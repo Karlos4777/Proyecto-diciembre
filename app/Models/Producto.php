@@ -13,9 +13,18 @@ class Producto extends Model
         'descripcion',
         'imagen',
         'categoria_id',
+        'catalogo_id', // <- agregado
     ];
+
+    // Relación con categoría
     public function categoria()
-{
-    return $this->belongsTo(Categoria::class);
-}
+    {
+        return $this->belongsTo(Categoria::class);
+    }
+
+    // Relación con catálogo
+    public function catalogo()
+    {
+        return $this->belongsTo(Catalogo::class);
+    }
 }

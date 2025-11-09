@@ -31,7 +31,6 @@
 </form>
 
 <!-- Productos de la categoría -->
-
 <div class="container mt-5">
     <h2 class="text-center mb-4">{{ $categoria->nombre }}</h2>
 
@@ -50,14 +49,28 @@
 
                         <div class="card-body text-center">
                             <h5 class="fw-bolder">{{ $producto->nombre }}</h5>
+
+                            <!-- Badges con íconos -->
                             <p class="mb-1 text-muted small">
-                                {{ $categoria->nombre }}
+                                @if($producto->categoria)
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-tags-fill me-1"></i>{{ $producto->categoria->nombre }}
+                                    </span>
+                                @endif
+                                @if($producto->catalogo)
+                                    <span class="badge bg-danger ms-1">
+                                        <i class="bi bi-bookmark-fill me-1"></i>{{ $producto->catalogo->nombre }}
+                                    </span>
+                                @endif
                             </p>
+
                             <p class="fw-bold text-success mb-2">
                                 ${{ number_format($producto->precio, 2) }}
                             </p>
-                            <a href="{{ route('web.show', $producto->id) }}" class="btn btn-dark btn-sm">
-                                Ver más
+
+                            <!-- Botón Ver producto -->
+                            <a href="{{ route('web.show', $producto->id) }}" class="btn btn-outline-dark flex-shrink-0">
+                                <i class="bi bi-eye me-1"></i> Ver producto
                             </a>
                         </div>
                     </div>

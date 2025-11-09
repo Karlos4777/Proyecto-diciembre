@@ -1,11 +1,10 @@
 @extends('web.app')
-
+@section('titulo', $catalogo->nombre . ' - DisZone')
 @section('header')
 @endsection
-
 @section('contenido')
 <!-- Formulario de búsqueda y filtro -->
-<form method="GET" action="{{ route('web.index') }}">
+<form method="GET" action="{{ route('catalogo.show', $catalogo->id) }}">
     <div class="container px-4 px-lg-5 mt-4">
         <div class="row">
             <div class="col-md-8 mb-3">
@@ -31,22 +30,18 @@
     </div>
 </form>
 
-<!-- Product Section -->
+<!-- Productos del catálogo -->
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Productos disponibles</h2>
+    <h2 class="text-center mb-4">{{ $catalogo->nombre }}</h2>
 
-    @if($productos->isEmpty())
-        <div class="text-center">
-            <p class="text-muted">No se encontraron productos.</p>
-        </div>
-    @else
+    @if($productos->count())
         <div class="row">
             @foreach ($productos as $producto)
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
                         @if($producto->imagen)
-                            <img src="{{ asset('uploads/productos/' . $producto->imagen) }}"
-                                 class="card-img-top" alt="{{ $producto->nombre }}"
+                            <img src="{{ asset('uploads/productos/' . $producto->imagen) }}" 
+                                 class="card-img-top" alt="{{ $producto->nombre }}" 
                                  style="height: 250px; object-fit: cover;">
                         @else
                             <img src="{{ asset('img/no-image.jpg') }}" class="card-img-top" alt="Sin imagen">
@@ -55,7 +50,7 @@
                         <div class="card-body text-center">
                             <h5 class="fw-bolder">{{ $producto->nombre }}</h5>
 
-                            <!-- Badges para categoría y catálogo con íconos -->
+                            <!-- Badges con íconos -->
                             <p class="mb-1 text-muted small">
                                 @if($producto->categoria)
                                     <span class="badge bg-primary">
@@ -73,7 +68,7 @@
                                 ${{ number_format($producto->precio, 2) }}
                             </p>
 
-                            <!-- Botón "Ver producto" estilo outline-dark con ícono -->
+                            <!-- Botón Ver producto -->
                             <a href="{{ route('web.show', $producto->id) }}" class="btn btn-outline-dark flex-shrink-0">
                                 <i class="bi bi-eye me-1"></i> Ver producto
                             </a>
@@ -86,6 +81,8 @@
         <div class="d-flex justify-content-center mt-3">
             {{ $productos->appends(request()->query())->links() }}
         </div>
+    @else
+        <p class="text-center text-muted">No hay productos en este catálogo.</p>
     @endif
 </div>
 @endsection

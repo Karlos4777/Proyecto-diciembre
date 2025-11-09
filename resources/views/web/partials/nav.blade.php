@@ -15,16 +15,21 @@
                     <a class="nav-link" href="#">Acerca</a>
                 </li>
 
-                <!-- Dropdown Tipo -->
+                <!-- Dropdown Catálogo dinámico -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownTipo" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">Tipo</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownTipo">
-                        <li><a class="dropdown-item" href="#">Vinilos</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#">CD's</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#">Casetes</a></li>
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownCatalogo" href="#" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">Catálogo</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownCatalogo">
+                        @foreach($catalogos as $catalogo)
+                            <li>
+                                <a class="dropdown-item" href="{{ route('catalogo.show', $catalogo->id) }}">
+                                    {{ $catalogo->nombre }}
+                                </a>
+                            </li>
+                            @if(!$loop->last)
+                                <li><hr class="dropdown-divider" /></li>
+                            @endif
+                        @endforeach
                     </ul>
                 </li>
 
@@ -45,6 +50,7 @@
                         @endforeach
                     </ul>
                 </li>
+
 
                 <!-- Dropdown Usuario -->
                 <li class="nav-item dropdown">

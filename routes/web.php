@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\WebController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\CatalogoController;
 
 // 🔹 Rutas públicas del sitio web
 Route::get('/', [WebController::class, 'index'])->name('web.index');
@@ -34,6 +36,8 @@ Route::middleware(['auth'])->group(function(){
     Route::patch('usuarios/{usuario}/toggle', [UserController::class, 'toggleStatus'])->name('usuarios.toggle');
     Route::resource('roles', RoleController::class);
     Route::resource('productos', ProductoController::class);
+    Route::resource('categoria', CategoriaController::class);
+    Route::resource('catalogo', CatalogoController::class); // ✅ NUEVO: rutas del catálogo
 
     Route::post('/pedido/realizar', [PedidoController::class, 'realizar'])->name('pedido.realizar');
     Route::get('/perfil/pedidos', [PedidoController::class, 'index'])->name('perfil.pedidos');
@@ -50,8 +54,6 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
-    
-    Route::resource('categoria', CategoriaController::class);
 });
 
 // 🔹 Rutas de autenticación (solo para invitados)

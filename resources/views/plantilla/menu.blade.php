@@ -72,7 +72,7 @@
                 @endcanany
 
                 <!-- Almacén -->
-                @canany(['producto-list', 'categoria-list'])
+                @canany(['producto-list', 'catalogo-list', 'categoria-list'])
                     <li class="nav-item" id="mnuAlmacen">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-archive-fill"></i>
@@ -92,6 +92,15 @@
                                 </li>
                             @endcan
 
+                            @can('catalogo-list')
+                                <li class="nav-item">
+                                    <a href="{{ route('catalogo.index') }}" class="nav-link" id="itemCatalogo">
+                                        <i class="nav-icon bi bi-circle"></i>
+                                        <p>Catálogo</p>
+                                    </a>
+                                </li>
+                            @endcan
+
                             @can('categoria-list')
                                 <li class="nav-item">
                                     <a href="{{ route('categoria.index') }}" class="nav-link" id="itemCategoria">
@@ -103,6 +112,7 @@
                         </ul>
                     </li>
                 @endcanany
+
 
             </ul>
             <!--end::Sidebar Menu-->

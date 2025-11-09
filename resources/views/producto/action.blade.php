@@ -51,7 +51,7 @@
                                     @enderror
                                 </div>
 
-                                <!-- Categoría (CORREGIDO) -->
+                                <!-- Categoría -->
                                 <div class="col-md-3 mb-3">
                                     <label for="categoria_id" class="form-label">Categoría</label>
                                     <select name="categoria_id" id="categoria_id" class="form-control" required>
@@ -70,6 +70,23 @@
                             </div>
 
                             <div class="row">
+                                <!-- Catálogo -->
+                                <div class="col-md-3 mb-3">
+                                    <label for="catalogo_id" class="form-label">Catálogo</label>
+                                    <select name="catalogo_id" id="catalogo_id" class="form-control">
+                                        <option value="">Seleccione un catálogo</option>
+                                        @foreach($catalogos as $catalogo)
+                                            <option value="{{ $catalogo->id }}"
+                                                {{ isset($registro) && $registro->catalogo_id == $catalogo->id ? 'selected' : '' }}>
+                                                {{ $catalogo->nombre }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('catalogo_id')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
                                 <!-- Descripción -->
                                 <div class="col-md-6 mb-3">
                                     <label for="descripcion" class="form-label">Descripción</label>

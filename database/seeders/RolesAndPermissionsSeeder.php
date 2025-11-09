@@ -25,9 +25,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'user-list', 'user-create', 'user-edit', 'user-delete', 'user-activate',
             'rol-list', 'rol-create', 'rol-edit', 'rol-delete',
             'producto-list', 'producto-create', 'producto-edit', 'producto-delete',
-            'pedido-list', 'pedido-anulate','categoria-list', 'categoria-create', 
-            'categoria-edit', 'categoria-delete',
+            'pedido-list', 'pedido-anulate',
+            'categoria-list', 'categoria-create', 'categoria-edit', 'categoria-delete',
+            'catalogo-list', 'catalogo-create', 'catalogo-edit', 'catalogo-delete',
         ];
+
 
         $clientePermissions = ['pedido-view', 'pedido-cancel','perfil'];
 
