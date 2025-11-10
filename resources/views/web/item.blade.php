@@ -41,13 +41,13 @@
                 <p class="text-success fw-semibold mb-2">
                     <i class="bi bi-check-circle me-1"></i> Producto disponible
                 </p>
-            @elseif ($producto->cantidad >= 10 && $producto->cantidad < 50)
+            @elseif ($producto->cantidad >= 1 && $producto->cantidad < 50)
                 <p class="text-warning fw-semibold mb-2">
                     <i class="bi bi-exclamation-circle me-1"></i> Pocas unidades
                 </p>
             @elseif ($producto->cantidad == 0)
                 <p class="text-danger fw-semibold mb-2">
-                    <i class="bi bi-x-circle me-1"></i> Agotado
+                    <i class="bi bi-x-circle me-1"></i> Producto no disponible
                 </p>
             @endif
 
@@ -61,6 +61,7 @@
                     @endif
 
                     <!-- Formulario cantidad + carrito -->
+                    @if ($producto->cantidad >= 1)
                     <div class="d-flex">
                         <input type="hidden" name="producto_id" value="{{ $producto->id }}">
                         <input class="form-control text-center me-3" id="inputQuantity" type="number" name="cantidad" min="1" value="1"
@@ -70,6 +71,9 @@
                             Agregar al carrito
                         </button>
                         <a class="btn btn-outline-secondary ms-2" href="javascript:history.back()">Regresar</a>
+                        @else
+                        <a class="btn btn-outline-secondary ms-2" href="javascript:history.back()">Regresar</a>
+                        @endif
                     </div>
                 </div>
             </div>

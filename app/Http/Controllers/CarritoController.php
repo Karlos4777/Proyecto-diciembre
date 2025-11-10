@@ -4,20 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Producto;
+use App\Models\Carrito;
+use Illuminate\Support\Facades\Auth;
 
 class CarritoController extends Controller
 {
-    public function agregar(Request $request){
+    // Mostrar el carrito del usuario autenticado
+    public function mostrar()
+    {
+        $registro = Carrito::where('user_id', Auth::id())->first();
+
+        $carrito = $registro ? $registro->contenido : [];
+
+        return view('web.pedido', compact('carrito'));
+    }
+
+    // Agregar producto al carrito
+    public function agregar(Request $request)
+    {
         $producto = Producto::findOrFail($request->producto_id);
         $cantidad = $request->cantidad ?? 1;
 
-        $carrito = session()->get('carrito', []);
-        if (isset($carrito[$producto->id])) {
-            // Ya existe en el carrito, solo aumenta la cantidad
-            $carrito[$producto->id]['cantidad'] += $cantidad;
+        $carrito = Carrito::firstOrCreate(['user_id' => Auth::id()], ['contenido' => []]);
+
+        $contenido = $carrito->contenido ?? [];
+
+        if (isset($contenido[$producto->id])) {
+            $contenido[$producto->id]['cantidad'] += $cantidad;
         } else {
-            // No existe, lo agregamos
-            $carrito[$producto->id] = [
+            $contenido[$producto->id] = [
                 'codigo' => $producto->codigo,
                 'nombre' => $producto->nombre,
                 'precio' => $producto->precio,
@@ -25,57 +40,73 @@ class CarritoController extends Controller
                 'cantidad' => $cantidad,
             ];
         }
-        session()->put('carrito', $carrito);
+
+        $carrito->update(['contenido' => $contenido]);
+
         return redirect()->back()->with('mensaje', 'Producto agregado al carrito');
     }
 
-    public function mostrar(){
-        $carrito =session('carrito', []);
-        return view('web.pedido', compact('carrito'));
+public function sumar(Request $request)
+{
+    // Buscar el carrito del usuario autenticado
+    $carrito = Carrito::where('user_id', Auth::id())->first();
+
+    // Si no existe carrito, redirigir
+    if (!$carrito) return redirect()->back()->with('error', 'No se encontró el carrito');
+
+    // Obtener el contenido (array)
+    $contenido = $carrito->contenido;
+    $productoId = $request->producto_id;
+
+    // Verificar que el producto exista en el carrito
+    if (isset($contenido[$productoId])) {
+        $contenido[$productoId]['cantidad']++;
+        $carrito->update(['contenido' => $contenido]);
     }
 
-    public function sumar(Request $request){
+    return redirect()->back()->with('mensaje', 'Cantidad actualizada');
+}
+    
+
+    // Restar cantidad
+    public function restar(Request $request)
+    {
+        $registro = Carrito::where('user_id', Auth::id())->first();
+        if (!$carrito) return redirect()->back()->with('error', 'No se encontró el carrito');
+
+        $contenido = $carrito->contenido;
         $productoId = $request->producto_id;
 
-        $carrito = session()->get('carrito', []);
-
-        if (isset($carrito[$productoId])) {
-            $carrito[$productoId]['cantidad'] += 1;
-            session()->put('carrito', $carrito);
-        }
-
-        return redirect()->back()->with('mensaje', 'Cantidad actualizada en el carrito');
-    }
-
-    public function restar(Request $request){
-        $productoId = $request->producto_id;
-
-        $carrito = session()->get('carrito', []);
-
-        if (isset($carrito[$productoId])) {
-            if ($carrito[$productoId]['cantidad'] > 1) {
-                // Resta 1 si la cantidad es mayor a 1
-                $carrito[$productoId]['cantidad'] -= 1;
-            } 
-            else{
-                // Si es 1, lo quitamos del carrito
-                unset($carrito[$productoId]);
+        if (isset($contenido[$productoId])) {
+            if ($contenido[$productoId]['cantidad'] > 1) {
+                $contenido[$productoId]['cantidad']--;
+            } else {
+                unset($contenido[$productoId]);
             }
-            session()->put('carrito', $carrito);
+            $carrito->update(['contenido' => $contenido]);
         }
 
-        return redirect()->back()->with('mensaje', 'Cantidad actualizada en el carrito');
+        return redirect()->back()->with('mensaje', 'Cantidad actualizada');
     }
-    public function eliminar($id){
-        $carrito = session()->get('carrito');
-        if (isset($carrito[$id])) {
-            unset($carrito[$id]);
-            session()->put('carrito', $carrito);
-        }
-        return redirect()->back()->with('success', 'Producto eliminado');
+
+    // Eliminar producto
+    public function eliminar($id)
+    {
+        $registro = Carrito::where('user_id', Auth::id())->first();
+        if (!$carrito) return redirect()->back()->with('error', 'No se encontró el carrito');
+
+        $contenido = $carrito->contenido;
+        unset($contenido[$id]);
+
+        $carrito->update(['contenido' => $contenido]);
+
+        return redirect()->back()->with('success', 'Producto eliminado del carrito');
     }
-    public function vaciar(){
-        session()->forget('carrito');
+
+    // Vaciar carrito
+    public function vaciar()
+    {
+        Carrito::where('user_id', Auth::id())->update(['contenido' => []]);
         return redirect()->back()->with('success', 'Carrito vaciado');
     }
 }

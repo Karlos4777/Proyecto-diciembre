@@ -68,7 +68,7 @@
                             <span class="badge bg-success position-absolute top-0 start-0 m-2 p-2 rounded-3 shadow">
                                 <i class="bi bi-check-circle me-1"></i> Producto disponible
                             </span>
-                        @elseif ($stock >= 10 && $stock < 50)
+                        @elseif ($stock >= 1 && $stock < 50)
                             <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2 p-2 rounded-3 shadow">
                                 <i class="bi bi-exclamation-circle me-1"></i> Pocas unidades
                             </span>

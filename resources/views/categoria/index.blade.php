@@ -90,7 +90,7 @@
 @endsection
 @push('scripts')
 <script>
-    document.getElementById('mnuSeguridad').classList.add('menu-open');
+    document.getElementById('mnuAlmacen').classList.add('menu-open');
     document.getElementById('itemCategoria').classList.add('active');
 </script>
 @endpush
