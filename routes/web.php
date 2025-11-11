@@ -23,13 +23,6 @@ Route::get('/producto/{id}', [WebController::class, 'show'])->name('web.show');
 // 🔹 Nueva ruta para mostrar productos por categoría
 Route::get('/categoria-web/{id}', [CategoriaController::class, 'show'])->name('web.categoria.show');
 
-Route::get('/carrito', [CarritoController::class, 'mostrar'])->name('carrito.mostrar');
-Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
-Route::get('/carrito/sumar', [CarritoController::class, 'sumar'])->name('carrito.sumar');
-Route::get('/carrito/restar', [CarritoController::class, 'restar'])->name('carrito.restar');
-Route::get('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
-Route::get('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
-
 // 🔹 Rutas protegidas (solo usuarios autenticados)
 Route::middleware(['auth'])->group(function(){
     Route::resource('usuarios', UserController::class);
@@ -38,6 +31,13 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('productos', ProductoController::class);
     Route::resource('categoria', CategoriaController::class);
     Route::resource('catalogo', CatalogoController::class);
+    
+    Route::get('/carrito', [CarritoController::class, 'mostrar'])->name('carrito.mostrar');
+Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+Route::get('/carrito/sumar', [CarritoController::class, 'sumar'])->name('carrito.sumar');
+Route::get('/carrito/restar', [CarritoController::class, 'restar'])->name('carrito.restar');
+Route::get('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+Route::get('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
 
     Route::get('/pedido/formulario', [PedidoController::class, 'formulario'])->name('pedido.formulario');
     Route::post('/pedido/realizar', [PedidoController::class, 'realizar'])->name('pedido.realizar');

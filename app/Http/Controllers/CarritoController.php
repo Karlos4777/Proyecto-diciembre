@@ -8,120 +8,125 @@ use App\Models\Carrito;
 use Illuminate\Support\Facades\Auth;
 
 class CarritoController extends Controller
-{
-  public function mostrar()
-{
-    $registro = Carrito::where('user_id', auth()->id())->first();
-    if ($registro) {
-    $contenido = $registro->contenido;
-
-    // Si el contenido ya es array, úsalo directamente
-    if (is_array($contenido)) {
-        $carrito = $contenido;
-    } else {
-        // Si es string JSON, decodifícalo
-        $carrito = json_decode($contenido, true) ?? [];
-    }
-} else {
-    $carrito = [];
-}
-
-    return view('web.pedido', compact('carrito'));
-}
-
-    
-public function agregar(Request $request)
-{
-    $producto = Producto::findOrFail($request->producto_id);
-
-    $carrito = session()->get('carrito', []);
-
-    $carrito[$producto->id] = [
-        'nombre' => $producto->nombre,
-        'codigo' => $producto->codigo,
-        'precio' => $producto->precio,
-        'cantidad' => 1,
-        'imagen' => $producto->imagen,
-    ];
-
-    session()->put('carrito', $carrito);
-
-    return redirect()->back()->with('mensaje', 'Producto agregado al carrito');
-}
-    public function sumar(Request $request)
-{
-    $carrito = Carrito::where('user_id', Auth::id())->first();
-
-    if (!$carrito) {
-        return redirect()->back()->with('error', 'El carrito está vacío');
+{public function __construct()
+    {
+        $this->middleware('auth'); // Solo usuarios autenticados
     }
 
-    $contenido = $carrito->contenido;
-    $productoId = $request->producto_id;
+    // Mostrar carrito
+    public function mostrar()
+    {
+        $registro = Carrito::firstOrCreate(
+            ['user_id' => Auth::id()],
+            ['contenido' => []]
+        );
 
-    if (isset($contenido[$productoId])) {
-        $contenido[$productoId]['cantidad']++;
-        $carrito->update(['contenido' => $contenido]);
+        $carrito = $registro->contenido;
+
+        return view('web.pedido', compact('carrito'));
     }
 
-    return redirect()->back()->with('mensaje', 'Cantidad actualizada');
-}
+    // Agregar producto
+    public function agregar(Request $request)
+    {
+        $producto = Producto::findOrFail($request->producto_id);
 
-public function restar(Request $request)
-{
-    $carrito = Carrito::where('user_id', Auth::id())->first();
+        $registro = Carrito::firstOrCreate(
+            ['user_id' => Auth::id()],
+            ['contenido' => []]
+        );
 
-    if (!$carrito) {
-        return redirect()->back()->with('error', 'El carrito está vacío');
-    }
+        $contenido = $registro->contenido;
 
-    $contenido = $carrito->contenido;
-    $productoId = $request->producto_id;
-
-    if (isset($contenido[$productoId])) {
-        if ($contenido[$productoId]['cantidad'] > 1) {
-            $contenido[$productoId]['cantidad']--;
+        if(isset($contenido[$producto->id])){
+            $contenido[$producto->id]['cantidad'] += 1;
         } else {
-            unset($contenido[$productoId]);
+            $contenido[$producto->id] = [
+                'nombre' => $producto->nombre,
+                'codigo' => $producto->codigo,
+                'precio' => $producto->precio,
+                'cantidad' => 1,
+                'imagen' => $producto->imagen,
+            ];
         }
-        $carrito->update(['contenido' => $contenido]);
+
+        $registro->contenido = $contenido;
+        $registro->save();
+
+        return redirect()->back()->with('mensaje', 'Producto agregado al carrito');
     }
 
-    return redirect()->back()->with('mensaje', 'Cantidad actualizada');
-}
+    // Restar producto
+    public function restar($producto_id)
+    {
+        $registro = Carrito::firstOrCreate(
+            ['user_id' => Auth::id()],
+            ['contenido' => []]
+        );
 
-public function eliminar($id)
-{
-    $carrito = Carrito::where('user_id', Auth::id())->first();
+        $contenido = $registro->contenido;
 
-    if (!$carrito) {
-        return redirect()->back()->with('error', 'El carrito está vacío');
+        if(isset($contenido[$producto_id])){
+            $contenido[$producto_id]['cantidad']--;
+            if($contenido[$producto_id]['cantidad'] <= 0){
+                unset($contenido[$producto_id]);
+            }
+            $registro->contenido = $contenido;
+            $registro->save();
+        }
+
+        return redirect()->back();
     }
 
-    $contenido = $carrito->contenido;
-    unset($contenido[$id]);
-    $carrito->update(['contenido' => $contenido]);
+    // Sumar producto
+    public function sumar($producto_id)
+    {
+        $registro = Carrito::firstOrCreate(
+            ['user_id' => Auth::id()],
+            ['contenido' => []]
+        );
 
-    return redirect()->back()->with('mensaje', 'Producto eliminado del carrito');
-}
+        $contenido = $registro->contenido;
 
-public function vaciar()
-{
-    $carrito = Carrito::where('user_id', Auth::id())->first();
+        if(isset($contenido[$producto_id])){
+            $contenido[$producto_id]['cantidad']++;
+            $registro->contenido = $contenido;
+            $registro->save();
+        }
 
-    if ($carrito) {
-        $carrito->update(['contenido' => []]);
+        return redirect()->back();
     }
 
-    return redirect()->back()->with('mensaje', 'Carrito vaciado correctamente');
-}
-public static function contarProductos()
-{
-    if (Auth::check()) {
-        $carrito = Carrito::where('user_id', Auth::id())->first();
-        return count($carrito->contenido ?? []);
-    }
-    return 0;
-}
+    // Eliminar producto
+    public function eliminar($producto_id)
+    {
+        $registro = Carrito::firstOrCreate(
+            ['user_id' => Auth::id()],
+            ['contenido' => []]
+        );
 
+        $contenido = $registro->contenido;
+
+        if(isset($contenido[$producto_id])){
+            unset($contenido[$producto_id]);
+            $registro->contenido = $contenido;
+            $registro->save();
+        }
+
+        return redirect()->back();
+    }
+
+    // Vaciar carrito
+    public function vaciar()
+    {
+        $registro = Carrito::firstOrCreate(
+            ['user_id' => Auth::id()],
+            ['contenido' => []]
+        );
+
+        $registro->contenido = [];
+        $registro->save();
+
+        return redirect()->back()->with('mensaje', 'Carrito vaciado correctamente');
+    }
 }

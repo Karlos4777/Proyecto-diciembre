@@ -10,6 +10,10 @@ class Carrito extends Model
     protected $fillable = ['user_id', 'contenido'];
 
     protected $casts = [
-        'contenido' => 'array', // Laravel convierte JSON <-> array automáticamente
+        'contenido' => 'array', 
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

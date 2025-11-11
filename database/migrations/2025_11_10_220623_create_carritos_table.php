@@ -6,19 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('carritos', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->json('contenido'); // guarda los productos como JSON
-            $table->timestamps();
-        });
-    }
-
+    public function up()
+{
+    Schema::create('carritos', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        $table->json('contenido')->nullable(); // Aquí se guardan los productos
+        $table->timestamps();
+    });
+}
     /**
      * Reverse the migrations.
      */
