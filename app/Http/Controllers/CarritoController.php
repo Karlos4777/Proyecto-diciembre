@@ -9,56 +9,56 @@ use Illuminate\Support\Facades\Auth;
 
 class CarritoController extends Controller
 {
-    // Mostrar el carrito del usuario autenticado
-    public function mostrar()
-    {
-        $registro = Carrito::where('user_id', Auth::id())->first();
-
-        $carrito = $registro ? $registro->contenido : [];
-
-        return view('web.pedido', compact('carrito'));
-    }
-
-    // Agregar producto al carrito
-    public function agregar(Request $request)
-    {
-        $producto = Producto::findOrFail($request->producto_id);
-        $cantidad = $request->cantidad ?? 1;
-
-        $carrito = Carrito::firstOrCreate(['user_id' => Auth::id()], ['contenido' => []]);
-
-        $contenido = $carrito->contenido ?? [];
-
-        if (isset($contenido[$producto->id])) {
-            $contenido[$producto->id]['cantidad'] += $cantidad;
-        } else {
-            $contenido[$producto->id] = [
-                'codigo' => $producto->codigo,
-                'nombre' => $producto->nombre,
-                'precio' => $producto->precio,
-                'imagen' => $producto->imagen,
-                'cantidad' => $cantidad,
-            ];
-        }
-
-        $carrito->update(['contenido' => $contenido]);
-
-        return redirect()->back()->with('mensaje', 'Producto agregado al carrito');
-    }
-
-public function sumar(Request $request)
+  public function mostrar()
 {
-    // Buscar el carrito del usuario autenticado
+    $registro = Carrito::where('user_id', auth()->id())->first();
+    if ($registro) {
+    $contenido = $registro->contenido;
+
+    // Si el contenido ya es array, úsalo directamente
+    if (is_array($contenido)) {
+        $carrito = $contenido;
+    } else {
+        // Si es string JSON, decodifícalo
+        $carrito = json_decode($contenido, true) ?? [];
+    }
+} else {
+    $carrito = [];
+}
+
+    return view('web.pedido', compact('carrito'));
+}
+
+    
+public function agregar(Request $request)
+{
+    $producto = Producto::findOrFail($request->producto_id);
+
+    $carrito = session()->get('carrito', []);
+
+    $carrito[$producto->id] = [
+        'nombre' => $producto->nombre,
+        'codigo' => $producto->codigo,
+        'precio' => $producto->precio,
+        'cantidad' => 1,
+        'imagen' => $producto->imagen,
+    ];
+
+    session()->put('carrito', $carrito);
+
+    return redirect()->back()->with('mensaje', 'Producto agregado al carrito');
+}
+    public function sumar(Request $request)
+{
     $carrito = Carrito::where('user_id', Auth::id())->first();
 
-    // Si no existe carrito, redirigir
-    if (!$carrito) return redirect()->back()->with('error', 'No se encontró el carrito');
+    if (!$carrito) {
+        return redirect()->back()->with('error', 'El carrito está vacío');
+    }
 
-    // Obtener el contenido (array)
     $contenido = $carrito->contenido;
     $productoId = $request->producto_id;
 
-    // Verificar que el producto exista en el carrito
     if (isset($contenido[$productoId])) {
         $contenido[$productoId]['cantidad']++;
         $carrito->update(['contenido' => $contenido]);
@@ -66,47 +66,62 @@ public function sumar(Request $request)
 
     return redirect()->back()->with('mensaje', 'Cantidad actualizada');
 }
-    
 
-    // Restar cantidad
-    public function restar(Request $request)
-    {
-        $registro = Carrito::where('user_id', Auth::id())->first();
-        if (!$carrito) return redirect()->back()->with('error', 'No se encontró el carrito');
+public function restar(Request $request)
+{
+    $carrito = Carrito::where('user_id', Auth::id())->first();
 
-        $contenido = $carrito->contenido;
-        $productoId = $request->producto_id;
+    if (!$carrito) {
+        return redirect()->back()->with('error', 'El carrito está vacío');
+    }
 
-        if (isset($contenido[$productoId])) {
-            if ($contenido[$productoId]['cantidad'] > 1) {
-                $contenido[$productoId]['cantidad']--;
-            } else {
-                unset($contenido[$productoId]);
-            }
-            $carrito->update(['contenido' => $contenido]);
+    $contenido = $carrito->contenido;
+    $productoId = $request->producto_id;
+
+    if (isset($contenido[$productoId])) {
+        if ($contenido[$productoId]['cantidad'] > 1) {
+            $contenido[$productoId]['cantidad']--;
+        } else {
+            unset($contenido[$productoId]);
         }
-
-        return redirect()->back()->with('mensaje', 'Cantidad actualizada');
-    }
-
-    // Eliminar producto
-    public function eliminar($id)
-    {
-        $registro = Carrito::where('user_id', Auth::id())->first();
-        if (!$carrito) return redirect()->back()->with('error', 'No se encontró el carrito');
-
-        $contenido = $carrito->contenido;
-        unset($contenido[$id]);
-
         $carrito->update(['contenido' => $contenido]);
-
-        return redirect()->back()->with('success', 'Producto eliminado del carrito');
     }
 
-    // Vaciar carrito
-    public function vaciar()
-    {
-        Carrito::where('user_id', Auth::id())->update(['contenido' => []]);
-        return redirect()->back()->with('success', 'Carrito vaciado');
+    return redirect()->back()->with('mensaje', 'Cantidad actualizada');
+}
+
+public function eliminar($id)
+{
+    $carrito = Carrito::where('user_id', Auth::id())->first();
+
+    if (!$carrito) {
+        return redirect()->back()->with('error', 'El carrito está vacío');
     }
+
+    $contenido = $carrito->contenido;
+    unset($contenido[$id]);
+    $carrito->update(['contenido' => $contenido]);
+
+    return redirect()->back()->with('mensaje', 'Producto eliminado del carrito');
+}
+
+public function vaciar()
+{
+    $carrito = Carrito::where('user_id', Auth::id())->first();
+
+    if ($carrito) {
+        $carrito->update(['contenido' => []]);
+    }
+
+    return redirect()->back()->with('mensaje', 'Carrito vaciado correctamente');
+}
+public static function contarProductos()
+{
+    if (Auth::check()) {
+        $carrito = Carrito::where('user_id', Auth::id())->first();
+        return count($carrito->contenido ?? []);
+    }
+    return 0;
+}
+
 }

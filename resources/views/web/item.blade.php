@@ -62,17 +62,16 @@
 
                     <!-- Formulario cantidad + carrito -->
                     @if ($producto->cantidad >= 1)
-                    <div class="d-flex">
-                        <input type="hidden" name="producto_id" value="{{ $producto->id }}">
-                        <input class="form-control text-center me-3" id="inputQuantity" type="number" name="cantidad" min="1" value="1"
-                               style="max-width: 3rem" />
-                        <button class="btn btn-outline-dark flex-shrink-0" type="submit">
-                            <i class="bi-cart-fill me-1"></i>
-                            Agregar al carrito
-                        </button>
-                        <a class="btn btn-outline-secondary ms-2" href="javascript:history.back()">Regresar</a>
+                   <form method="POST" action="{{ route('carrito.agregar') }}" class="d-flex">
+    @csrf
+    <input type="hidden" name="producto_id" value="{{ $producto->id }}">
+    <button class="btn btn-outline-dark flex-shrink-0" type="submit">
+        <i class="bi-cart-fill me-1"></i> Agregar al carrito
+    </button>
+    <a class="btn btn-outline-dark flex-shrink-0" href="javascript:history.back()">Regresar</a>
+</form>
                         @else
-                        <a class="btn btn-outline-secondary ms-2" href="javascript:history.back()">Regresar</a>
+                        <a class="btn btn-outline-dark flex-shrink-0" href="javascript:history.back()">Regresar</a>
                         @endif
                     </div>
                 </div>

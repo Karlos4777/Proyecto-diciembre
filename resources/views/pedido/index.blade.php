@@ -108,7 +108,7 @@
                                                             </td>
                                                         </tr>
                                                         @endforeach
-                                                    </tbody>
+                            </tbody>
                                                 </table>
                                             </td>
                                         </tr>
@@ -117,8 +117,11 @@
                                         @endif
                                 </tbody>
                             </table>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-secondary me-md-2"
+                                    onclick="window.location.href='{{route('web.index')}}'">Cancelar</button>
                         </div>
-
+                        </div>
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer clearfix">

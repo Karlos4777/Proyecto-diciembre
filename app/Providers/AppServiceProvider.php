@@ -19,35 +19,28 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+public function boot(): void
+{
+    Paginator::useBootstrap();
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        // 🔹 Usa Bootstrap para la paginación
-        Paginator::useBootstrap();
-
-        // 🔹 Hace disponibles las categorías y catálogos en todas las vistas
-        View::composer('*', function ($view) {
-            $view->with('categorias', Categoria::all());
-            $view->with('catalogos', Catalogo::all());
-            
-        View::composer('*', function ($view) {
-        $count = 0;
-
-        if (Auth::check()) {
-            $car = Carrito::where('user_id', Auth::id())->first();
-            $contenido = $car ? $car->contenido : [];
-            $count = is_array($contenido) ? array_sum(array_column($contenido, 'cantidad')) : 0;
-        } else {
-            $sessionCart = session('carrito', []);
-            $sessionCart = is_array($sessionCart) ? $sessionCart : (is_object($sessionCart) ? (array) $sessionCart : []);
-            $count = $sessionCart ? array_sum(array_column($sessionCart, 'cantidad')) : 0;
-        }
-
-        $view->with('cartCount', $count);
+    View::composer('*', function ($view) {
+        $view->with('categorias', \App\Models\Categoria::all());
+        $view->with('catalogos', \App\Models\Catalogo::all());
     });
-        });
+        
+View::composer('*', function ($view) {
+    $count = 0;
+
+    if (Auth::check()) {
+        $carrito = \App\Models\Carrito::where('user_id', Auth::id())->first();
+        $contenido = $carrito ? $carrito->contenido : [];
+        $count = is_array($contenido) ? array_sum(array_column($contenido, 'cantidad')) : 0;
+    } else {
+        $carrito = session('carrito', []);
+        $count = is_array($carrito) ? array_sum(array_column($carrito, 'cantidad')) : 0;
     }
+
+    $view->with('cartCount', $count);
+});
+}
 }
