@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="title" content="Shop | ArtCode.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="ArtCode" />
     <meta name="description" content="Shop | ArtCode.com" />
     <meta name="keywords" content="Shop, ArtCode" />
@@ -19,26 +17,48 @@
     <!-- Core theme CSS -->
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
     @stack('estilos')
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        footer {
+            margin-top: auto;
+        }
+    </style>
 </head>
 <body>
-    <!--  Navegación -->
+
+    <!-- Navegación -->
     @include('web.partials.nav')
 
-    <!--  Header (solo si la vista lo define) -->
+    <!-- Header opcional -->
     @if(View::hasSection('header'))
         @include('web.partials.header')
     @endif
 
-    <!--  Sección de búsqueda / contenido dinámico -->
-    @yield('contenido')
+    <!-- Contenido principal -->
+    <main>
+        @yield('contenido')
+    </main>
 
-    <!--  Footer -->
+    <!-- Footer -->
     @include('web.partials.footer')
 
-    <!-- JS de Bootstrap -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Scripts personalizados -->
     <script src="{{ asset('js/scripts.js') }}"></script>
     @stack('scripts')
 </body>

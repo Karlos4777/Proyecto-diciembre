@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('roles', RoleController::class);
     Route::resource('productos', ProductoController::class);
     Route::resource('categoria', CategoriaController::class);
-    Route::resource('catalogo', CatalogoController::class); // ✅ NUEVO: rutas del catálogo
+    Route::resource('catalogo', CatalogoController::class);
 
     Route::get('/pedido/formulario', [PedidoController::class, 'formulario'])->name('pedido.formulario');
     Route::post('/pedido/realizar', [PedidoController::class, 'realizar'])->name('pedido.realizar');
