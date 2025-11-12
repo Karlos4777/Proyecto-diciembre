@@ -78,6 +78,7 @@ public function buscarProductosAjax(Request $request)
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
                 'precio' => $producto->precio,
+                'imagen' => $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/sin-imagen.png'),
                 'categoria' => $producto->categoria->nombre ?? 'Sin categoría',
                 'catalogo' => $producto->catalogo->nombre ?? 'Sin catálogo',
                 'estado' => $producto->stock > 10 ? 'Disponible' : ($producto->stock > 0 ? 'Pocas unidades' : 'Agotado'),

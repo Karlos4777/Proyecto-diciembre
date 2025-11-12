@@ -160,14 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 resultados.innerHTML = data.map(p => `
                     <li class="list-group-item">
-                        <a href="/producto/${p.id}" class="d-block">
-                            <strong>${p.nombre}</strong> - $${parseFloat(p.precio).toFixed(2)} <br>
-                            <small class="text-muted">${p.categoria} | ${p.catalogo}</small><br>
-                            <span class="badge ${
-                                p.estado === 'Disponible' ? 'bg-success' :
-                                p.estado === 'Pocas unidades' ? 'bg-warning text-dark' :
-                                'bg-danger'
-                            }">${p.estado}</span>
+                        <a href="/producto/${p.id}" class="d-block d-flex align-items-start gap-2">
+                            <img src="${p.imagen}" alt="${p.nombre}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; flex-shrink-0;">
+                            <div class="flex-grow-1">
+                                <strong>${p.nombre}</strong><br>
+                                <small class="text-muted">$${parseFloat(p.precio).toFixed(2)} | ${p.categoria} | ${p.catalogo}</small><br>
+                                <span class="badge ${
+                                    p.estado === 'Disponible' ? 'bg-success' :
+                                    p.estado === 'Pocas unidades' ? 'bg-warning text-dark' :
+                                    'bg-danger'
+                                }">${p.estado}</span>
+                            </div>
                         </a>
                     </li>
                 `).join('');
