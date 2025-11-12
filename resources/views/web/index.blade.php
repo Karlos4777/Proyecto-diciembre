@@ -50,12 +50,7 @@
     <div class="row">
         <div class="col-md-8 mb-3 position-relative">
             <form id="formBuscador" method="GET" action="{{ route('web.index') }}">
-                <div class="input-group">
-                    <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." name="search" autocomplete="off" value="{{ request('search') }}">
-                    <button class="btn btn-outline-dark" type="submit">
-                        <i class="bi bi-search"></i> Buscar
-                    </button>
-                </div>
+                <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." name="search" autocomplete="off" value="{{ request('search') }}">
             </form>
 
             <!-- 📋 Contenedor para los resultados -->
@@ -97,17 +92,35 @@
 @push('styles')
 <!-- 🎨 Estilos del buscador -->
 <style>
+#buscador {
+    border-radius: 6px;
+}
+
 #resultadosBusqueda {
     display: none;
     z-index: 1000;
-    max-height: 320px;
+    max-height: 400px;
     overflow-y: auto;
     border-radius: 0 0 6px 6px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    list-style: none;
+    padding: 0;
+    margin: 0 !important;
 }
 
 #resultadosBusqueda .list-group-item {
     transition: background-color 0.2s ease;
+    border: none !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    padding: 12px !important;
+    margin: 0 !important;
+}
+
+#resultadosBusqueda .list-group-item:last-child {
+    border-bottom: none !important;
 }
 
 #resultadosBusqueda .list-group-item:hover {
@@ -118,6 +131,11 @@
     display: block;
     text-decoration: none;
     color: #212529;
+    padding: 0;
+}
+
+#resultadosBusqueda a:hover {
+    color: #0d6efd;
 }
 
 #resultadosBusqueda small {
@@ -137,12 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 🔍 Autocompletado en tiempo real
     input.addEventListener('keyup', async (e) => {
         const query = input.value.trim();
-
-        // Si presiona Enter → búsqueda normal
-        if (e.key === 'Enter') {
-            form.submit();
-            return;
-        }
 
         // Si hay menos de 2 letras, ocultar
         if (query.length < 2) {
