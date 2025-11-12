@@ -17,21 +17,6 @@ class WebController extends Controller
             $query->where('nombre', 'like', '%' . $request->search . '%');
         }
 
-        // 🔀 Filtro de orden (precio asc/desc)
-        if ($request->has('sort') && $request->sort) {
-            switch ($request->sort) {
-                case 'priceAsc':
-                    $query->orderBy('precio', 'asc');
-                    break;
-                case 'priceDesc':
-                    $query->orderBy('precio', 'desc');
-                    break;
-                default:
-                    $query->orderBy('nombre', 'asc');
-                    break;
-            }
-        }
-
         // 🛒 Productos principales (para la vista general)
         $productos = $query->paginate(10);
 
@@ -82,6 +67,7 @@ class WebController extends Controller
 
 public function buscarProductosAjax(Request $request)
 {
+<<<<<<< Updated upstream
     $query = trim($request->get('search'));
 
     if (strlen($query) < 2) {
@@ -104,11 +90,32 @@ public function buscarProductosAjax(Request $request)
                 'estado' => $p->cantidad > 5
                     ? 'Disponible'
                     : ($p->cantidad > 0 ? 'Pocas unidades' : 'Agotado'),
+=======
+    $search = $request->get('search', '');
+
+    $productos = Producto::with(['categoria', 'catalogo'])
+        ->where('nombre', 'like', "%$search%")
+        ->limit(10)
+        ->get()
+        ->map(function ($producto) {
+            return [
+                'id' => $producto->id,
+                'nombre' => $producto->nombre,
+                'precio' => $producto->precio,
+                'categoria' => $producto->categoria->nombre ?? 'Sin categoría',
+                'catalogo' => $producto->catalogo->nombre ?? 'Sin catálogo',
+                'estado' => $producto->stock > 10 ? 'Disponible' : ($producto->stock > 0 ? 'Pocas unidades' : 'Agotado'),
+>>>>>>> Stashed changes
             ];
         });
 
     return response()->json($productos);
+<<<<<<< Updated upstream
 }
 
+
+=======
+>>>>>>> Stashed changes
+}
 
 }

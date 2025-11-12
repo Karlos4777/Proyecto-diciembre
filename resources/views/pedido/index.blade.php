@@ -44,10 +44,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(count($registros)<=0) <tr>
-                                        <td colspan="7">No hay registros que coincidan con la búsqueda</td>
-                                        </tr>
-                                        @else
+                                    @if($registros && count($registros) > 0)
                                         @foreach($registros as $reg)
                                         <tr class="align-middle">
                                             <td>
@@ -93,28 +90,41 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach($reg->detalles as $detalle)
-                                                        <tr>
-                                                            <td>{{ $detalle->producto->nombre }}</td>
-                                                            <td>
-                                                                <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen ) }}"
-                                                                    class="img-fluid rounded"
-                                                                    style="width: 80px; height: 80px; object-fit: cover;"
-                                                                    alt="{{ $detalle->producto->nombre}}">
-                                                            </td>
-                                                            <td>{{ $detalle->cantidad}}</td>
-                                                            <td>{{ number_format($detalle->precio, 2) }}</td>
-                                                            <td>{{ number_format($detalle->cantidad * $detalle->precio, 2) }}
-                                                            </td>
-                                                        </tr>
-                                                        @endforeach
-                            </tbody>
+                                                        @if($reg->detalles && count($reg->detalles) > 0)
+                                                            @foreach($reg->detalles as $detalle)
+                                                            <tr>
+                                                                <td>{{ $detalle->producto->nombre }}</td>
+                                                                <td>
+                                                                    <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen ) }}"
+                                                                        class="img-fluid rounded"
+                                                                        style="width: 80px; height: 80px; object-fit: cover;"
+                                                                        alt="{{ $detalle->producto->nombre}}">
+                                                                </td>
+                                                                <td>{{ $detalle->cantidad}}</td>
+                                                                <td>${{ number_format($detalle->precio, 2) }}</td>
+                                                                <td>${{ number_format($detalle->cantidad * $detalle->precio, 2) }}</td>
+                                                            </tr>
+                                                            @endforeach
+                                                        @else
+                                                            <tr>
+                                                                <td colspan="5" class="text-center text-muted">
+                                                                    No hay detalles para este pedido
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    </tbody>
                                                 </table>
                                             </td>
                                         </tr>
                                         @include('pedido.state')
                                         @endforeach
-                                        @endif
+                                    @else
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted py-4">
+                                                No hay registros que coincidan con la búsqueda
+                                            </td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">

@@ -7,40 +7,41 @@ use App\Models\Pedido;
 use App\Models\PedidoDetalle;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Carrito;
 
 class PedidoController extends Controller
 {public function index(Request $request)
 {
-    $texto = $request->input('texto');
     $texto = trim($request->get('texto', ''));
-    $query = Pedido::with('user', 'detalles.producto')->orderBy('id', 'desc');
-    $registros = Pedido::with(['user', 'detalles.producto'])
-            ->whereHas('user', function ($q) use ($texto) {
-                $q->where('name', 'like', "%$texto%");
-            })
-            ->orWhere('id', 'like', "%$texto%")
-            ->orderBy('created_at', 'desc');
+    
+    // Construir la consulta base
+    $query = Pedido::with(['user', 'detalles.producto'])->orderBy('created_at', 'desc');
 
     // Permisos
     if (auth()->user()->can('pedido-list')) {
-        // Puede ver todos los pedidos
+        // Admin: puede ver todos los pedidos
+        $view = 'pedido.index';
     } elseif (auth()->user()->can('pedido-view')) {
-        // Solo puede ver sus propios pedidos
+        // Cliente: solo puede ver sus propios pedidos
         $query->where('user_id', auth()->id());
+        $view = 'web.mis_pedidos';
     } else {
         abort(403, 'No tienes permisos para ver pedidos.');
     }
 
     // Búsqueda
     if (!empty($texto)) {
-        $query->whereHas('user', function ($q) use ($texto) {
-            $q->where('name', 'like', "%{$texto}%");
+        $query->where(function ($q) use ($texto) {
+            $q->where('id', 'like', "%{$texto}%")
+              ->orWhereHas('user', function ($subQ) use ($texto) {
+                  $subQ->where('name', 'like', "%{$texto}%");
+              });
         });
     }
 
     $registros = $query->paginate(10);
 
-    return view('pedido.index', compact('registros', 'texto'));
+    return view($view, compact('registros', 'texto'));
 }
         public function formulario()
 {
@@ -77,7 +78,7 @@ public function realizar(Request $request)
     ]);
 
     if (empty($carrito)) {
-        return redirect()->back()->with('mensaje', 'El carrito está vacío.');
+        return redirect()->back()->with('error', 'El carrito está vacío.');
     }
 
     DB::beginTransaction();
@@ -93,6 +94,7 @@ public function realizar(Request $request)
             'user_id' => auth()->id(),
             'total' => $total,
             'estado' => 'pendiente',
+            'fecha' => now()->toDateString(),
         ]);
 
         foreach ($carrito as $productoId => $item) {
@@ -110,10 +112,11 @@ public function realizar(Request $request)
 
         DB::commit();
 
-        return redirect()->route('web.index')->with('success', 'Pedido realizado con éxito.');
+        return redirect()->route('perfil.pedidos')->with('success', '¡Compra exitosa! Tu pedido #' . $pedido->id . ' ha sido registrado.');
     } catch (\Exception $e) {
         DB::rollBack();
-        return redirect()->back()->with('error', 'Hubo un error al procesar el pedido.');
+        \Log::error('Error al procesar pedido: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Hubo un error al procesar el pedido: ' . $e->getMessage());
     }
 }
   public function store(Request $request)
