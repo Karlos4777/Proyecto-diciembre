@@ -29,9 +29,6 @@
     </div>
 @endif
 
-<<<<<<< Updated upstream
-<!--  SECCIÓN: LO MÁS RECIENTE -->
-=======
 <!-- ✅ Otros mensajes de error -->
 @if (session('error'))
     <div class="container mt-3">
@@ -68,7 +65,6 @@
 </div>
 
 <!-- 🆕 SECCIÓN: LO MÁS RECIENTE -->
->>>>>>> Stashed changes
 <div class="container mt-5">
     <h2 class="text-start mb-4">Lo más reciente</h2>
     <div class="productos-carrusel-wrapper">

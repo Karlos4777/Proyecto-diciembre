@@ -119,29 +119,6 @@ public function realizar(Request $request)
         return redirect()->back()->with('error', 'Hubo un error al procesar el pedido: ' . $e->getMessage());
     }
 }
-  public function store(Request $request)
-    {
-        $user = auth()->user();
-
-        $pedido = Pedido::create([
-            'user_id' => $user->id,
-            'total' => $request->input('total'),
-            'estado' => 'pendiente',
-        ]);
-
-        // Guardar detalles
-        foreach ($request->input('carrito', []) as $item) {
-            DetallePedido::create([
-                'pedido_id' => $pedido->id,
-                'producto_id' => $item['producto_id'],
-                'cantidad' => $item['cantidad'],
-                'precio' => $item['precio'],
-            ]);
-        }
-
-        return redirect()->route('pedido.index')->with('mensaje', 'Pedido registrado correctamente');
-    }
-
     // Cambiar estado del pedido
     public function cambiarEstado(Request $request, $id){
         $pedido = Pedido::findOrFail($id);
