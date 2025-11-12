@@ -5,21 +5,21 @@
 
 @section('contenido')
 
-<!-- Mostrar mensaje de éxito -->
+<!-- Mensaje de éxito -->
 @if (session('success'))
     <div class="alert alert-success text-center mt-3">
         {{ session('success') }}
     </div>
 @endif
 
-<!-- Formulario de búsqueda y filtro -->
+<!-- Formulario de búsqueda -->
 <form method="GET" action="{{ route('web.index') }}">
     <div class="container px-4 px-lg-5 mt-4">
         <div class="row">
             <div class="col-md-8 mb-3">
                 <div class="input-group">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar productos..."
-                        name="search" value="{{ request('search') }}">
+                    <input type="text" class="form-control" placeholder="Buscar productos..." name="search"
+                        value="{{ request('search') }}">
                     <button class="btn btn-outline-dark" type="submit">
                         <i class="bi bi-search"></i> Buscar
                     </button>
@@ -39,79 +39,32 @@
     </div>
 </form>
 
-<!-- Sección de productos -->
+<!--  SECCIÓN: LO MÁS RECIENTE -->
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Productos disponibles</h2>
-
-    @if($productos->isEmpty())
-        <div class="text-center">
-            <p class="text-muted">No se encontraron productos.</p>
-        </div>
-    @else
-        <div class="row">
-            @foreach ($productos as $producto)
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm position-relative">
-                        @if($producto->imagen)
-                            <img src="{{ asset('uploads/productos/' . $producto->imagen) }}"
-                                 class="card-img-top" alt="{{ $producto->nombre }}"
-                                 style="height: 250px; object-fit: cover;">
-                        @else
-                            <img src="{{ asset('img/no-image.jpg') }}" class="card-img-top" alt="Sin imagen">
-                        @endif
-
-                        @php
-                            $stock = $producto->cantidad ?? 0;
-                        @endphp
-
-                        @if ($stock >= 50)
-                            <span class="badge bg-success position-absolute top-0 start-0 m-2 p-2 rounded-3 shadow">
-                                <i class="bi bi-check-circle me-1"></i> Producto disponible
-                            </span>
-                        @elseif ($stock >= 1 && $stock < 50)
-                            <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2 p-2 rounded-3 shadow">
-                                <i class="bi bi-exclamation-circle me-1"></i> Pocas unidades
-                            </span>
-                        @elseif ($stock == 0)
-                            <span class="badge bg-danger position-absolute top-0 start-0 m-2 p-2 rounded-3 shadow">
-                                <i class="bi bi-x-circle me-1"></i> Agotado
-                            </span>
-                        @endif
-
-                        <div class="card-body text-center">
-                            <h5 class="fw-bolder">{{ $producto->nombre }}</h5>
-
-                            <!-- Badges categoría y catálogo -->
-                            <p class="mb-1 text-muted small">
-                                @if($producto->categoria)
-                                    <span class="badge bg-primary">
-                                        <i class="bi bi-tags-fill me-1"></i>{{ $producto->categoria->nombre }}
-                                    </span>
-                                @endif
-                                @if($producto->catalogo)
-                                    <span class="badge bg-danger ms-1">
-                                        <i class="bi bi-bookmark-fill me-1"></i>{{ $producto->catalogo->nombre }}
-                                    </span>
-                                @endif
-                            </p>
-
-                            <p class="fw-bold text-success mb-2">
-                                ${{ number_format($producto->precio, 2) }}
-                            </p>
-
-                            <!-- Botón "Ver producto" -->
-                            <a href="{{ route('web.show', $producto->id) }}" class="btn btn-outline-dark flex-shrink-0">
-                                <i class="bi bi-eye me-1"></i> Ver producto
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-
-        <div class="d-flex justify-content-center mt-3">
-            {{ $productos->appends(request()->query())->links() }}
-        </div>
-    @endif
+    <h2 class="text-start mb-4">Lo más reciente</h2>
+    <div class="productos-carrusel-wrapper">
+        @include('web.partials.carrusel', ['productos' => $productosRecientes])
+    </div>
 </div>
+
+<!--  SECCIONES: LO MÁS VENDIDO POR CATÁLOGO -->
+@foreach ($productosVendidosPorCatalogo as $catalogo => $productos)
+    <div class="container mt-5">
+        <h2 class="text-start mb-4">Lo más vendido en {{ $catalogo }}</h2>
+        <div class="productos-carrusel-wrapper">
+            @include('web.partials.carrusel', ['productos' => $productos])
+        </div>
+    </div>
+@endforeach
+
+<!--  SECCIÓN: VISTO RECIENTEMENTE -->
+@if (!empty($vistosRecientemente))
+    <div class="container mt-5 mb-5">
+        <h2 class="text-start mb-4">Visto recientemente</h2>
+        <div class="productos-carrusel-wrapper">
+            @include('web.partials.carrusel', ['productos' => $vistosRecientemente])
+        </div>
+    </div>
+@endif
+
 @endsection

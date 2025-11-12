@@ -130,14 +130,17 @@
 
                 <!-- Carrito -->
                 @auth
-                <li class="nav-item mb-2 mb-lg-0">
-                    <a href="{{ route('carrito.mostrar') }}" class="btn btn-outline-dark position-relative w-100 w-lg-auto">
-                        <i class="bi bi-cart-fill me-1"></i> Pedido
+                <li class="nav-item mb-2 mb-lg-0 me-3 me-lg-4">
+                    <a href="{{ route('carrito.mostrar') }}" class="btn btn-outline-dark d-flex align-items-center position-relative w-100 w-lg-auto">
+                        <i class="bi bi-cart-fill me-2"></i>
+                        <span>Pedido</span>
                         @php
                             $registro = \App\Models\Carrito::where('user_id', auth()->id())->first();
                             $cantidad = $registro ? array_sum(array_column($registro->contenido ?? [], 'cantidad')) : 0;
                         @endphp
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">{{ $cantidad }}</span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark text-white">
+                            {{ $cantidad }}
+                        </span>
                     </a>
                 </li>
                 @endauth
@@ -146,11 +149,11 @@
                 <li class="nav-item dropdown w-100 w-lg-auto">
                     @auth
                         <a class="nav-link dropdown-toggle d-flex justify-content-center align-items-center"
-                           id="navbarDropdownUser"
-                           href="#"
-                           role="button"
-                           data-bs-toggle="dropdown"
-                           aria-expanded="false">
+                        id="navbarDropdownUser"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
                             <i class="bi bi-person-circle me-1 fs-5"></i>
                             <span>{{ Auth::user()->name }}</span>
                         </a>
@@ -164,7 +167,7 @@
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a href="#" class="dropdown-item text-danger" 
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
                                 </a>
                             </li>
@@ -176,7 +179,6 @@
                         </a>
                     @endauth
                 </li>
-
             </ul>
         </div>
     </div>
