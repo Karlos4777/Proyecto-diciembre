@@ -16,14 +16,19 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CatalogoController;
 
-// 🔹 Rutas públicas del sitio web
+//  Rutas públicas del sitio web
 Route::get('/', [WebController::class, 'index'])->name('web.index');
 Route::get('/producto/{id}', [WebController::class, 'show'])->name('web.show');
 
-// 🔹 Nueva ruta para mostrar productos por categoría
+// Ruta para búsqueda AJAX de productos
+Route::get('/buscar-productos', [WebController::class, 'buscarProductosAjax'])->name('web.buscar');
+
+
+
+//  Nueva ruta para mostrar productos por categoría
 Route::get('/categoria-web/{id}', [CategoriaController::class, 'show'])->name('web.categoria.show');
 
-// 🔹 Rutas protegidas (solo usuarios autenticados)
+//  Rutas protegidas (solo usuarios autenticados)
 Route::middleware(['auth'])->group(function(){
     Route::resource('usuarios', UserController::class);
     Route::patch('usuarios/{usuario}/toggle', [UserController::class, 'toggleStatus'])->name('usuarios.toggle');
@@ -57,7 +62,7 @@ Route::get('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carri
     Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
 });
 
-// 🔹 Rutas de autenticación (solo para invitados)
+//  Rutas de autenticación (solo para invitados)
 Route::middleware('guest')->group(function(){
     Route::get('login', function(){
         return view('autenticacion.login');

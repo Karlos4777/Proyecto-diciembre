@@ -21,7 +21,7 @@ class CatalogoController extends Controller
         $texto = $request->input('texto');
         $registros = Catalogo::where('nombre', 'like', "%{$texto}%")
             ->orderBy('id', 'desc')
-            ->paginate(3);
+            ->paginate(10);
 
         return view('catalogo.index', compact('registros', 'texto'));
     }

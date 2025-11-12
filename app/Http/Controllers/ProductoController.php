@@ -26,7 +26,7 @@ class ProductoController extends Controller
             ->where('nombre', 'like', "%{$texto}%")
             ->orWhere('codigo', 'like', "%{$texto}%")
             ->orderBy('id', 'desc')
-            ->paginate(3);
+            ->paginate(10);
 
         return view('producto.index', compact('registros','texto'));
     }
@@ -140,4 +140,45 @@ class ProductoController extends Controller
         $registro->delete();
         return redirect()->route('productos.index')->with('mensaje', $registro->nombre. ' eliminado correctamente.');
     }
+
+public function buscarProductosAjax(Request $request)
+{
+    $search = $request->input('search');
+
+    if (!$search || strlen($search) < 2) {
+        return response()->json([]);
+    }
+
+    $productos = \App\Models\Producto::with(['categoria', 'catalogo'])
+        ->where('nombre', 'like', "%{$search}%")
+        ->orWhere('descripcion', 'like', "%{$search}%")
+        ->orWhere('codigo', 'like', "%{$search}%")
+        ->take(10)
+        ->get();
+
+    $data = $productos->map(function ($p) {
+        // ✅ Detecta la ruta correcta de la imagen (uploads/productos)
+        $imagen = null;
+        if ($p->imagen && file_exists(public_path('uploads/productos/' . $p->imagen))) {
+            $imagen = asset('uploads/productos/' . $p->imagen);
+        } else {
+            $imagen = asset('img/sin-imagen.png');
+        }
+
+        return [
+            'id'        => $p->id,
+            'nombre'    => $p->nombre,
+            'precio'    => $p->precio,
+            'categoria' => $p->categoria->nombre ?? 'Sin categoría',
+            'catalogo'  => $p->catalogo->nombre ?? 'Sin catálogo',
+            'estado'    => $p->cantidad == 0
+                            ? 'Agotado'
+                            : ($p->cantidad < 5 ? 'Pocas unidades' : 'Disponible'),
+            'imagen'    => $imagen,
+        ];
+    });
+
+    return response()->json($data);
+}
+
 }

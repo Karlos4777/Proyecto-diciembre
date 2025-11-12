@@ -28,4 +28,14 @@ class Producto extends Model
     {
         return $this->belongsTo(Catalogo::class);
     }
+
+    public function getImagenUrlAttribute()
+{
+    if ($this->imagen && file_exists(storage_path('app/public/' . $this->imagen))) {
+        return asset('storage/' . $this->imagen);
+    }
+
+    return asset('img/no-image.png'); // Imagen por defecto
+}
+
 }

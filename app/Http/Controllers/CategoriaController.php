@@ -21,7 +21,7 @@ class CategoriaController extends Controller
         $texto = $request->input('texto');
         $registros = Categoria::where('nombre', 'like', "%{$texto}%")
             ->orderBy('id', 'desc')
-            ->paginate(3);
+            ->paginate(10);
 
         return view('categoria.index', compact('registros', 'texto'));
     }
