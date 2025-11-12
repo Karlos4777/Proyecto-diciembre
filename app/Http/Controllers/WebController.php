@@ -67,30 +67,6 @@ class WebController extends Controller
 
 public function buscarProductosAjax(Request $request)
 {
-<<<<<<< Updated upstream
-    $query = trim($request->get('search'));
-
-    if (strlen($query) < 2) {
-        return response()->json([]);
-    }
-
-    $productos = \App\Models\Producto::with(['categoria', 'catalogo'])
-        ->where('nombre', 'like', "%{$query}%")
-        ->orWhere('codigo', 'like', "%{$query}%")
-        ->take(10)
-        ->get()
-        ->map(function ($p) {
-            return [
-                'id' => $p->id,
-                'nombre' => $p->nombre,
-                'precio' => $p->precio,
-                'imagen' => $p->imagen ? asset('uploads/productos/' . $p->imagen) : asset('img/sin-imagen.png'),
-                'categoria' => $p->categoria->nombre ?? 'Sin categoría',
-                'catalogo' => $p->catalogo->nombre ?? 'Sin catálogo',
-                'estado' => $p->cantidad > 5
-                    ? 'Disponible'
-                    : ($p->cantidad > 0 ? 'Pocas unidades' : 'Agotado'),
-=======
     $search = $request->get('search', '');
 
     $productos = Producto::with(['categoria', 'catalogo'])
@@ -105,17 +81,10 @@ public function buscarProductosAjax(Request $request)
                 'categoria' => $producto->categoria->nombre ?? 'Sin categoría',
                 'catalogo' => $producto->catalogo->nombre ?? 'Sin catálogo',
                 'estado' => $producto->stock > 10 ? 'Disponible' : ($producto->stock > 0 ? 'Pocas unidades' : 'Agotado'),
->>>>>>> Stashed changes
             ];
         });
 
     return response()->json($productos);
-<<<<<<< Updated upstream
-}
-
-
-=======
->>>>>>> Stashed changes
 }
 
 }
