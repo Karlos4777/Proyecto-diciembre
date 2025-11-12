@@ -75,7 +75,7 @@ class CarritoController extends Controller
             $registro->save();
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('mensaje', 'El carrito ha sido actualizado correctamente.');
     }
 
     // Sumar producto
@@ -94,7 +94,7 @@ class CarritoController extends Controller
             $registro->save();
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('mensaje', 'El carrito ha sido actualizado correctamente.');
     }
 
     // Eliminar producto

@@ -16,11 +16,9 @@
 
             <!-- Enlaces principales -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 text-center text-lg-start">
+                
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('web') ? 'active' : '' }}" href="{{ route('web.index') }}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contacto</a>
                 </li>
 
                 <!-- Dropdown Catálogos -->
@@ -59,89 +57,102 @@
 
                 <!-- Dropdown Sistema -->
                 @canany(['user-list', 'rol-list', 'producto-list', 'catalogo-list', 'categoria-list'])
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdownSistema" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-gear-fill me-1"></i> Sistema
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownSistema">
-                            <li><a class="dropdown-item" href="{{ route('dashboard') }}">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownSistema" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-gear-fill me-1"></i> Sistema
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownSistema">
+
+                        <!-- Dashboard -->
+                        <li>
+                            <a class="dropdown-item" href="{{ route('dashboard') }}">
                                 <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            @canany(['user-list', 'rol-list'])
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">
-                                        <i class="bi bi-shield-lock me-2"></i> Seguridad
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        @can('user-list')
-                                            <li><a class="dropdown-item" href="{{ route('usuarios.index') }}">
-                                                <i class="bi bi-person-lines-fill me-2"></i> Usuarios
-                                            </a></li>
-                                        @endcan
-                                        @can('rol-list')
-                                            <li><a class="dropdown-item" href="{{ route('roles.index') }}">
-                                                <i class="bi bi-key-fill me-2"></i> Roles
-                                            </a></li>
-                                        @endcan
-                                    </ul>
-                                </li>
-                            @endcanany
-                            @canany(['producto-list', 'catalogo-list', 'categoria-list'])
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">
-                                        <i class="bi bi-archive-fill me-2"></i> Almacén
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        @can('producto-list')
-                                            <li><a class="dropdown-item" href="{{ route('productos.index') }}">
-                                                <i class="bi bi-box-seam me-2"></i> Productos
-                                            </a></li>
-                                        @endcan
-                                        @can('catalogo-list')
-                                            <li><a class="dropdown-item" href="{{ route('catalogo.index') }}">
-                                                <i class="bi bi-bookmark me-2"></i> Catálogos
-                                            </a></li>
-                                        @endcan
-                                        @can('categoria-list')
-                                            <li><a class="dropdown-item" href="{{ route('categoria.index') }}">
-                                                <i class="bi bi-tags me-2"></i> Categorías
-                                            </a></li>
-                                        @endcan
-                                    </ul>
-                                </li>
-                            @endcanany
-                        </ul>
-                    </li>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+
+                        <!-- Seguridad -->
+                        @canany(['user-list', 'rol-list'])
+                        <li class="dropend">
+                            <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-shield-lock me-2"></i> Seguridad
+                            </a>
+                            <ul class="dropdown-menu">
+                                @can('user-list')
+                                <li><a class="dropdown-item" href="{{ route('usuarios.index') }}">
+                                    <i class="bi bi-person-lines-fill me-2"></i> Usuarios
+                                </a></li>
+                                @endcan
+                                @can('rol-list')
+                                <li><a class="dropdown-item" href="{{ route('roles.index') }}">
+                                    <i class="bi bi-key-fill me-2"></i> Roles
+                                </a></li>
+                                @endcan
+                            </ul>
+                        </li>
+                        @endcanany
+
+                        <!-- Gestión / Almacén -->
+                        @canany(['producto-list', 'catalogo-list', 'categoria-list'])
+                        <li class="dropend">
+                            <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-archive-fill me-2"></i> Gestión
+                            </a>
+                            <ul class="dropdown-menu">
+                                @can('producto-list')
+                                <li><a class="dropdown-item" href="{{ route('productos.index') }}">
+                                    <i class="bi bi-box-seam me-2"></i> Productos
+                                </a></li>
+                                @endcan
+                                @can('catalogo-list')
+                                <li><a class="dropdown-item" href="{{ route('catalogo.index') }}">
+                                    <i class="bi bi-bookmark me-2"></i> Catálogo
+                                </a></li>
+                                @endcan
+                                @can('categoria-list')
+                                <li><a class="dropdown-item" href="{{ route('categoria.index') }}">
+                                    <i class="bi bi-tags me-2"></i> Categorías
+                                </a></li>
+                                @endcan
+                            </ul>
+                        </li>
+                        @endcanany
+
+                    </ul>
+                </li>
                 @endcanany
+
             </ul>
 
-            <!-- 📱 Carrito y Usuario (bien alineados en móvil y a la derecha en PC) -->
+            <!-- Carrito y Usuario -->
             <ul class="navbar-nav ms-auto align-items-center flex-lg-row flex-column text-center mt-3 mt-lg-0">
+
                 <!-- Carrito -->
+                @auth
                 <li class="nav-item mb-2 mb-lg-0">
                     <a href="{{ route('carrito.mostrar') }}" class="btn btn-outline-dark position-relative w-100 w-lg-auto">
-                        <i class="bi bi-cart-fill me-1"></i>
-                        Pedido
+                        <i class="bi bi-cart-fill me-1"></i> Pedido
                         @php
-                            $cantidad = session('carrito') ? array_sum(array_column(session('carrito'), 'cantidad')) : 0;
+                            $registro = \App\Models\Carrito::where('user_id', auth()->id())->first();
+                            $cantidad = $registro ? array_sum(array_column($registro->contenido ?? [], 'cantidad')) : 0;
                         @endphp
                         <span class="badge bg-dark text-white ms-1 rounded-pill">{{ $cantidad }}</span>
                     </a>
                 </li>
+                @endauth
 
                 <!-- Usuario -->
                 <li class="nav-item dropdown w-100 w-lg-auto">
                     @auth
                         <a class="nav-link dropdown-toggle d-flex justify-content-center align-items-center"
-                        id="navbarDropdownUser"
-                        href="#"
-                        role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        <i class="bi bi-person-circle me-1 fs-5"></i>
-                        <span>{{ Auth::user()->name }}</span>
+                           id="navbarDropdownUser"
+                           href="#"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            <i class="bi bi-person-circle me-1 fs-5"></i>
+                            <span>{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="navbarDropdownUser">
                             <li><a class="dropdown-item" href="{{ route('perfil.pedidos') }}">
@@ -165,7 +176,24 @@
                         </a>
                     @endauth
                 </li>
+
             </ul>
         </div>
     </div>
 </nav>
+
+<script>
+document.querySelectorAll('.dropdown-menu a.dropdown-toggle').forEach(function(element) {
+    element.addEventListener('click', function(e) {
+        let submenu = this.nextElementSibling;
+        if (!submenu.classList.contains('show')) {
+            // Cerrar otros submenús abiertos
+            let submenus = this.closest('.dropdown-menu').querySelectorAll('.show');
+            submenus.forEach(function(sub) { sub.classList.remove('show'); });
+        }
+        submenu.classList.toggle('show');
+        e.stopPropagation();
+        e.preventDefault();
+    });
+});
+</script>

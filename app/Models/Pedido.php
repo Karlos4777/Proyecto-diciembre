@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pedido extends Model
 {
-    protected $fillable = ['user_id', 'total', 'estado'];
-    
+    protected $fillable = ['user_id','contenido', 'estado', 'fecha', 'total','detalles',
+    ];
+    protected $casts = [
+        'contenido' => 'array', // para que se convierta automáticamente de/para JSON
+    ];
     public function detalles()
     {
         return $this->hasMany(PedidoDetalle::class);

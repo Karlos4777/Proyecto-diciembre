@@ -34,8 +34,8 @@ Route::middleware(['auth'])->group(function(){
     
     Route::get('/carrito', [CarritoController::class, 'mostrar'])->name('carrito.mostrar');
 Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
-Route::get('/carrito/sumar', [CarritoController::class, 'sumar'])->name('carrito.sumar');
-Route::get('/carrito/restar', [CarritoController::class, 'restar'])->name('carrito.restar');
+Route::get('/carrito/sumar/{producto_id}', [CarritoController::class, 'sumar'])->name('carrito.sumar');
+Route::get('/carrito/restar/{producto_id}', [CarritoController::class, 'restar'])->name('carrito.restar');
 Route::get('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
 Route::get('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
 

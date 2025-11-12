@@ -35,14 +35,13 @@
                             </div>
                             <!--Cantidad-->
                             <div class="col-md-2 d-flex justify-content-center">
-                                <div class="input-group input-group-sm" style="max-width: 100px;">
-                                    <a class="btn btn-outline-secondary" href="{{ route('carrito.restar', ['producto_id' => $id]) }}"
-                                        data-action="decrease">-</a>
-                                    <input type="text" class="form-control text-center" value="{{ $item['cantidad'] }}"
-                                        readonly>
-                                        <a href="{{ route('carrito.sumar', ['producto_id' => $id]) }}" class="btn btn-outline-secondary btn-sm">
-                                            +
-                                        </a>
+                                <div class="input-group input-group-sm" style="max-width: 100px;"><td class="text-center">
+        <a href="{{ route('carrito.restar', $id) }}" class="btn btn-outline-danger btn-sm">-</a>
+        <span class="mx-2">{{ $item['cantidad'] }}</span>
+        <a href="{{ route('carrito.sumar', $id) }}" class="btn btn-outline-success btn-sm">+</a>
+    </td>
+                                   
+                                        
                                 </div>
                             </div>
 
