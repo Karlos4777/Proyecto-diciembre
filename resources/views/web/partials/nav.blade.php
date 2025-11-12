@@ -77,6 +77,63 @@
                     </a>
                 </li>
                 @endauth
+                 <!-- Sistema (junto al carrito) -->
+                @canany(['user-list', 'rol-list', 'producto-list', 'catalogo-list', 'categoria-list'])
+                <li class="nav-item dropdown me-2">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdownSistema" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-gear-fill me-1"></i>
+                        <span class="d-none d-md-inline">Sistema</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="navbarDropdownSistema">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('dashboard') }}">
+                                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+
+                        @can('user-list')
+                            <li>
+                                <a class="dropdown-item" href="{{ route('usuarios.index') }}">
+                                    <i class="bi bi-person-lines-fill me-2"></i> Usuarios
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('rol-list')
+                            <li>
+                                <a class="dropdown-item" href="{{ route('roles.index') }}">
+                                    <i class="bi bi-key-fill me-2"></i> Roles
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('producto-list')
+                            <li>
+                                <a class="dropdown-item" href="{{ route('productos.index') }}">
+                                    <i class="bi bi-box-seam me-2"></i> Productos
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('catalogo-list')
+                            <li>
+                                <a class="dropdown-item" href="{{ route('catalogo.index') }}">
+                                    <i class="bi bi-bookmark me-2"></i> Catálogo
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('categoria-list')
+                            <li>
+                                <a class="dropdown-item" href="{{ route('categoria.index') }}">
+                                    <i class="bi bi-tags me-2"></i> Categorías
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
 
                 <!-- Usuario -->
                 <li class="nav-item dropdown w-100 w-lg-auto">

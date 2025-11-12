@@ -112,7 +112,8 @@ public function realizar(Request $request)
 
         DB::commit();
 
-        return redirect()->route('web.index')->with('success', '¡Compra exitosa! Tu pedido #' . $pedido->id . ' ha sido registrado. <a href="' . route('perfil.pedidos') . '" class="alert-link">Ver mis pedidos</a>');
+    // Enviar mensaje de éxito sin HTML para evitar que aparezcan caracteres sueltos
+    return redirect()->route('web.index')->with('success', '¡Compra exitosa! Tu pedido #' . $pedido->id . ' ha sido registrado.');
     } catch (\Exception $e) {
         DB::rollBack();
         \Log::error('Error al procesar pedido: ' . $e->getMessage());

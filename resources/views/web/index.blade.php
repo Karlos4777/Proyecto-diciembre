@@ -29,37 +29,7 @@
     </div>
 @endif
 
-<!-- ✅ Otros mensajes de error -->
-@if (session('error'))
-    <div class="container mt-3">
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-exclamation-circle-fill me-3 fs-4 text-danger"></i>
-                <div>
-                    <h5 class="alert-heading mb-1">Error</h5>
-                    <p class="mb-0">{{ session('error') }}</p>
-                </div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </div>
-@endif
-
-<!-- 🔍 Formulario de búsqueda con autocompletado -->
-<div class="container px-4 px-lg-5 mt-4">
-    <div class="row">
-        <div class="col-md-8 mb-3 position-relative">
-            <form id="formBuscador" method="GET" action="{{ route('web.index') }}">
-                <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." name="search" autocomplete="off" value="{{ request('search') }}">
-            </form>
-
-            <!-- 📋 Contenedor para los resultados -->
-            <ul id="resultadosBusqueda" class="list-group position-absolute w-100 mt-1"></ul>
-        </div>
-    </div>
-</div>
-
-<!-- 🆕 SECCIÓN: LO MÁS RECIENTE -->
+<!--  SECCIÓN: LO MÁS RECIENTE -->
 <div class="container mt-5">
     <h2 class="text-start mb-4">Lo más reciente</h2>
     <div class="productos-carrusel-wrapper">
@@ -90,119 +60,13 @@
 @endsection
 
 @push('styles')
-<!-- 🎨 Estilos del buscador -->
-<style>
-#buscador {
-    border-radius: 6px;
-}
-
-#resultadosBusqueda {
-    display: none;
-    z-index: 1000;
-    max-height: 400px;
-    overflow-y: auto;
-    border-radius: 0 0 6px 6px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    background-color: white;
-    border: 1px solid #dee2e6;
-    border-top: none;
-    list-style: none;
-    padding: 0;
-    margin: 0 !important;
-}
-
-#resultadosBusqueda .list-group-item {
-    transition: background-color 0.2s ease;
-    border: none !important;
-    border-bottom: 1px solid #f0f0f0 !important;
-    padding: 12px !important;
-    margin: 0 !important;
-}
-
-#resultadosBusqueda .list-group-item:last-child {
-    border-bottom: none !important;
-}
-
-#resultadosBusqueda .list-group-item:hover {
-    background-color: #f8f9fa;
-}
-
-#resultadosBusqueda a {
-    display: block;
-    text-decoration: none;
-    color: #212529;
-    padding: 0;
-}
-
-#resultadosBusqueda a:hover {
-    color: #0d6efd;
-}
-
-#resultadosBusqueda small {
-    font-size: 0.85rem;
-}
-</style>
+<!-- Estilos específicos de la página (sin repetir estilos del buscador, que están en el partial nav) -->
 @endpush
 
 @push('scripts')
-<!-- ⚙️ Script de búsqueda AJAX -->
+<!-- ✅ Mantener solo el script de comportamiento específico de la página (no duplicar la búsqueda) -->
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('buscador');
-    const resultados = document.getElementById('resultadosBusqueda');
-    const form = document.getElementById('formBuscador');
-
-    // 🔍 Autocompletado en tiempo real
-    input.addEventListener('keyup', async (e) => {
-        const query = input.value.trim();
-
-        // Si hay menos de 2 letras, ocultar
-        if (query.length < 2) {
-            resultados.style.display = 'none';
-            resultados.innerHTML = '';
-            return;
-        }
-
-        try {
-            const response = await fetch(`/buscar-productos?search=${encodeURIComponent(query)}`);
-            const data = await response.json();
-
-            if (data.length === 0) {
-                resultados.innerHTML = '<li class="list-group-item text-muted">No se encontraron productos</li>';
-            } else {
-                resultados.innerHTML = data.map(p => `
-                    <li class="list-group-item">
-                        <a href="/producto/${p.id}" class="d-block d-flex align-items-start gap-2">
-                            <img src="${p.imagen}" alt="${p.nombre}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; flex-shrink-0;">
-                            <div class="flex-grow-1">
-                                <strong>${p.nombre}</strong><br>
-                                <small class="text-muted">$${parseFloat(p.precio).toFixed(2)} | ${p.categoria} | ${p.catalogo}</small><br>
-                                <span class="badge ${
-                                    p.estado === 'Disponible' ? 'bg-success' :
-                                    p.estado === 'Pocas unidades' ? 'bg-warning text-dark' :
-                                    'bg-danger'
-                                }">${p.estado}</span>
-                            </div>
-                        </a>
-                    </li>
-                `).join('');
-            }
-
-            resultados.style.display = 'block';
-        } catch (error) {
-            console.error('Error en la búsqueda:', error);
-        }
-    });
-
-    // 🧹 Ocultar resultados al hacer click fuera
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#buscador') && !e.target.closest('#resultadosBusqueda')) {
-            resultados.style.display = 'none';
-        }
-    });
-});
-
-// ✅ Auto-cerrar mensaje de éxito después de 5 segundos
+// Auto-cerrar mensaje de éxito después de 5 segundos
 document.addEventListener('DOMContentLoaded', () => {
     const successAlert = document.querySelector('.alert-success');
     if (successAlert) {

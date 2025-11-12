@@ -99,7 +99,7 @@
                                    name="telefono" 
                                    id="telefono" 
                                    class="form-control @error('telefono') is-invalid @enderror" 
-                                   value="{{ old('telefono') }}"
+                                   value="{{ old('telefono', auth()->user()->telefono ?? '') }}"
                                    required>
                             @error('telefono')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -113,7 +113,7 @@
                                    id="direccion" 
                                    class="form-control @error('direccion') is-invalid @enderror" 
                                    placeholder="Calle, número, apartamento, ciudad..."
-                                   value="{{ old('direccion') }}"
+                                   value="{{ old('direccion', auth()->user()->direccion ?? '') }}"
                                    required>
                             @error('direccion')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>

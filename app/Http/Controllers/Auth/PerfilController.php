@@ -19,6 +19,18 @@ class PerfilController extends Controller
         $registro=Auth::user();
         $registro->name = $request->name;
         $registro->email = $request->email;
+        // Guardar teléfono y dirección si vienen en la petición
+        if ($request->filled('telefono')) {
+            $registro->telefono = $request->telefono;
+        } else {
+            $registro->telefono = $request->telefono ?? $registro->telefono;
+        }
+
+        if ($request->filled('direccion')) {
+            $registro->direccion = $request->direccion;
+        } else {
+            $registro->direccion = $request->direccion ?? $registro->direccion;
+        }
         if ($request->filled('password')) {
             $registro->password = Hash::make($request->password);
         }

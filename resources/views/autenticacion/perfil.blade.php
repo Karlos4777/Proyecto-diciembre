@@ -56,6 +56,24 @@
                                      @enderror
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefono" class="form-label">Teléfono</label>
+                                    <input type="text" class="form-control @error('telefono') is-invalid @enderror"
+                                     id="telefono" name="telefono" value="{{ old('telefono', $registro->telefono ?? '') }}">
+                                     @error('telefono')
+                                        <small class="text-danger">{{ $message }}</small>
+                                     @enderror
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="direccion" class="form-label">Dirección</label>
+                                    <input type="text" class="form-control @error('direccion') is-invalid @enderror"
+                                     id="direccion" name="direccion" value="{{ old('direccion', $registro->direccion ?? '') }}">
+                                     @error('direccion')
+                                        <small class="text-danger">{{ $message }}</small>
+                                     @enderror
+                                </div>
+                            </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <button type="button" class="btn btn-secondary me-md-2"
                                     onclick="window.location.href='{{route('web.index')}}'">Cancelar</button>
