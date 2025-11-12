@@ -20,18 +20,11 @@ use App\Http\Controllers\CatalogoController;
 Route::get('/', [WebController::class, 'index'])->name('web.index');
 Route::get('/producto/{id}', [WebController::class, 'show'])->name('web.show');
 
-<<<<<<< Updated upstream
 // Ruta para búsqueda AJAX de productos
 Route::get('/buscar-productos', [WebController::class, 'buscarProductosAjax'])->name('web.buscar');
 
-
-
-//  Nueva ruta para mostrar productos por categoría
+// Nueva ruta para mostrar productos por categoría
 Route::get('/categoria-web/{id}', [CategoriaController::class, 'show'])->name('web.categoria.show');
-=======
-// 🔹 Nueva ruta para mostrar productos por categoría
-Route::get('/buscar-productos', [WebController::class, 'buscarProductosAjax'])->name('web.buscar');
->>>>>>> Stashed changes
 
 //  Rutas protegidas (solo usuarios autenticados)
 Route::middleware(['auth'])->group(function(){
