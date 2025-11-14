@@ -1,0 +1,623 @@
+/* ===== Admin Panel - DiscZone Music Store Theme ===== */
+/* Color Palette: Marrón (#6F4E37), Negro (#1A1A1A), Blanco (#FFFFFF) */
+
+:root {
+    --color-brown: #6F4E37;
+    --color-dark-brown: #4A2F1E;
+    --color-black: #1A1A1A;
+    --color-white: #FFFFFF;
+    --color-light-gray: #F5F5F5;
+    --color-border-gray: #E8E8E8;
+    --color-accent: #8B6F47;
+    --color-cream: #efe3d8;
+    --font-main: 'Poppins', sans-serif;
+}
+
+/* Override Bootstrap card background in app-content */
+.app-content {
+    --bs-card-bg: var(--color-cream);
+    --bs-card-cap-bg: var(--color-cream);
+}
+
+html, body {
+    font-family: var(--font-main);
+    background-color: var(--color-dark-brown);
+    margin: 0;
+    padding: 0;
+}
+
+/* Main element styling for controller views */
+main {
+    background-color: var(--color-dark-brown);
+    padding-top: 72px; /* Account for fixed navbar */
+    min-height: 100vh;
+}
+
+/* === Navbar Admin Mejorado === */
+.app-header {
+    background: linear-gradient(90deg, var(--color-dark-brown) 0%, var(--color-black) 100%);
+    border-bottom: 3px solid var(--color-brown);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    padding: 0.25rem 0;
+    margin: 0;
+}
+
+.app-header .container-fluid {
+    padding: 0.5rem 1rem;
+}
+
+.app-header .navbar-brand {
+    color: var(--color-white) !important;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.app-header .navbar-brand:hover {
+    color: var(--color-accent) !important;
+    transform: scale(1.05);
+}
+
+.app-header .nav-link {
+    color: var(--color-white) !important;
+    font-weight: 600;
+    margin: 0 0.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0 !important;
+    font-family: var(--font-main);
+    font-size: 1.05rem;
+}
+
+.app-header .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-brown), var(--color-accent));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.app-header .nav-link:hover {
+    color: var(--color-accent) !important;
+}
+
+.app-header .nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.app-header .nav-link.active {
+    color: var(--color-accent) !important;
+    font-weight: 700;
+}
+
+.app-header .nav-link.active::after {
+    transform: scaleX(1);
+}
+
+.app-header .dropdown-menu {
+    background: linear-gradient(135deg, var(--color-dark-brown) 0%, #3a1f13 100%);
+    border: 2px solid var(--color-brown);
+    border-top: 3px solid var(--color-accent);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.app-header .dropdown-item {
+    color: var(--color-white);
+    transition: all 0.2s ease;
+    padding: 0.75rem 1.5rem;
+}
+
+.app-header .dropdown-item:hover {
+    background-color: var(--color-brown);
+    color: var(--color-white);
+    padding-left: 2rem;
+}
+
+.app-header .dropdown-item.active,
+.app-header .dropdown-item:active {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+}
+
+.app-header .dropdown-divider {
+    border-color: var(--color-accent);
+    opacity: 0.3;
+}
+
+.app-header .navbar-toggler {
+    border-color: var(--color-accent);
+}
+
+.app-header .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%238B6F47' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* === Botón Carrito/Pedido === */
+.btn-carrito {
+    background-color: transparent;
+    color: var(--color-white) !important;
+    border: 2px solid var(--color-accent);
+    transition: all 0.25s ease;
+    font-weight: 600;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+}
+
+.btn-carrito:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-white) !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.btn-carrito .badge {
+    background-color: var(--color-accent) !important;
+    color: var(--color-white) !important;
+}
+
+/* === Submenú estilo === */
+.dropdown-submenu {
+    position: relative;
+}
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+    display: none;
+    border-left: 3px solid var(--color-brown);
+}
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+}
+.dropdown-toggle::after {
+    margin-left: .3em;
+}
+.dropdown-item:hover {
+    background-color: var(--color-light-gray);
+    border-left: 3px solid var(--color-brown);
+    padding-left: calc(1rem - 3px);
+}
+.dropdown-item.active {
+    background-color: var(--color-brown);
+}
+
+/* === Sidebar y Menu === */
+.sidebar {
+    background-color: var(--color-light-gray);
+    border-right: 2px solid var(--color-brown);
+}
+
+.sidebar-wrapper {
+    background-color: var(--color-light-gray);
+}
+
+/* Sidebar nav items only */
+.sidebar .nav-link {
+    color: var(--color-black);
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(111, 78, 55, 0.1);
+    color: var(--color-brown);
+    padding-left: 1.5rem;
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--color-brown);
+    color: var(--color-white);
+    font-weight: bold;
+    border-left: 4px solid var(--color-dark-brown);
+    padding-left: 1rem;
+}
+
+/* === Cards === */
+.card {
+    border: 1px solid var(--color-border-gray);
+    border-top: 4px solid var(--color-brown);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    background-color: var(--color-light-gray);
+    border-bottom: 2px solid var(--color-brown);
+    font-weight: bold;
+    color: var(--color-black);
+}
+
+.card-title {
+    color: var(--color-black);
+    font-weight: 900;
+}
+
+/* === Tables === */
+.table {
+    font-size: 0.9rem;
+}
+
+.table thead {
+    background-color: var(--color-dark-brown);
+    color: var(--color-white);
+    font-weight: bold;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(111, 78, 55, 0.05);
+}
+
+.table-bordered {
+    border-color: var(--color-border-gray);
+}
+
+.table-bordered thead th {
+    border-color: var(--color-brown);
+}
+
+/* === Buttons === */
+.btn-primary {
+    background-color: var(--color-brown);
+    border-color: var(--color-brown);
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-dark-brown);
+    border-color: var(--color-dark-brown);
+}
+
+.btn-info {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.btn-info:hover {
+    background-color: var(--color-brown);
+    border-color: var(--color-brown);
+}
+
+.btn-warning {
+    background-color: #F59E0B;
+    border-color: #F59E0B;
+    color: var(--color-white);
+}
+
+.btn-warning:hover {
+    background-color: #D97706;
+    border-color: #D97706;
+}
+
+/* === Badges === */
+.badge.bg-brown {
+    background-color: var(--color-brown);
+}
+
+.badge.bg-primary {
+    background-color: var(--color-brown);
+}
+
+/* === Form Controls === */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-brown);
+    box-shadow: 0 0 0 0.2rem rgba(111, 78, 55, 0.25);
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+/* === Alert === */
+.alert-info {
+    background-color: rgba(111, 78, 55, 0.1);
+    border-color: var(--color-brown);
+    color: var(--color-black);
+}
+
+/* === Modal === */
+.modal-header {
+    background-color: var(--color-brown);
+    color: var(--color-white);
+    font-weight: bold;
+}
+
+.modal-body {
+    background-color: var(--color-light-gray);
+}
+
+/* === Footer === */
+.card-footer {
+    background-color: var(--color-light-gray);
+    border-top: 2px solid var(--color-brown);
+}
+
+/* === Apply cream background to app-content wrapper (controller views) === */
+.app-content {
+    background-color: var(--color-cream);
+    padding: 1.5rem;
+    margin: 0;
+}
+
+/* Apply cream background to all cards in admin views === */
+.app-content .card {
+    background-color: var(--color-cream) !important;
+}
+
+.app-content .card-header {
+    background-color: var(--color-cream) !important;
+}
+
+.app-content .card-body {
+    background-color: var(--color-cream) !important;
+}
+
+.app-content .card-footer {
+    background-color: var(--color-cream) !important;
+}
+
+/* === Responsive Design === */
+
+/* Extra Small Devices (320px - 575px) */
+@media (max-width: 575px) {
+    /* Adjust navbar for mobile */
+    .app-navbar {
+        padding: 0.15rem 0;
+    }
+
+    .app-navbar .container-fluid {
+        padding: 0.35rem 0.75rem;
+    }
+
+    .app-navbar .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .nav-logo {
+        max-height: 32px;
+    }
+
+    .app-navbar .nav-link {
+        font-size: 0.8rem;
+        margin: 0 0.2rem;
+        padding: 0.35rem 0 !important;
+    }
+
+    /* Main content adjustments */
+    main {
+        padding-top: 60px;
+    }
+
+    .app-content {
+        padding: 0.75rem;
+    }
+
+    /* Cards */
+    .card {
+        margin-bottom: 0.75rem;
+        border-radius: 4px;
+    }
+
+    .card-header {
+        padding: 0.6rem 0.75rem;
+    }
+
+    .card-body {
+        padding: 0.6rem 0.75rem;
+    }
+
+    .card-title {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Forms and inputs */
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+
+    .form-label {
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control, .form-select {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.5rem;
+        border-radius: 3px;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.8rem;
+        border-radius: 3px;
+    }
+
+    .btn-primary, .btn-info, .btn-warning, .btn-danger {
+        font-weight: 600;
+    }
+
+    /* Tables - make them scrollable */
+    .table {
+        font-size: 0.7rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .table thead th {
+        padding: 0.4rem;
+        font-size: 0.65rem;
+    }
+
+    .table tbody td {
+        padding: 0.3rem;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.8rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Modal adjustments */
+    .modal-header {
+        padding: 0.75rem;
+    }
+
+    .modal-body {
+        padding: 0.75rem;
+    }
+
+    .modal-title {
+        font-size: 1rem;
+    }
+
+    /* Dropdowns */
+    .dropdown-menu {
+        font-size: 0.8rem;
+    }
+
+    .dropdown-item {
+        padding: 0.4rem 0.75rem;
+    }
+
+    /* Row and column gutters */
+    .row {
+        --bs-gutter-x: 0.5rem;
+        --bs-gutter-y: 0.5rem;
+    }
+
+    .col-md-12, .col-lg-6, .col-lg-8 {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+}
+
+/* Small Devices (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    main {
+        padding-top: 64px;
+    }
+
+    .app-navbar .container-fluid {
+        padding: 0.4rem 0.85rem;
+    }
+
+    .app-navbar .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .nav-logo {
+        max-height: 36px;
+    }
+
+    .app-navbar .nav-link {
+        font-size: 0.9rem;
+        margin: 0 0.3rem;
+    }
+
+    .app-content {
+        padding: 1rem;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .card-header {
+        padding: 0.75rem;
+    }
+
+    .card-body {
+        padding: 0.75rem;
+    }
+
+    .card-title {
+        font-size: 0.95rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        font-size: 0.9rem;
+        padding: 0.45rem 0.6rem;
+    }
+
+    .btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .table {
+        font-size: 0.8rem;
+    }
+
+    .table thead th, .table tbody td {
+        padding: 0.5rem;
+    }
+
+    .alert {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .row {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+    }
+}
+
+/* Medium and Large Devices (768px and up) */
+@media (min-width: 768px) {
+    main {
+        padding-top: 72px;
+    }
+
+    .app-navbar .container-fluid {
+        padding: 0.5rem 1rem;
+    }
+
+    .app-content {
+        padding: 1.5rem;
+    }
+
+    .card {
+        margin-bottom: 1.25rem;
+    }
+
+    .card-header {
+        padding: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Tables have more space */
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .table thead th, .table tbody td {
+        padding: 0.6rem;
+    }
+
+    .row {
+        --bs-gutter-x: 1rem;
+        --bs-gutter-y: 1rem;
+    }
+}

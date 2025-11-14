@@ -53,13 +53,12 @@
                                             <tr class="align-middle">
                                                 <td>
                                                     @can('categoria-edit')
-                                                    <a href="{{route('categoria.edit', $reg->id)}}" class="btn btn-info btn-sm"><i class="bi bi-pencil-fill"></i></a>
+                                                    <a href="{{route('categoria.edit', $reg->id)}}" class="btn btn-info btn-sm"><i class="bi bi-pencil-fill"></i></a>&nbsp;
                                                     @endcan
                                                     @can('categoria-delete')
-                                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                                            data-bs-target="#modal-eliminar-{{$reg->id}}"><i class="bi bi-trash-fill"></i>
-                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modal-eliminar-{{$reg->id}}"><i class="bi bi-trash-fill"></i></button>
                                                     @endcan
+                                                </td>
                                                 <td>{{$reg->id}}</td>
                                                 <td>{{$reg->nombre}}</td>
                                                 <td>{{$reg->descripcion}}</td>
@@ -88,9 +87,3 @@
     <!--end::Container-->
 </div>
 @endsection
-@push('scripts')
-<script>
-    document.getElementById('mnuAlmacen').classList.add('menu-open');
-    document.getElementById('itemCategoria').classList.add('active');
-</script>
-@endpush

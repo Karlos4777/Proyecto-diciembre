@@ -3,7 +3,7 @@
 <!-- Section-->
 <section class="py-5">
     <div class="container px-4 px-lg-12 my-5">
-        <h2 class="fw-bold mb-4">Detalle de su Pedido</h2>
+        <h2 class="section-title fw-bold mb-4">Detalle de su Pedido</h2>
         <div class="row">
             <!-- Cart Items -->
             <div class="col-lg-8">
@@ -31,7 +31,16 @@
                             </div>
                             <!--Precio-->
                             <div class="col-md-2 text-center">
-                                <span class="fw-bold">${{ number_format($item['precio'], 2) }}</span>
+                                        @if(isset($item['precio_original']) && $item['precio_original'] > $item['precio'])
+                                        <div>
+                                            <small class="text-muted text-decoration-line-through">${{ number_format($item['precio_original'], 2) }}</small>
+                                        </div>
+                                        <div>
+                                                <span class="product-price fw-bold">${{ number_format($item['precio'], 2) }}</span>
+                                        </div>
+                                    @else
+                                        <span class="product-price fw-bold">${{ number_format($item['precio'], 2) }}</span>
+                                    @endif
                             </div>
                             <!--Cantidad-->
                             <div class="col-md-2 d-flex justify-content-center">
@@ -49,7 +58,7 @@
                             <div class="col-md-3 d-flex align-items-center justify-content-end">
                                 <div class="text-end me-3">
                                     <span
-                                        class="fw-bold subtotal">${{ number_format($item['precio'] * $item['cantidad'], 2) }}</span>
+                                        class="fw-bold subtotal product-price">${{ number_format($item['precio'] * $item['cantidad'], 2) }}</span>
                                 </div>
                                 <a class="btn btn-sm btn-outline-danger" href="{{ route('carrito.eliminar', $id) }}">
                                     <i class="bi bi-trash"></i>
@@ -95,17 +104,11 @@
                         <h5 class="mb-0">Resumen del Pedido</h5>
                     </div>
                     <div class="card-body">
-                        @php
-                            $total = 0;
-                            foreach ($carrito as $item) {
-                                $total += $item['precio'] * $item['cantidad'];
-                            }
-                        @endphp
                         <div class="d-flex justify-content-between mb-4">
                             <strong>Total</strong>
-                            <strong id="orderTotal">${{ number_format($total, 2) }}</strong>
+                            <strong id="orderTotal">${{ number_format($total ?? 0, 2) }}</strong>
                         </div>
-                        <!-- Checkout Button --><a href="{{ route('pedido.formulario') }}" class="btn btn-primary w-100" id="checkout">
+                        <!-- Checkout Button --><a href="{{ route('pedido.formulario') }}" class="btn btn-product w-100" id="checkout">
                         <i class="bi bi-credit-card me-1"></i>Realizar pedido
                         </a>
                          

@@ -21,9 +21,44 @@ class CarritoController extends Controller
             ['contenido' => []]
         );
 
-        $carrito = $registro->contenido;
+        $contenido = $registro->contenido ?? [];
+        $total = 0;
 
-        return view('web.pedido', compact('carrito'));
+        foreach ($contenido as $productoId => &$item) {
+            $producto = Producto::find($productoId);
+
+            // Si el producto ya no existe, lo eliminamos del carrito
+            if (!$producto) {
+                unset($contenido[$productoId]);
+                continue;
+            }
+
+            // Actualizar datos básicos (nombre, codigo, imagen)
+            $item['nombre'] = $producto->nombre;
+            $item['codigo'] = $producto->codigo;
+            $item['imagen'] = $producto->imagen;
+
+            // Cantidad segura
+            $item['cantidad'] = isset($item['cantidad']) ? (int) $item['cantidad'] : 1;
+
+            // Precios: original y con descuento si aplica
+            $item['precio_original'] = $producto->precio;
+            $item['precio'] = $producto->precio_con_descuento ?? $producto->precio;
+
+            // Subtotal por línea
+            $item['subtotal'] = round($item['precio'] * $item['cantidad'], 2);
+
+            $total += $item['subtotal'];
+        }
+        unset($item);
+
+        // Guardar contenido actualizado (precios, nombres) en el registro para mantener consistencia
+        $registro->contenido = $contenido;
+        $registro->save();
+
+        $carrito = $contenido;
+
+        return view('web.pedido', compact('carrito', 'total'));
     }
 
     // Agregar producto
@@ -40,11 +75,16 @@ class CarritoController extends Controller
 
         if(isset($contenido[$producto->id])){
             $contenido[$producto->id]['cantidad'] += 1;
+            // Asegurar que el precio almacenado esté actualizado si cambió el descuento
+            $contenido[$producto->id]['precio_original'] = $producto->precio;
+            $contenido[$producto->id]['precio'] = $producto->precio_con_descuento ?? $producto->precio;
         } else {
             $contenido[$producto->id] = [
                 'nombre' => $producto->nombre,
                 'codigo' => $producto->codigo,
-                'precio' => $producto->precio,
+                // Guardar precio original y precio con descuento (si aplica)
+                'precio_original' => $producto->precio,
+                'precio' => $producto->precio_con_descuento ?? $producto->precio,
                 'cantidad' => 1,
                 'imagen' => $producto->imagen,
             ];

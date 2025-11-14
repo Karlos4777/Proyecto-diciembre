@@ -59,10 +59,3 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.getElementById('mnuSeguridad')?.classList.add('menu-open');
-    document.getElementById('itemCatalogo')?.classList.add('active');
-</script>
-@endpush

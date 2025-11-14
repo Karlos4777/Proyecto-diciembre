@@ -13,7 +13,7 @@
 
 <!-- Título del catálogo -->
 <div class="container mt-5">
-    <h2 class="text-start mb-4">{{ $catalogo->nombre }}</h2>
+    <h2 class="section-title text-start mb-4">{{ $catalogo->nombre }}</h2>
 </div>
 
 <!-- Carrusel de productos del catálogo -->

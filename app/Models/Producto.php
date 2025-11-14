@@ -11,6 +11,7 @@ class Producto extends Model
         'nombre',
         'precio',
         'cantidad',
+        'descuento',
         'descripcion',
         'imagen',
         'categoria_id',
@@ -37,5 +38,26 @@ class Producto extends Model
 
     return asset('img/no-image.png'); // Imagen por defecto
 }
+
+    /**
+     * Precio con descuento aplicado (precio * (1 - descuento/100)).
+     * Si no hay descuento devuelve el precio original.
+     */
+    public function getPrecioConDescuentoAttribute()
+    {
+        $descuento = (int) ($this->descuento ?? 0);
+        $precio = (float) $this->precio;
+
+        if ($descuento <= 0) {
+            return $precio;
+        }
+
+        return round($precio * (1 - $descuento / 100), 2);
+    }
+
+    public function getTieneDescuentoAttribute()
+    {
+        return ((int) ($this->descuento ?? 0)) > 0;
+    }
 
 }

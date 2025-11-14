@@ -15,11 +15,11 @@
                 </div>
 
                 @php $stock = $producto->cantidad ?? 0; @endphp
-                @if ($stock >= 50)
+                @if ($stock >= 21)
                     <span class="badge bg-success position-absolute top-0 start-0 m-2 p-2 rounded-3 shadow">
                         <i class="bi bi-check-circle me-1"></i> Disponible
                     </span>
-                @elseif ($stock >= 1 && $stock < 50)
+                @elseif ($stock >= 1 && $stock < 21)
                     <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2 p-2 rounded-3 shadow">
                         <i class="bi bi-exclamation-circle me-1"></i> Pocas unidades
                     </span>
@@ -29,8 +29,14 @@
                     </span>
                 @endif
 
+                @if (!empty($producto->descuento) && $producto->descuento > 0)
+                    <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2 p-2 rounded-3 shadow">
+                        -{{ $producto->descuento }}%
+                    </span>
+                @endif
+
                 <div class="card-body text-center">
-                    <h5 class="fw-bolder">{{ $producto->nombre }}</h5>
+                    <h5 class="fw-bolder product-name">{{ $producto->nombre }}</h5>
                     <p class="mb-1 text-muted small">
                         @if($producto->categoria)
                             <span class="badge bg-primary"><i class="bi bi-tags-fill me-1"></i>{{ $producto->categoria->nombre }}</span>
@@ -39,8 +45,15 @@
                             <span class="badge bg-danger ms-1"><i class="bi bi-bookmark-fill me-1"></i>{{ $producto->catalogo->nombre }}</span>
                         @endif
                     </p>
-                    <p class="fw-bold text-success mb-2">${{ number_format($producto->precio, 2) }}</p>
-                    <a href="{{ route('web.show', $producto->id) }}" class="btn btn-outline-dark btn-sm w-100">
+                    @if(!empty($producto->descuento) && $producto->descuento > 0)
+                        <p class="fw-bold mb-2">
+                            <small class="text-muted text-decoration-line-through me-2">${{ number_format($producto->precio, 2) }}</small>
+                            <span class="text-success">${{ number_format($producto->precio_con_descuento, 2) }}</span>
+                        </p>
+                    @else
+                        <p class="fw-bold text-success mb-2">${{ number_format($producto->precio, 2) }}</p>
+                    @endif
+                    <a href="{{ route('web.show', $producto->id) }}" class="btn btn-product btn-sm w-100">
                         <i class="bi bi-eye me-1"></i> Ver producto
                     </a>
                 </div>
@@ -52,83 +65,4 @@
 </div>
 @endif
 
-<style>
-.carrusel-wrapper {
-    position: relative;
-    overflow: hidden;
-}
-.carrusel-wrapper:hover .carousel-btn {
-    opacity: 1;
-    visibility: visible;
-}
-.productos-carrusel {
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    gap: 1.5rem;
-    padding: 20px;
-}
-.productos-carrusel::-webkit-scrollbar {
-    height: 5px;
-}
-.productos-carrusel::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 4px;
-}
-.producto-card {
-    flex: 0 0 260px;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
-    position: relative;
-}
-.producto-card:hover {
-    transform: translateY(-5px);
-}
-.imagen-container {
-    width: 100%;
-    height: 250px;
-    overflow: hidden;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    background-color: #f8f9fa;
-}
-.imagen-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-.carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #212529;
-    color: white;
-    border: none;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 2;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-.carousel-btn:hover {
-    background-color: #000;
-}
-.carousel-btn.left { left: 5px; }
-.carousel-btn.right { right: 5px; }
-</style>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".carrusel-wrapper").forEach(wrapper => {
-        const carrusel = wrapper.querySelector(".productos-carrusel");
-        const nextBtn = wrapper.querySelector(".carousel-btn.right");
-        const prevBtn = wrapper.querySelector(".carousel-btn.left");
-
-        nextBtn.addEventListener("click", () => carrusel.scrollBy({ left: 300, behavior: 'smooth' }));
-        prevBtn.addEventListener("click", () => carrusel.scrollBy({ left: -300, behavior: 'smooth' }));
-    });
-});
-</script>
+<!-- Carrusel styles and behavior moved to resources/css/web.css and resources/js/web.js -->

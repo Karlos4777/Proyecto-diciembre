@@ -87,17 +87,11 @@
                     </div>
                 </div>
                 <!-- /.card -->
+                </div>
             </div>
-            <!-- /.col -->
         </div>
         <!--end::Row-->
     </div>
     <!--end::Container-->
 </div>
 @endsection
-@push('scripts')
-<script>
-    document.getElementById('mnuSeguridad').classList.add('menu-open');
-    document.getElementById('itemUsuario').classList.add('active');
-</script>
-@endpush

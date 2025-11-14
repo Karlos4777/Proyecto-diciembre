@@ -28,6 +28,8 @@ class ProductoRequest extends FormRequest
             'codigo' => ['required', 'string', 'max:16', 'unique:productos,codigo,' . $id],
             'nombre' => ['required', 'string', 'max:100'],
             'precio' => ['required', 'numeric', 'min:0'],
+            'cantidad' => ['required', 'integer', 'min:0'],
+            'descuento' => ['nullable', 'integer', 'min:0', 'max:100'],
             'descripcion' => ['nullable', 'string', 'max:1000'],
             'imagen' => [$method === 'POST' ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ];
@@ -46,6 +48,14 @@ class ProductoRequest extends FormRequest
             'precio.required' => 'El precio del producto es obligatorio.',
             'precio.numeric' => 'El precio debe ser un valor numérico.',
             'precio.min' => 'El precio no puede ser negativo.',
+
+            'cantidad.required' => 'La cantidad es obligatoria.',
+            'cantidad.integer' => 'La cantidad debe ser un número entero.',
+            'cantidad.min' => 'La cantidad no puede ser negativa.',
+
+            'descuento.integer' => 'El descuento debe ser un número entero.',
+            'descuento.min' => 'El descuento no puede ser negativo.',
+            'descuento.max' => 'El descuento no puede ser mayor a 100.',
 
             'descripcion.max' => 'La descripción no puede tener más de 1000 caracteres.',
 

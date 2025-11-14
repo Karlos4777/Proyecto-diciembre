@@ -147,8 +147,3 @@
     <!--end::Container-->
 </div>
 @endsection
-@push('scripts')
-<script>
-document.getElementById('mnuPedidos').classList.add('active');
-</script>
-@endpush

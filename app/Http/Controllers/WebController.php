@@ -78,10 +78,16 @@ public function buscarProductosAjax(Request $request)
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
                 'precio' => $producto->precio,
-                'imagen' => $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/sin-imagen.png'),
+                    'imagen' => $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/sin-imagen.png'),
                 'categoria' => $producto->categoria->nombre ?? 'Sin categoría',
                 'catalogo' => $producto->catalogo->nombre ?? 'Sin catálogo',
-                'estado' => $producto->stock > 10 ? 'Disponible' : ($producto->stock > 0 ? 'Pocas unidades' : 'Agotado'),
+                // Usar el campo `cantidad` (guardado en la BD) y convertir a entero por seguridad
+                // Nuevo umbral: >=21 Disponible, 1-20 Pocas unidades, 0 Agotado
+                'estado' => ((int) $producto->cantidad) >= 21
+                    ? 'Disponible'
+                    : (((int) $producto->cantidad) >= 1 ? 'Pocas unidades' : 'Agotado'),
+                    'descuento' => (int) ($producto->descuento ?? 0),
+                    'precio_con_descuento' => $producto->precio_con_descuento,
             ];
         });
 

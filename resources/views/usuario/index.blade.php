@@ -58,15 +58,10 @@
                                                     <a href="{{route('usuarios.edit', $reg->id)}}" class="btn btn-info btn-sm"><i class="bi bi-pencil-fill"></i></a>&nbsp;
                                                     @endcan
                                                     @can('user-delete')
-                                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                                            data-bs-target="#modal-eliminar-{{$reg->id}}"><i class="bi bi-trash-fill"></i>
-                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modal-eliminar-{{$reg->id}}"><i class="bi bi-trash-fill"></i></button>&nbsp;
                                                     @endcan
                                                     @can('user-activate')
-                                                    <button class="btn {{ $reg->activo ? 'btn-warning' : 'btn-success'}} btn-sm" data-bs-toggle="modal"
-                                                            data-bs-target="#modal-toggle-{{$reg->id}}">
-                                                            <i class="bi {{$reg->activo ? 'bi-ban' : 'bi-check-circle'}}"></i>
-                                                    </button>
+                                                    <button class="btn {{ $reg->activo ? 'btn-warning' : 'btn-success'}} btn-sm" data-bs-toggle="modal" data-bs-target="#modal-toggle-{{$reg->id}}"><i class="bi {{$reg->activo ? 'bi-ban' : 'bi-check-circle'}}"></i></button>
                                                     @endcan
                                                 </td>
                                                 <td>{{$reg->id}}</td>
@@ -74,17 +69,13 @@
                                                 <td>{{$reg->email}}</td>
                                                 <td>
                                                     @if($reg->roles->isNotEmpty()) 
-                                                        <span class="badge bg-primary">
-                                                            {{ $reg->roles->pluck('name')->implode('</span> <span class="badge bg-primary">') }} 
-                                                        </span>
+                                                        <span class="badge bg-primary">{{ $reg->roles->pluck('name')->implode('</span> <span class="badge bg-primary">') }}</span>
                                                     @else
                                                         <span class="badge bg-secondary">Sin rol</span>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <span class="badge {{ $reg->activo ? 'bg-success' : 'bg-danger' }}">
-                                                        {{ $reg->activo ? 'Activo' : 'Inactivo' }}
-                                                    </span>
+                                                    <span class="badge {{ $reg->activo ? 'bg-success' : 'bg-danger' }}">{{ $reg->activo ? 'Activo' : 'Inactivo' }}</span>
                                                 </td>
                                             </tr>
                                             @can('user-delete')
@@ -114,9 +105,3 @@
     <!--end::Container-->
 </div>
 @endsection
-@push('scripts')
-<script>
-    document.getElementById('mnuSeguridad').classList.add('menu-open');
-    document.getElementById('itemUsuario').classList.add('active');
-</script>
-@endpush

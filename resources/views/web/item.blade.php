@@ -16,7 +16,7 @@
             <!-- Información del producto -->
             <div class="col-md-6">
                 <div class="small mb-1">SKU: {{ $producto->codigo }}</div>
-                <h1 class="display-5 fw-bolder">{{ $producto->nombre }}</h1>
+                <h1 class="product-title display-5 fw-bolder">{{ $producto->nombre }}</h1>
 
                 <!-- Badges categoría y catálogo -->
                 <p class="mb-2">
@@ -34,15 +34,21 @@
 
                 <!-- Precio -->
                 <div class="fs-5 mb-3">
-                    <span>${{ number_format($producto->precio, 2) }}</span>
+                    @if($producto->tiene_descuento)
+                        <span class="text-muted text-decoration-line-through me-2">${{ number_format($producto->precio, 2) }}</span>
+                        <span class="product-price fw-bold">${{ number_format($producto->precio_con_descuento, 2) }}</span>
+                        <small class="badge bg-warning text-dark ms-2">-{{ $producto->descuento }}%</small>
+                    @else
+                        <span class="product-price">${{ number_format($producto->precio, 2) }}</span>
+                    @endif
                 </div>
 
                 <!-- Estado del stock -->
-                @if ($producto->cantidad >= 50)
+                @if ($producto->cantidad >= 21)
                     <p class="text-success fw-semibold mb-2">
                         <i class="bi bi-check-circle me-1"></i> Producto disponible
                     </p>
-                @elseif ($producto->cantidad >= 1 && $producto->cantidad < 50)
+                @elseif ($producto->cantidad >= 1 && $producto->cantidad < 21)
                     <p class="text-warning fw-semibold mb-2">
                         <i class="bi bi-exclamation-circle me-1"></i> Pocas unidades
                     </p>
@@ -69,12 +75,12 @@
                         <form method="POST" action="{{ route('carrito.agregar') }}">
                             @csrf
                             <input type="hidden" name="producto_id" value="{{ $producto->id }}">
-                            <button class="btn btn-outline-dark" type="submit">
+                            <button class="btn btn-product" type="submit">
                                 <i class="bi-cart-fill me-1"></i> Agregar al carrito
                             </button>
                         </form>
                     @endif
-                    <a class="btn btn-outline-dark" href="javascript:history.back()">Regresar</a>
+                    <a class="btn btn-outline-secondary" href="javascript:history.back()">Regresar</a>
                 </div>
 
             </div>

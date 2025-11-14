@@ -1,8 +1,10 @@
-<nav class="app-header navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+<nav class="app-header navbar navbar-expand-lg app-navbar">
     <div class="container-fluid px-4 px-lg-5">
 
         <!-- Marca -->
-        <a class="navbar-brand fw-bold text-uppercase" href="{{ url('/') }}">DiscZone.com</a>
+        <a class="navbar-brand fw-bold text-uppercase" href="{{ url('/') }}">
+            <img src="{{ asset('assets/img/nav-logo-img.png') }}" alt="DiscZone" class="nav-logo d-inline-block align-middle">
+        </a>
 
         <!-- Botón responsive -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
@@ -64,7 +66,7 @@
                 <!-- Carrito -->
                 @auth
                 <li class="nav-item mb-2 mb-lg-0 me-3 me-lg-4">
-                    <a href="{{ route('carrito.mostrar') }}" class="btn btn-outline-dark d-flex align-items-center position-relative w-100 w-lg-auto">
+                    <a href="{{ route('carrito.mostrar') }}" class="btn btn-carrito d-flex align-items-center position-relative w-100 w-lg-auto">
                         <i class="bi bi-cart-fill me-2"></i>
                         <span>Pedido</span>
                         @php
@@ -174,121 +176,4 @@
     </div>
 </nav>
 
-<!-- ✅ Estilos -->
-<style>
-#resultadosBusqueda {
-    display: none;
-    z-index: 2000;
-    max-height: 320px;
-    overflow-y: auto;
-    border-radius: 0 0 6px 6px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    background-color: white;
-    /* asegurar que esté justo debajo del input (posicionado respecto al form .position-relative) */
-    position: absolute;
-    top: calc(100% + 0.25rem);
-    left: 0;
-}
-
-#resultadosBusqueda .list-group-item {
-    transition: background-color 0.2s ease;
-}
-
-#resultadosBusqueda .list-group-item:hover {
-    background-color: #f8f9fa;
-}
-
-#resultadosBusqueda a {
-    display: block;
-    text-decoration: none;
-    color: #212529;
-}
-</style>
-
-<!-- ⚙️ Script búsqueda AJAX -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('buscador');
-    const resultados = document.getElementById('resultadosBusqueda');
-    const form = document.getElementById('formBuscador');
-    // Rutas base (generadas por Blade) para construir URLs de imágenes en el cliente
-    const storageUrl = "{{ asset('storage') }}";
-    const defaultImg = "{{ asset('img/default.jpg') }}";
-    // Formateador de precios (ej: 495,000.00)
-    const priceFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-    input.addEventListener('keyup', async (e) => {
-        const query = input.value.trim();
-
-        if (e.key === 'Enter') {
-            form.submit();
-            return;
-        }
-
-        if (query.length < 2) {
-            resultados.style.display = 'none';
-            resultados.innerHTML = '';
-            return;
-        }
-
-        try {
-            const response = await fetch(`/buscar-productos?search=${encodeURIComponent(query)}`);
-            const data = await response.json();
-
-            if (data.length === 0) {
-                resultados.innerHTML = '<li class="list-group-item text-muted">No se encontraron productos</li>';
-            } else {
-                resultados.innerHTML = data.map(p => {
-                    // Construir una URL segura para la imagen
-                    let imgSrc = defaultImg;
-                    if (p.imagen) {
-                        // Si ya es una URL absoluta
-                        if (/^https?:\/\//i.test(p.imagen)) {
-                            imgSrc = p.imagen;
-                        } else if (p.imagen.startsWith('/storage')) {
-                            // Ruta ya servida desde /storage
-                            imgSrc = p.imagen;
-                        } else {
-                            // Prefijar con la URL base de storage generada por Blade
-                            imgSrc = storageUrl + '/' + p.imagen;
-                        }
-                    }
-
-                    // Asegurar codificación mínima
-                    const safeImg = encodeURI(imgSrc);
-
-                    return `
-                    <li class="list-group-item">
-                        <a href="/producto/${p.id}" class="d-flex align-items-center">
-                       <img src="${safeImg}" 
-                           alt="${p.nombre}" 
-                           style="width: 50px; height: 50px; object-fit: contain; object-position: center; border-radius: 4px; margin-right: 10px; background-color: #f8f9fa; padding: 2px; display: block;"
-                           onerror="this.onerror=null;this.src='${defaultImg}'">
-                            <div>
-                                <strong>${p.nombre}</strong> - <span class="fw-bold text-success">$${priceFormatter.format(parseFloat(p.precio))}</span> <br>
-                                <small class="text-muted">${p.categoria} | ${p.catalogo}</small><br>
-                                <span class="badge ${
-                                    p.estado === 'Disponible' ? 'bg-success' :
-                                    p.estado === 'Pocas unidades' ? 'bg-warning text-dark' :
-                                    'bg-danger'
-                                }">${p.estado}</span>
-                            </div>
-                        </a>
-                    </li>
-                `;
-                }).join('');
-            }
-
-            resultados.style.display = 'block';
-        } catch (error) {
-            console.error('Error en la búsqueda:', error);
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#buscador') && !e.target.closest('#resultadosBusqueda')) {
-            resultados.style.display = 'none';
-        }
-    });
-});
-</script>
+<!-- Styles and search script moved to public CSS/JS (resources/css/web.css and resources/js/web.js) -->

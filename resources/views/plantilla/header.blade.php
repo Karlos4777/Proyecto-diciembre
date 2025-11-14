@@ -1,8 +1,10 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm app-header">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg app-header">
     <div class="container-fluid px-4 px-lg-5">
 
         <!-- Marca -->
-        <a class="navbar-brand fw-bold text-uppercase" href="{{ url('/') }}">DiscZone.com</a>
+        <a class="navbar-brand fw-bold text-uppercase" href="{{ url('/') }}">
+            <img src="{{ asset('assets/img/nav-logo-img.png') }}" alt="DiscZone" class="nav-logo d-inline-block align-middle">
+        </a>
 
         <!-- Botón responsive -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
@@ -143,15 +145,17 @@
 
             <!-- Sección derecha -->
             <ul class="navbar-nav ms-auto align-items-center">
-                <!-- Carrito -->
+                <!-- Pedido/Carrito -->
                 <li class="nav-item me-3">
-                    <a href="{{ route('carrito.mostrar') }}" class="btn btn-outline-dark position-relative">
-                        <i class="bi bi-cart-fill me-1"></i>
-                        Pedido
+                    <a href="{{ route('carrito.mostrar') }}" class="btn btn-carrito d-flex align-items-center position-relative">
+                        <i class="bi bi-cart-fill me-2"></i>
+                        <span>Pedido</span>
                         @php
                             $cantidad = session('carrito') ? array_sum(array_column(session('carrito'), 'cantidad')) : 0;
                         @endphp
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">{{ $cantidad }}</span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                            {{ $cantidad }}
+                        </span>
                     </a>
                 </li>
 
@@ -197,53 +201,4 @@
     </div>
 </nav>
 
-<!-- ✅ CSS -->
-<style>
-/* Submenú estilo */
-.dropdown-submenu {
-    position: relative;
-}
-.dropdown-submenu > .dropdown-menu {
-    top: 0;
-    left: 100%;
-    margin-top: -1px;
-    display: none;
-}
-.dropdown-submenu:hover > .dropdown-menu {
-    display: block;
-}
-.dropdown-toggle::after {
-    margin-left: .3em;
-}
-.dropdown-item:hover {
-    background-color: #f8f9fa;
-}
-.navbar-nav .nav-link.active {
-    font-weight: bold;
-    color: #0d6efd !important;
-}
-</style>
-
-<!-- ✅ JS -->
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Para manejar los submenús en pantallas pequeñas
-    document.querySelectorAll('.dropdown-submenu > a').forEach(function(element){
-        element.addEventListener('click', function(e){
-            let submenu = this.nextElementSibling;
-            if(submenu && submenu.classList.contains('dropdown-menu')){
-                e.preventDefault();
-                submenu.classList.toggle('show');
-            }
-        });
-    });
-
-    document.addEventListener('click', function (e) {
-        document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
-            if (!menu.parentNode.contains(e.target)) {
-                menu.classList.remove('show');
-            }
-        });
-    });
-});
-</script>
+<!-- Header styles and small behaviours moved to resources/css/admin.css and resources/js/admin.js -->

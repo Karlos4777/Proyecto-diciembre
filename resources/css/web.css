@@ -1,0 +1,894 @@
+/* ===== DiscZone - Premium Music Store Theme ===== */
+/* Color Palette: Marrón (#6F4E37), Negro (#1A1A1A), Blanco (#FFFFFF) */
+
+:root {
+    --color-brown: #6F4E37;
+    --color-dark-brown: #4A2F1E;
+    --color-black: #1A1A1A;
+    --color-white: #FFFFFF;
+    --color-light-gray: #F5F5F5;
+    --color-border-gray: #E8E8E8;
+    --color-accent: #8B6F47;
+    --color-cream: #fbf6f0;
+    --app-navbar-height: 72px;
+    --font-main: 'Georgia', serif;
+}
+
+/* === Base Styles === */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: var(--font-main);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #fbfaf9 0%, var(--color-light-gray) 100%);
+    color: var(--color-black);
+
+    /* Make room for the fixed navbar so content doesn't hide beneath it */
+    padding-top: var(--app-navbar-height);
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
+    background-color: var(--color-black);
+    color: var(--color-white);
+    border-top: 3px solid var(--color-brown);
+}
+
+/* === Header Mejorado === */
+.page-header {
+    background: linear-gradient(135deg, var(--color-dark-brown) 0%, var(--color-black) 100%);
+    padding: 6rem 0;
+    color: var(--color-white);
+    border-bottom: 5px solid var(--color-brown);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+.page-header h1 {
+    font-weight: 900;
+    letter-spacing: -2px;
+    text-transform: uppercase;
+    font-size: 3.5rem;
+    margin: 0;
+    text-align: center;
+}
+
+.page-header .lead {
+    font-size: 1.3rem;
+    color: var(--color-accent);
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+/* Header image replacement for site title */
+.header-img {
+    max-height: 90px;
+    display: block;
+    margin: 0 auto 0.5rem auto;
+}
+
+/* Navbar brand image */
+.nav-logo {
+    max-height: 48px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* === Navbar Mejorado === */
+.app-navbar {
+    background: linear-gradient(90deg, var(--color-dark-brown) 0%, var(--color-black) 100%);
+    border-bottom: 3px solid var(--color-brown);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1030;
+
+    /* Keep navbar always visible */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0.25rem 0;
+    height: auto;
+}
+
+.app-navbar .container-fluid {
+    padding: 0.5rem 1rem;
+}
+
+.app-navbar .navbar-brand {
+    color: var(--color-white) !important;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.app-navbar .navbar-brand:hover {
+    color: var(--color-accent) !important;
+    transform: scale(1.05);
+}
+
+.app-navbar .nav-link {
+    color: var(--color-white) !important;
+    font-weight: 600;
+    margin: 0 0.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0 !important;
+    font-family: 'Georgia', serif;
+    font-size: 1.05rem;
+}
+
+.app-navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-brown), var(--color-accent));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.app-navbar .nav-link:hover {
+    color: var(--color-accent) !important;
+}
+
+.app-navbar .nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.app-navbar .nav-link.active {
+    color: var(--color-accent) !important;
+    font-weight: 700;
+}
+
+.app-navbar .nav-link.active::after {
+    transform: scaleX(1);
+}
+
+.app-navbar .dropdown-menu {
+    background: linear-gradient(135deg, var(--color-dark-brown) 0%, #3a1f13 100%);
+    border: 2px solid var(--color-brown);
+    border-top: 3px solid var(--color-accent);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.app-navbar .dropdown-item {
+    color: var(--color-white);
+    transition: all 0.2s ease;
+    padding: 0.75rem 1.5rem;
+}
+
+.app-navbar .dropdown-item:hover {
+    background-color: var(--color-brown);
+    color: var(--color-white);
+    padding-left: 2rem;
+}
+
+.app-navbar .dropdown-item.active,
+.app-navbar .dropdown-item:active {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+}
+
+.app-navbar .dropdown-divider {
+    border-color: var(--color-accent);
+    opacity: 0.3;
+}
+
+.app-navbar .navbar-toggler {
+    border-color: var(--color-accent);
+}
+
+.app-navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%238B6F47' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.app-navbar #buscador {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--color-brown);
+    border-radius: 25px;
+    padding: 0.65rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.app-navbar #buscador:focus {
+    background-color: var(--color-white);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.2);
+    outline: none;
+}
+
+.app-navbar #buscador::placeholder {
+    color: var(--color-dark-brown);
+}
+
+/* === Botón Carrito/Pedido === */
+.btn-theme {
+    background-color: transparent;
+    color: var(--color-dark-brown);
+    border: 2px solid var(--color-accent);
+    transition: all 0.25s ease;
+    font-weight: 600;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+}
+
+.btn-theme:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-white);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.btn-theme:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(139,111,71,0.12);
+}
+
+.btn-carrito, .btn-product {
+    /* base theme shared by pedido, carrito and product CTAs */
+    background-color: transparent;
+    color: var(--color-dark-brown);
+    border: 2px solid var(--color-accent);
+    transition: all 0.25s ease;
+    font-weight: 600;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+}
+
+.app-navbar .btn-carrito {
+    /* Pedido button: transparent by default, brown on hover */
+    background-color: transparent;
+    color: var(--color-white) !important;
+    border-color: var(--color-accent);
+    transition: background-color 0.22s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.app-navbar .btn-carrito:hover {
+    background-color: var(--color-brown);
+    border-color: var(--color-brown);
+    color: var(--color-white) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+}
+
+.btn-carrito .badge {
+    background-color: var(--color-accent) !important;
+    color: var(--color-white) !important;
+}
+
+/* === Sección y Títulos === */
+.section-title {
+    font-family: 'Georgia', serif;
+    color: var(--color-dark-brown);
+    font-size: 1.8rem;
+    margin-bottom: 1rem !important;
+    padding-left: 0.5rem;
+    border-left: 6px solid var(--color-accent);
+    padding-left: 14px;
+    letter-spacing: -0.5px;
+}
+
+.producto-card .card-body {
+    padding: 1.1rem;
+    /* Info area: solid brown background with white text - title & price live here */
+    background: linear-gradient(180deg, var(--color-brown) 0%, var(--color-dark-brown) 100%);
+    transition: background 0.25s ease;
+    color: var(--color-white);
+}
+.producto-card h5 {
+    font-size: 1.05rem;
+    color: var(--color-black);
+    min-height: 46px;
+}
+
+.btn-product {
+    /* make product CTA match the pedido/cart theme */
+    background-color: transparent;
+    color: var(--color-dark-brown);
+    border: 2px solid var(--color-accent);
+    transition: all 0.25s ease;
+    font-weight: 600;
+    padding: 0.45rem 0.8rem;
+    border-radius: 6px;
+}
+
+.btn-product:hover {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+/* Price styling for product pages */
+.product-price {
+    color: #28a745; /* green */
+    font-weight: 800;
+}
+
+/* Product title on item page */
+.product-title {
+    color: var(--color-black);
+    font-weight: 900;
+}
+
+/* Slight container card look to sections */
+.page-section {
+    background: transparent;
+    padding: 1rem 0 2rem 0;
+}
+
+/* === Search Results === */
+#resultadosBusqueda {
+    display: none;
+    z-index: 2000;
+    max-height: 360px;
+    overflow-y: auto;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    background-color: var(--color-white);
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    border-left: 4px solid var(--color-brown);
+    border-right: 4px solid var(--color-brown);
+    border-bottom: 4px solid var(--color-brown);
+}
+
+#resultadosBusqueda .list-group-item {
+    transition: all 0.2s ease;
+    border: none;
+    border-bottom: 1px solid var(--color-border-gray);
+    padding: 12px 15px;
+}
+
+#resultadosBusqueda .list-group-item:hover {
+    background-color: var(--color-light-gray);
+    border-left: 4px solid var(--color-brown);
+    padding-left: 11px;
+}
+
+#resultadosBusqueda a {
+    display: block;
+    text-decoration: none;
+    color: var(--color-black);
+}
+
+/* === Carrusel Styles === */
+.carrusel-wrapper {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-cream);
+    border-radius: 8px;
+    padding: 20px 0;
+    margin: 20px 0;
+}
+
+.carrusel-wrapper:hover .carousel-btn {
+    opacity: 1;
+    visibility: visible;
+}
+
+.productos-carrusel {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 1.5rem;
+    padding: 20px;
+    scroll-padding: 20px;
+    background: transparent;
+}
+
+/* Improve carousel snapping and spacing */
+.productos-carrusel {
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding-left: 28px; /* leave some breathing room */
+    padding-right: 28px;
+}
+
+.producto-card {
+    scroll-snap-align: center;
+}
+
+/* Carousel dots (optional) */
+.carrusel-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+}
+.carrusel-dots button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.15);
+    border: none;
+    transition: transform 0.18s ease, background 0.18s ease;
+}
+.carrusel-dots button.active { background: var(--color-brown); transform: scale(1.15); }
+
+.productos-carrusel::-webkit-scrollbar {
+    height: 8px;
+    background-color: var(--color-light-gray);
+}
+
+/* General section background: avoid plain white pages */
+section.py-5 {
+    background: var(--color-cream);
+    border-radius: 8px;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.productos-carrusel::-webkit-scrollbar-thumb {
+    background: var(--color-brown);
+    border-radius: 4px;
+}
+
+.productos-carrusel::-webkit-scrollbar-thumb:hover {
+    background: var(--color-dark-brown);
+}
+
+/* === Producto Card === */
+.producto-card {
+    flex: 0 0 240px;
+    border-radius: 8px;
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s ease, background 0.25s ease;
+    position: relative;
+    /* Card shell: keep light so image stands out; info area will be brown */
+    background: linear-gradient(180deg, var(--color-cream) 0%, rgba(255,255,255,0.95) 100%);
+    border: 1px solid rgba(232,232,232,0.7);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    color: var(--color-black);
+}
+
+.producto-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.16);
+    border-color: var(--color-brown);
+}
+
+.producto-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--color-brown), var(--color-accent), var(--color-brown));
+    z-index: 2;
+}
+
+.imagen-container {
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    /* keep image area light so product covers are visible */
+    background: linear-gradient(135deg, var(--color-light-gray) 0%, var(--color-white) 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imagen-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 10px;
+    transition: transform 0.3s ease;
+}
+
+.producto-card:hover .imagen-container img {
+    transform: scale(1.05);
+}
+
+/* Make product content text white while preserving price and badge colors */
+.producto-card .card-body,
+.producto-card h5,
+.producto-card p,
+.producto-card small {
+    color: var(--color-white) !important;
+}
+
+.producto-card .product-price {
+    /* keep price standout (green) */
+    color: #28a745 !important;
+}
+
+/* Ensure prices inside the product card body (e.g., uses of .text-success) remain green
+   even though .card-body sets white as base text color with !important. */
+.producto-card .card-body .text-success,
+.producto-card .card-body p.text-success,
+.producto-card .card-body span.text-success,
+.producto-card .card-body .product-price {
+    color: #28a745 !important;
+}
+
+.producto-card .badge {
+    /* ensure badges remain visible on brown background */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.imagen-container::after {
+    content: '🎵';
+    position: absolute;
+    font-size: 3rem;
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+/* === Carousel Navigation Buttons === */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, var(--color-brown), var(--color-accent));
+    color: var(--color-white);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.9;
+    visibility: visible;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-btn:hover {
+    background: linear-gradient(135deg, var(--color-dark-brown), var(--color-brown));
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.left { left: 12px; }
+.carousel-btn.right { right: 12px; }
+
+/* Make nav buttons subtler on small screens */
+@media (max-width: 768px) {
+    .carousel-btn { width: 40px; height: 40px; font-size: 1.15rem; opacity: 0.85; }
+}
+
+/* === Footer Mejorado === */
+.page-footer {
+    background: linear-gradient(135deg, var(--color-dark-brown) 0%, var(--color-black) 100%);
+    border-top: 5px solid var(--color-brown);
+    margin-top: auto;
+}
+
+.page-footer h5 {
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+.page-footer .text-accent {
+    color: var(--color-accent) !important;
+}
+
+.page-footer .text-light {
+    color: #E8E8E8 !important;
+}
+
+.page-footer ul li {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.page-footer ul li:hover {
+    transform: translateX(4px);
+    color: var(--color-accent);
+}
+
+.page-footer hr {
+    background-color: var(--color-accent);
+    opacity: 0.3;
+}
+
+/* === Responsive === */
+
+/* Extra Small Devices (320px - 575px) */
+@media (max-width: 575px) {
+    /* Base layout adjustments */
+    body {
+        padding-top: 64px; /* Reduce navbar height on mobile */
+    }
+
+    /* Header adjustments */
+    .page-header {
+        padding: 2rem 1rem;
+        min-height: 200px;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+        letter-spacing: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header .lead {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    .header-img {
+        max-height: 48px;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Navbar adjustments */
+    .app-navbar {
+        padding: 0.15rem 0;
+    }
+
+    .app-navbar .container-fluid {
+        padding: 0.35rem 0.75rem;
+    }
+
+    .app-navbar .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .nav-logo {
+        max-height: 36px;
+    }
+
+    .app-navbar .nav-link {
+        margin: 0 0.25rem;
+        font-size: 0.85rem;
+        padding: 0.35rem 0 !important;
+    }
+
+    .app-navbar #buscador {
+        max-width: 150px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-carrito, .btn-product {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    /* Carousel adjustments */
+    .productos-carrusel {
+        padding: 1rem 0.5rem;
+    }
+
+    .producto-card {
+        flex: 0 0 140px;
+        margin: 0 0.5rem;
+    }
+
+    .imagen-container {
+        height: 140px;
+    }
+
+    .card-body {
+        padding: 0.75rem;
+    }
+
+    .card-title {
+        font-size: 0.8rem;
+    }
+
+    .card-text {
+        font-size: 0.75rem;
+    }
+
+    /* Section titles */
+    .section-title {
+        font-size: 1.25rem !important;
+        margin: 1.5rem 0 1rem 0 !important;
+    }
+
+    .section-subtitle {
+        font-size: 0.85rem !important;
+    }
+
+    /* Containers */
+    .container, .container-fluid {
+        padding: 0.75rem !important;
+    }
+
+    /* Carousel buttons */
+    .carousel-btn {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.95rem !important;
+        opacity: 0.8 !important;
+    }
+
+    .carousel-btn.left { left: 4px; }
+    .carousel-btn.right { right: 4px; }
+
+    /* Footer */
+    .page-footer {
+        padding: 1.5rem 0.75rem !important;
+    }
+
+    .page-footer h5 {
+        font-size: 0.8rem;
+    }
+
+    .page-footer p {
+        font-size: 0.75rem;
+    }
+
+    /* Forms and inputs */
+    .form-control, .form-select {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    /* Cards in forms/admin */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .card-header {
+        padding: 0.75rem;
+    }
+
+    .card-body {
+        padding: 0.75rem;
+    }
+
+    /* Alert messages */
+    .alert {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Tables - make them scrollable */
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+
+    .table {
+        font-size: 0.75rem;
+    }
+
+    .table thead th, .table tbody td {
+        padding: 0.4rem;
+    }
+}
+
+/* Small Devices (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    body {
+        padding-top: 68px;
+    }
+
+    /* Header adjustments */
+    .page-header {
+        padding: 3rem 1rem;
+        min-height: 240px;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        letter-spacing: -1px;
+    }
+
+    .page-header .lead {
+        font-size: 0.95rem;
+    }
+
+    .header-img {
+        max-height: 56px;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Navbar adjustments */
+    .app-navbar .container-fluid {
+        padding: 0.4rem 0.9rem;
+    }
+
+    .app-navbar .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .nav-logo {
+        max-height: 40px;
+    }
+
+    .app-navbar .nav-link {
+        font-size: 0.95rem;
+        margin: 0 0.4rem;
+    }
+
+    .app-navbar #buscador {
+        max-width: 180px;
+        font-size: 0.9rem;
+    }
+
+    /* Carousel adjustments */
+    .producto-card {
+        flex: 0 0 160px;
+    }
+
+    .imagen-container {
+        height: 160px;
+    }
+
+    /* Section titles */
+    .section-title {
+        font-size: 1.5rem !important;
+        margin: 1.75rem 0 1.25rem 0 !important;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.9rem;
+    }
+
+    .carousel-btn {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+    }
+
+    /* Cards */
+    .card-body {
+        padding: 0.9rem;
+    }
+
+    /* Tables */
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .table thead th, .table tbody td {
+        padding: 0.5rem;
+    }
+}
+
+/* Medium Devices (768px and up) */
+@media (min-width: 768px) {
+    .carousel-btn { width: 40px; height: 40px; font-size: 1.15rem; opacity: 0.85; }
+
+    .producto-card {
+        flex: 0 0 200px;
+    }
+
+    .imagen-container {
+        height: 200px;
+    }
+}

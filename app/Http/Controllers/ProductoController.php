@@ -53,7 +53,8 @@ class ProductoController extends Controller
         $registro->codigo       = $request->input('codigo');
         $registro->nombre       = $request->input('nombre');
         $registro->precio       = $request->input('precio');
-        $registro->cantidad       = $request->input('cantidad');
+    $registro->cantidad       = $request->input('cantidad');
+    $registro->descuento      = $request->input('descuento', 0); // nuevo campo descuento
         $registro->categoria_id = $request->input('categoria_id');
         $registro->catalogo_id  = $request->input('catalogo_id'); // <- agregado
         $registro->descripcion  = $request->input('descripcion');
@@ -101,7 +102,8 @@ class ProductoController extends Controller
         $registro->codigo       = $request->input('codigo');
         $registro->nombre       = $request->input('nombre');
         $registro->precio       = $request->input('precio');
-        $registro->cantidad       = $request->input('cantidad');
+    $registro->cantidad       = $request->input('cantidad');
+    $registro->descuento      = $request->input('descuento', 0); // nuevo campo descuento
         $registro->categoria_id = $request->input('categoria_id');
         $registro->catalogo_id  = $request->input('catalogo_id'); // <- agregado
         $registro->descripcion  = $request->input('descripcion');
@@ -171,9 +173,10 @@ public function buscarProductosAjax(Request $request)
             'precio'    => $p->precio,
             'categoria' => $p->categoria->nombre ?? 'Sin categoría',
             'catalogo'  => $p->catalogo->nombre ?? 'Sin catálogo',
-            'estado'    => $p->cantidad == 0
-                            ? 'Agotado'
-                            : ($p->cantidad < 5 ? 'Pocas unidades' : 'Disponible'),
+            // Estándar: >=21 Disponible, 1-20 Pocas unidades, 0 Agotado
+            'estado'    => ((int) $p->cantidad) >= 21
+                            ? 'Disponible'
+                            : (((int) $p->cantidad) >= 1 ? 'Pocas unidades' : 'Agotado'),
             'imagen'    => $imagen,
         ];
     });

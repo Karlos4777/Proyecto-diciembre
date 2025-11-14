@@ -6,8 +6,8 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0 product-title">
                         <i class="bi bi-credit-card me-2"></i> Completar Compra
                     </h4>
                 </div>
@@ -54,7 +54,7 @@
                             <hr>
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0">Total a pagar:</h6>
-                                <h5 class="mb-0 text-success"><strong>${{ number_format($total, 2) }}</strong></h5>
+                                <h5 class="mb-0 product-price"><strong>${{ number_format($total, 2) }}</strong></h5>
                             </div>
                         </div>
                     </div>
@@ -143,7 +143,7 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg">
+                            <button type="submit" class="btn btn-product btn-lg">
                                 <i class="bi bi-check-circle me-2"></i> Confirmar compra
                             </button>
                             <a href="{{ route('carrito.mostrar') }}" class="btn btn-outline-secondary">

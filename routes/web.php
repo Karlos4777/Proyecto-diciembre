@@ -15,6 +15,7 @@ use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\PromotionController;
 
 //  Rutas públicas del sitio web
 Route::get('/', [WebController::class, 'index'])->name('web.index');
@@ -32,6 +33,8 @@ Route::middleware(['auth'])->group(function(){
     Route::patch('usuarios/{usuario}/toggle', [UserController::class, 'toggleStatus'])->name('usuarios.toggle');
     Route::resource('roles', RoleController::class);
     Route::resource('productos', ProductoController::class);
+    // Ruta para asignar promociones (form admin simple)
+    Route::post('/productos/promocion/assign', [PromotionController::class, 'assign'])->name('productos.promocion.assign');
     Route::resource('categoria', CategoriaController::class);
     Route::resource('catalogo', CatalogoController::class);
     
@@ -74,4 +77,5 @@ Route::middleware('guest')->group(function(){
     Route::post('password/email', [ResetPasswordController::class, 'sendResetLinkEmail'])->name('password.send-link');
     Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('password/reset', [ResetPasswordController::class, 'resetPassword'])->name('password.update');
+    
 });

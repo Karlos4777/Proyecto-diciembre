@@ -1,8 +1,8 @@
-<header class="bg-dark py-5">
-    <div class="container px-4 px-lg-5 my-5">
-        <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">DiscZone</h1>
-            <p class="lead fw-normal text-white-50 mb-0">Tienda de Discos Musicales</p>
+<header class="page-header">
+    <div class="container px-4 px-lg-5">
+        <div class="text-center">
+            <img src="{{ asset('assets/img/header-img.png') }}" alt="DisMusic" class="header-img img-fluid">
+            <p class="lead fw-normal mb-0">Tienda de Discos Musicales</p>
         </div>
     </div>
 </header>

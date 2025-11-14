@@ -124,6 +124,19 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <!-- Descuento -->
+                                <div class="col-md-3 mb-3">
+                                    <label for="descuento" class="form-label">Descuento (%)</label>
+                                    <input type="number" class="form-control @error('descuento') is-invalid @enderror"
+                                        id="descuento" name="descuento" min="0" max="100" step="1"
+                                        value="{{ old('descuento', $registro->descuento ?? 0) }}">
+                                    @error('descuento')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <button type="button" class="btn btn-secondary me-md-2"
                                     onclick="window.location.href='{{ route('productos.index') }}'">Cancelar</button>
@@ -140,9 +153,3 @@
 </div>
 @endsection
 
-@push('scripts')
-<script>
-    document.getElementById('mnuAlmacen').classList.add('menu-open');
-    document.getElementById('itemProducto').classList.add('active');
-</script>
-@endpush

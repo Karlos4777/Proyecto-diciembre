@@ -5,7 +5,7 @@
 <div class="container mt-5 mb-5">
     <div class="row mb-4">
         <div class="col-md-12">
-            <h2 class="mb-4">
+            <h2 class="section-title mb-4">
                 <i class="bi bi-bag-check me-2"></i> Mis Pedidos
             </h2>
             

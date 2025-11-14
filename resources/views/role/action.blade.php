@@ -55,16 +55,10 @@
                 </div>
                 <!-- /.card -->
             </div>
-            <!-- /.col -->
+            </div>
         </div>
         <!--end::Row-->
     </div>
     <!--end::Container-->
 </div>
 @endsection
-@push('scripts')
-<script>
-document.getElementById('mnuSeguridad').classList.add('menu-open');
-document.getElementById('itemRole').classList.add('active');
-</script>
-@endpush
