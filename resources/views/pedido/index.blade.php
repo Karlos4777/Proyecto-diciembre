@@ -71,13 +71,14 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-primary" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#detalles-{{ $reg->id }}">
-                                                    Ver detalles
+                                                <button class="btn btn-sm btn-primary btn-toggle" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#detalles-{{ $reg->id }}" aria-expanded="false" aria-controls="detalles-{{ $reg->id }}">
+                                                    <i class="bi bi-chevron-down toggle-icon"></i>
+                                                    <span class="ms-1 d-none d-sm-inline">Ver detalles</span>
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr class="collapse" id="detalles-{{ $reg->id }}">
+                                        <tr class="collapse detalles-row" id="detalles-{{ $reg->id }}">
                                             <td colspan="7">
                                                 <table class="table table-sm table-striped">
                                                     <thead>
@@ -96,8 +97,7 @@
                                                                 <td>{{ $detalle->producto->nombre }}</td>
                                                                 <td>
                                                                     <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen ) }}"
-                                                                        class="img-fluid rounded"
-                                                                        style="width: 80px; height: 80px; object-fit: cover;"
+                                                                        class="detalle-img"
                                                                         alt="{{ $detalle->producto->nombre}}">
                                                                 </td>
                                                                 <td>{{ $detalle->cantidad}}</td>
@@ -146,4 +146,7 @@
     </div>
     <!--end::Container-->
 </div>
+@push('scripts')
+    <script src="{{ asset('js/pedido.js') }}"></script>
+@endpush
 @endsection

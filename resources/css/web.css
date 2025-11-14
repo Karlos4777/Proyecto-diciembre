@@ -614,281 +614,68 @@ section.py-5 {
 }
 
 /* === Responsive === */
-
-/* Extra Small Devices (320px - 575px) */
-@media (max-width: 575px) {
-    /* Base layout adjustments */
-    body {
-        padding-top: 64px; /* Reduce navbar height on mobile */
-    }
-
-    /* Header adjustments */
-    .page-header {
-        padding: 2rem 1rem;
-        min-height: 200px;
-    }
-
-    .page-header h1 {
-        font-size: 1.5rem;
-        letter-spacing: 0;
-        margin-bottom: 0.5rem;
-    }
-
-    .page-header .lead {
-        font-size: 0.85rem;
-        margin-top: 0.25rem;
-    }
-
-    .header-img {
-        max-height: 48px;
-        margin-bottom: 0.25rem;
-    }
-
-    /* Navbar adjustments */
-    .app-navbar {
-        padding: 0.15rem 0;
-    }
-
-    .app-navbar .container-fluid {
-        padding: 0.35rem 0.75rem;
-    }
-
-    .app-navbar .navbar-brand {
-        font-size: 1.1rem;
-    }
-
-    .nav-logo {
-        max-height: 36px;
-    }
-
-    .app-navbar .nav-link {
-        margin: 0 0.25rem;
-        font-size: 0.85rem;
-        padding: 0.35rem 0 !important;
-    }
-
-    .app-navbar #buscador {
-        max-width: 150px;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
-    }
-
-    .btn-carrito, .btn-product {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.85rem;
-    }
-
-    /* Carousel adjustments */
-    .productos-carrusel {
-        padding: 1rem 0.5rem;
-    }
-
-    .producto-card {
-        flex: 0 0 140px;
-        margin: 0 0.5rem;
-    }
-
-    .imagen-container {
-        height: 140px;
-    }
-
-    .card-body {
-        padding: 0.75rem;
-    }
-
-    .card-title {
-        font-size: 0.8rem;
-    }
-
-    .card-text {
-        font-size: 0.75rem;
-    }
-
-    /* Section titles */
-    .section-title {
-        font-size: 1.25rem !important;
-        margin: 1.5rem 0 1rem 0 !important;
-    }
-
-    .section-subtitle {
-        font-size: 0.85rem !important;
-    }
-
-    /* Containers */
-    .container, .container-fluid {
-        padding: 0.75rem !important;
-    }
-
-    /* Carousel buttons */
-    .carousel-btn {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 0.95rem !important;
-        opacity: 0.8 !important;
-    }
-
-    .carousel-btn.left { left: 4px; }
-    .carousel-btn.right { right: 4px; }
-
-    /* Footer */
-    .page-footer {
-        padding: 1.5rem 0.75rem !important;
-    }
-
-    .page-footer h5 {
-        font-size: 0.8rem;
-    }
-
-    .page-footer p {
-        font-size: 0.75rem;
-    }
-
-    /* Forms and inputs */
-    .form-control, .form-select {
-        font-size: 0.9rem;
-        padding: 0.4rem 0.6rem;
-    }
-
-    /* Buttons */
-    .btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
-    }
-
-    /* Cards in forms/admin */
-    .card {
-        margin-bottom: 1rem;
-    }
-
-    .card-header {
-        padding: 0.75rem;
-    }
-
-    .card-body {
-        padding: 0.75rem;
-    }
-
-    /* Alert messages */
-    .alert {
-        padding: 0.75rem;
-        font-size: 0.85rem;
-        margin-bottom: 1rem;
-    }
-
-    /* Tables - make them scrollable */
-    .table-responsive {
-        font-size: 0.8rem;
-    }
-
-    .table {
-        font-size: 0.75rem;
-    }
-
-    .table thead th, .table tbody td {
-        padding: 0.4rem;
-    }
-}
-
-/* Small Devices (576px - 767px) */
-@media (min-width: 576px) and (max-width: 767px) {
-    body {
-        padding-top: 68px;
-    }
-
-    /* Header adjustments */
-    .page-header {
-        padding: 3rem 1rem;
-        min-height: 240px;
-    }
-
+@media (max-width: 768px) {
     .page-header h1 {
         font-size: 2rem;
-        letter-spacing: -1px;
     }
 
     .page-header .lead {
-        font-size: 0.95rem;
+        font-size: 1rem;
+    }
+
+    .producto-card {
+        flex: 0 0 180px;
+    }
+
+    .imagen-container {
+        height: 180px;
     }
 
     .header-img {
-        max-height: 56px;
-        margin-bottom: 0.5rem;
-    }
-
-    /* Navbar adjustments */
-    .app-navbar .container-fluid {
-        padding: 0.4rem 0.9rem;
-    }
-
-    .app-navbar .navbar-brand {
-        font-size: 1.2rem;
-    }
-
-    .nav-logo {
-        max-height: 40px;
-    }
-
-    .app-navbar .nav-link {
-        font-size: 0.95rem;
-        margin: 0 0.4rem;
-    }
-
-    .app-navbar #buscador {
-        max-width: 180px;
-        font-size: 0.9rem;
-    }
-
-    /* Carousel adjustments */
-    .producto-card {
-        flex: 0 0 160px;
-    }
-
-    .imagen-container {
-        height: 160px;
-    }
-
-    /* Section titles */
-    .section-title {
-        font-size: 1.5rem !important;
-        margin: 1.75rem 0 1.25rem 0 !important;
-    }
-
-    /* Buttons */
-    .btn {
-        padding: 0.45rem 0.85rem;
-        font-size: 0.9rem;
-    }
-
-    .carousel-btn {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 1rem !important;
-    }
-
-    /* Cards */
-    .card-body {
-        padding: 0.9rem;
-    }
-
-    /* Tables */
-    .table {
-        font-size: 0.85rem;
-    }
-
-    .table thead th, .table tbody td {
-        padding: 0.5rem;
+        max-height: 64px;
     }
 }
 
-/* Medium Devices (768px and up) */
-@media (min-width: 768px) {
-    .carousel-btn { width: 40px; height: 40px; font-size: 1.15rem; opacity: 0.85; }
+/* === Pedidos / Carrito Styles === */
+.pedido-table .table {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+.pedido-table .table thead th {
+    background: linear-gradient(90deg, var(--color-brown), var(--color-accent));
+    color: #fff;
+    border: none;
+    vertical-align: middle;
+}
+.pedido-table .btn-toggle-detalles {
+    transition: transform 0.22s ease;
+}
+.pedido-table .btn-toggle-detalles.rotate {
+    transform: rotate(180deg);
+}
+.detalles-row td {
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), var(--color-cream));
+    padding: 1rem !important;
+}
+.detalle-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+.pedido-badge {
+    padding: .45rem .6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
 
-    .producto-card {
-        flex: 0 0 200px;
-    }
-
-    .imagen-container {
-        height: 200px;
-    }
+@media (max-width: 576px) {
+    .producto-card { flex: 0 0 140px; }
+    .imagen-container { height: 140px; }
+    .detalle-img { width: 56px; height: 56px; }
+    .pedido-table .table thead th { font-size: .85rem; }
+    .pedido-table .table td { font-size: .92rem; }
 }
