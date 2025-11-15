@@ -21,6 +21,76 @@ html, body {
     font-family: var(--font-main);
 }
 
+/* General improvements: typography, containers, accessibility */
+body {
+    font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.45;
+}
+
+/* Restrict content width for large screens for better readability */
+.container {
+    max-width: 1200px;
+}
+
+/* Section titles: slightly larger and balanced spacing */
+.section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: -0.3px;
+}
+
+/* Product card: add footer area for actions and unify card height */
+.producto-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.producto-card .card-body {
+    padding: 1rem;
+}
+.producto-card .card-footer {
+    background: transparent;
+    border-top: 1px dashed rgba(0,0,0,0.04);
+    padding: 0.75rem;
+}
+.producto-card .product-name {
+    font-size: 1rem;
+    color: var(--color-black);
+    min-height: 48px;
+}
+
+/* Buttons: consistent primary CTA look */
+.btn-product, .btn-theme {
+    border-radius: 8px;
+    padding: 0.45rem 0.8rem;
+}
+.btn-product:focus, .btn-theme:focus, .btn:focus {
+    outline: 3px solid rgba(139,111,71,0.16);
+    outline-offset: 2px;
+}
+
+/* Improve badges contrast and sizing */
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+/* Add keyboard-visible focus for interactive elements */
+a:focus, button:focus {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* Respect reduced motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+
 body {
     display: flex;
     flex-direction: column;
@@ -454,7 +524,7 @@ section.py-5 {
 
 /* === Producto Card === */
 .producto-card {
-    flex: 0 0 240px;
+    flex: 0 0 280px;
     border-radius: 8px;
     transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s ease, background 0.25s ease;
     position: relative;
@@ -467,22 +537,38 @@ section.py-5 {
 }
 
 /* Responsive product card sizes for better layout */
+
+/* Wider cards by default; adjust down at smaller sizes */
 @media (min-width: 1200px) {
-    .producto-card { flex: 0 0 260px; }
+    .producto-card { flex: 0 0 300px; }
 }
 @media (min-width: 992px) and (max-width:1199px) {
-    .producto-card { flex: 0 0 220px; }
+    .producto-card { flex: 0 0 260px; }
 }
 @media (min-width: 768px) and (max-width:991px) {
-    .producto-card { flex: 0 0 200px; }
+    .producto-card { flex: 0 0 220px; }
 }
 @media (max-width: 767px) {
-    .producto-card { flex: 0 0 160px; }
+    .producto-card { flex: 0 0 180px; }
 }
 
-/* Hide large carousel controls on very small screens */
+/* Hide arrows by default; show on hover of the wrapper */
+.carrusel-wrapper .carousel-btn {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms ease, transform 180ms ease;
+    transform: translateY(-10%);
+}
+.carrusel-wrapper:hover .carousel-btn,
+.carrusel-wrapper:focus-within .carousel-btn {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Keep touch controls for devices; hide buttons on very small screens to avoid overlap */
 @media (max-width: 576px) {
-    .carousel-btn { display: none; }
+    .carrusel-wrapper .carousel-btn { display: none; }
 }
 
 /* Main product image adjustments */

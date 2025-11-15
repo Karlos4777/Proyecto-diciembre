@@ -80,10 +80,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Touch swipe support
         let touchStartX = null;
-        wrapper.addEventListener('touchstart', (ev) => { stopAutoplay(); touchStartX = ev.touches[0].clientX; }, { passive: true });
+        let touchStartY = null;
+        let isScrolling = undefined;
+
+        wrapper.addEventListener('touchstart', (ev) => {
+            stopAutoplay();
+            touchStartX = ev.touches[0].clientX;
+            touchStartY = ev.touches[0].clientY;
+            isScrolling = undefined;
+        }, { passive: true });
+
+        wrapper.addEventListener('touchmove', (ev) => {
+            if (!touchStartX || !touchStartY) return;
+            const dx = ev.touches[0].clientX - touchStartX;
+            const dy = ev.touches[0].clientY - touchStartY;
+            if (typeof isScrolling === 'undefined') {
+                isScrolling = Math.abs(dy) > Math.abs(dx);
+            }
+            // If horizontal swipe, prevent vertical page scroll
+            if (!isScrolling) {
+                ev.preventDefault();
+            }
+        }, { passive: false });
+
         wrapper.addEventListener('touchend', (ev) => {
-            if (touchStartX === null) return; const dx = ev.changedTouches[0].clientX - touchStartX; const TH = 40;
-            if (dx > TH) prev(); else if (dx < -TH) next(); touchStartX = null; startAutoplay();
+            if (touchStartX === null) return;
+            const dx = ev.changedTouches[0].clientX - touchStartX; const TH = 40;
+            if (Math.abs(dx) > TH && !isScrolling) {
+                if (dx > 0) prev(); else next();
+            }
+            touchStartX = null; touchStartY = null; isScrolling = undefined; startAutoplay();
         });
 
         // Keyboard support (left/right when not typing)
@@ -94,8 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'ArrowLeft') { prev(); }
         });
 
-        // Start autoplay initially
-        startAutoplay();
+        // Honor prefers-reduced-motion: disable autoplay if user requests reduced motion
+        const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reducedMotion) {
+            startAutoplay();
+        } else {
+            // still allow manual navigation
+            stopAutoplay();
+        }
     });
 
     // Buscador AJAX (from nav.blade.php)
@@ -108,10 +140,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const priceFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         if (input) {
-            input.addEventListener('keyup', async (e) => {
+            // debounce helper to avoid calling the search endpoint too often
+            const debounce = (fn, delay = 350) => {
+                let t = null;
+                return (...args) => {
+                    clearTimeout(t);
+                    t = setTimeout(() => fn(...args), delay);
+                };
+            };
+
+            const doSearch = async (e) => {
                 const query = input.value.trim();
 
-                if (e.key === 'Enter') {
+                if (e && e.key === 'Enter') {
                     if (form) form.submit();
                     return;
                 }
@@ -183,7 +224,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (error) {
                     console.error('Error en la búsqueda:', error);
                 }
-            });
+            };
+
+            const debouncedSearch = debounce(doSearch, 300);
+            input.addEventListener('keyup', debouncedSearch);
 
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('#buscador') && !e.target.closest('#resultadosBusqueda')) {
