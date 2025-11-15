@@ -4,14 +4,14 @@
     </div>
 @else
 <div class="position-relative carrusel-wrapper">
-    <button class="carousel-btn left"><i class="bi bi-chevron-left"></i></button>
+    <button class="carousel-btn left" aria-label="Anterior" title="Anterior"><i class="bi bi-chevron-left"></i></button>
 
     <div class="productos-carrusel">
         @foreach ($productos as $producto)
             <div class="producto-card card shadow-sm">
                 <div class="imagen-container">
-                    <img src="{{ $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/no-image.jpg') }}"
-                         alt="{{ $producto->nombre }}">
+                    <img loading="lazy" decoding="async" src="{{ $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/no-image.jpg') }}"
+                         alt="{{ $producto->nombre }}" class="d-block w-100" style="object-fit:cover; max-height:240px;"/>
                 </div>
 
                 @php $stock = $producto->cantidad ?? 0; @endphp
@@ -61,7 +61,7 @@
         @endforeach
     </div>
 
-    <button class="carousel-btn right"><i class="bi bi-chevron-right"></i></button>
+    <button class="carousel-btn right" aria-label="Siguiente" title="Siguiente"><i class="bi bi-chevron-right"></i></button>
 </div>
 @endif
 

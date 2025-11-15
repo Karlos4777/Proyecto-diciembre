@@ -8,9 +8,9 @@
 
             <!-- Imagen del producto -->
             <div class="col-md-6">
-                <img class="card-img-top mb-5 mb-md-0"
+                <img class="card-img-top mb-5 mb-md-0 producto-main-img"
                      src="{{ $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/no-image.jpg') }}" 
-                     alt="{{ $producto->nombre }}" />
+                     alt="{{ $producto->nombre }}" loading="lazy" decoding="async" />
             </div>
 
             <!-- Información del producto -->

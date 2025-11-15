@@ -466,6 +466,34 @@ section.py-5 {
     color: var(--color-black);
 }
 
+/* Responsive product card sizes for better layout */
+@media (min-width: 1200px) {
+    .producto-card { flex: 0 0 260px; }
+}
+@media (min-width: 992px) and (max-width:1199px) {
+    .producto-card { flex: 0 0 220px; }
+}
+@media (min-width: 768px) and (max-width:991px) {
+    .producto-card { flex: 0 0 200px; }
+}
+@media (max-width: 767px) {
+    .producto-card { flex: 0 0 160px; }
+}
+
+/* Hide large carousel controls on very small screens */
+@media (max-width: 576px) {
+    .carousel-btn { display: none; }
+}
+
+/* Main product image adjustments */
+.producto-main-img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.12);
+}
+
 .producto-card:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 14px 30px rgba(0,0,0,0.16);

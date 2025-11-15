@@ -89,7 +89,8 @@ body.auth-page {
 }
 
 .login-logo-main {
-    height: 80px;
+    height: 64px;
+    max-width: 320px;
     width: auto;
     display: block;
     margin: 0 auto;
@@ -420,7 +421,8 @@ body.auth-page {
     }
 
     .login-logo-main {
-        height: 64px;
+        height: 56px;
+        max-width: 220px;
     }
 
     .form-label {
@@ -492,7 +494,7 @@ body.auth-page {
     }
 
     .login-logo-main {
-        height: 72px;
+        height: 64px;
     }
 
     .form-control,
@@ -518,7 +520,7 @@ body.auth-page {
     }
 
     .login-logo-main {
-        height: 80px;
+        height: 72px;
     }
 }
 
@@ -533,6 +535,6 @@ body.auth-page {
     }
 
     .login-logo-main {
-        height: 90px;
+        height: 80px;
     }
 }
