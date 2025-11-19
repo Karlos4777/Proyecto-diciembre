@@ -79,11 +79,10 @@
                                         <table class="table table-sm">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th style="width: 50px;">Imagen</th>
+                                                    <th style="width: 40px;">Imagen</th>
                                                     <th>Producto</th>
-                                                    <th style="width: 80px;">Cantidad</th>
-                                                    <th style="width: 100px;">Precio Unit.</th>
-                                                    <th style="width: 100px;">Subtotal</th>
+                                                    <th style="width: 70px;">Cantidad</th>
+                                                    <th style="width: 90px;">Precio Unit.</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -93,22 +92,26 @@
                                                             @if($detalle->producto && $detalle->producto->imagen)
                                                                 <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
                                                                      class="img-thumbnail"
-                                                                     style="width: 50px; height: 50px; object-fit: cover;"
+                                                                     style="width: 40px; height: 40px; object-fit: cover; padding: 2px !important;"
                                                                      alt="{{ $detalle->producto->nombre }}">
                                                             @else
                                                                 <div class="bg-light d-flex align-items-center justify-content-center" 
-                                                                     style="width: 50px; height: 50px;">
-                                                                    <i class="bi bi-image"></i>
+                                                                     style="width: 40px; height: 40px; flex-shrink: 0;">
+                                                                    <i class="bi bi-image fs-6"></i>
                                                                 </div>
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <strong>{{ $detalle->producto->nombre ?? 'Producto eliminado' }}</strong>
+                                                            <small><strong>{{ $detalle->producto->nombre ?? 'Producto eliminado' }}</strong></small><br>
+                                                            @if($detalle->producto && $detalle->producto->categoria)
+                                                                <span class="badge bg-info fs-7">{{ $detalle->producto->categoria->nombre }}</span>
+                                                            @endif
                                                         </td>
-                                                        <td>{{ $detalle->cantidad }}</td>
-                                                        <td>${{ number_format($detalle->precio, 2) }}</td>
-                                                        <td>
-                                                            <strong>${{ number_format($detalle->cantidad * $detalle->precio, 2) }}</strong>
+                                                        <td class="text-center">
+                                                            <small>{{ $detalle->cantidad }}</small>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <small>${{ number_format($detalle->precio, 2) }}</small>
                                                         </td>
                                                     </tr>
                                                 @endforeach

@@ -132,7 +132,8 @@
                                                                 <td class="d-none d-sm-table-cell">
                                                                     <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen ) }}"
                                                                         class="detalle-img"
-                                                                        alt="{{ $detalle->producto->nombre}}">
+                                                                        alt="{{ $detalle->producto->nombre}}"
+                                                                        style="max-width: 50px; max-height: 50px; object-fit: cover;">
                                                                 </td>
                                                                 <td class="text-center">{{ $detalle->cantidad}}</td>
                                                                 <td class="text-end d-none d-md-table-cell"><small>${{ number_format($detalle->precio, 2) }}</small></td>

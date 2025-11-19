@@ -39,9 +39,16 @@
                                         @foreach($carrito as $item)
                                             @php $subtotal = $item['precio'] * $item['cantidad']; $total += $subtotal; @endphp
                                             <tr>
-                                                <td>
-                                                    <strong>{{ $item['nombre'] }}</strong><br>
-                                                    <small class="text-muted">{{ $item['cantidad'] }} x ${{ number_format($item['precio'], 2) }}</small>
+                                                <td class="d-flex align-items-center gap-2">
+                                                    @if(isset($item['imagen']))
+                                                        <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" 
+                                                             alt="{{ $item['nombre'] }}"
+                                                             style="width: 35px; height: 35px; object-fit: cover; flex-shrink: 0;">
+                                                    @endif
+                                                    <div>
+                                                        <strong class="d-block">{{ $item['nombre'] }}</strong>
+                                                        <small class="text-muted">{{ $item['cantidad'] }} x ${{ number_format($item['precio'], 2) }}</small>
+                                                    </div>
                                                 </td>
                                                 <td class="text-end">
                                                     <strong>${{ number_format($subtotal, 2) }}</strong>

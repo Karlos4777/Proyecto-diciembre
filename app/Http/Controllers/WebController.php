@@ -20,12 +20,17 @@ class WebController extends Controller
         // 🛒 Productos principales (para la vista general)
         $productos = $query->paginate(10);
 
-        // 🆕 Lo más reciente
-        $productosRecientes = Producto::orderBy('created_at', 'desc')->take(10)->get();
+        // 🆕 Lo más reciente (con eager loading)
+        $productosRecientes = Producto::with(['categoria', 'catalogo'])
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
 
-        // 💥 Lo más vendido (por catálogo)
+        // 💥 Lo más vendido (por catálogo - optimizado)
         $catalogos = Catalogo::with(['productos' => function ($q) {
-            $q->orderBy('ventas', 'desc')->take(10);
+            $q->with(['categoria'])
+                ->orderBy('ventas', 'desc')
+                ->take(10);
         }])->get();
 
         // Transformamos los catálogos en un array usable para la vista
@@ -34,10 +39,13 @@ class WebController extends Controller
             $productosVendidosPorCatalogo[$catalogo->nombre] = $catalogo->productos;
         }
 
-        // 👀 Visto recientemente (guardado en sesión)
+        // 👀 Visto recientemente (guardado en sesión - con eager loading)
         $vistosRecientemente = [];
         if (session()->has('vistos_recientemente')) {
-            $vistosRecientemente = Producto::whereIn('id', session('vistos_recientemente'))->get();
+            $vistos = array_slice(session('vistos_recientemente'), 0, 10);
+            $vistosRecientemente = Producto::with(['categoria', 'catalogo'])
+                ->whereIn('id', $vistos)
+                ->get();
         }
 
         // 📤 Enviamos todo a la vista
@@ -70,6 +78,7 @@ public function buscarProductosAjax(Request $request)
     $search = $request->get('search', '');
 
     $productos = Producto::with(['categoria', 'catalogo'])
+        ->select('id', 'nombre', 'precio', 'imagen', 'cantidad', 'descuento', 'precio_con_descuento', 'categoria_id', 'catalogo_id')
         ->where('nombre', 'like', "%$search%")
         ->limit(10)
         ->get()
@@ -78,16 +87,14 @@ public function buscarProductosAjax(Request $request)
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
                 'precio' => $producto->precio,
-                    'imagen' => $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/sin-imagen.png'),
+                'imagen' => $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/sin-imagen.png'),
                 'categoria' => $producto->categoria->nombre ?? 'Sin categoría',
                 'catalogo' => $producto->catalogo->nombre ?? 'Sin catálogo',
-                // Usar el campo `cantidad` (guardado en la BD) y convertir a entero por seguridad
-                // Nuevo umbral: >=21 Disponible, 1-20 Pocas unidades, 0 Agotado
                 'estado' => ((int) $producto->cantidad) >= 21
                     ? 'Disponible'
                     : (((int) $producto->cantidad) >= 1 ? 'Pocas unidades' : 'Agotado'),
-                    'descuento' => (int) ($producto->descuento ?? 0),
-                    'precio_con_descuento' => $producto->precio_con_descuento,
+                'descuento' => (int) ($producto->descuento ?? 0),
+                'precio_con_descuento' => $producto->precio_con_descuento,
             ];
         });
 
