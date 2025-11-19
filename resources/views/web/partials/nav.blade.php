@@ -17,8 +17,11 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             
             <!-- 🔍 Buscador principal -->
-            <form id="formBuscador" class="d-flex mx-auto position-relative w-50" method="GET" action="{{ route('web.index') }}">
-                <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." name="search" autocomplete="off" value="{{ request('search') }}">
+            <form id="formBuscador" class="d-flex mx-auto position-relative w-lg-50 search-form" method="GET" action="{{ route('web.index') }}">
+                <div class="search-wrapper">
+                    <i class="bi bi-search search-icon d-lg-none"></i>
+                    <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." name="search" autocomplete="off" value="{{ request('search') }}">
+                </div>
                 <ul id="resultadosBusqueda" class="list-group position-absolute w-100 mt-1"></ul>
             </form>
 
@@ -66,9 +69,9 @@
                 <!-- Carrito -->
                 @auth
                 <li class="nav-item mb-2 mb-lg-0 me-3 me-lg-4">
-                    <a href="{{ route('carrito.mostrar') }}" class="btn btn-carrito d-flex align-items-center position-relative w-100 w-lg-auto">
-                        <i class="bi bi-cart-fill me-2"></i>
-                        <span>Pedido</span>
+                    <a href="{{ route('carrito.mostrar') }}" class="btn btn-carrito d-flex align-items-center justify-content-center position-relative w-100 w-lg-auto">
+                        <i class="bi bi-cart-fill me-2 me-lg-2 me-0"></i>
+                        <span class="d-none d-lg-inline">Pedido</span>
                         @php
                             $registro = \App\Models\Carrito::where('user_id', auth()->id())->first();
                             $cantidad = $registro ? array_sum(array_column($registro->contenido ?? [], 'cantidad')) : 0;
@@ -82,9 +85,9 @@
                  <!-- Sistema (junto al carrito) -->
                 @canany(['user-list', 'rol-list', 'producto-list', 'catalogo-list', 'categoria-list'])
                 <li class="nav-item dropdown me-2">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdownSistema" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-gear-fill me-1"></i>
-                        <span class="d-none d-md-inline">Sistema</span>
+                    <a class="nav-link dropdown-toggle d-flex align-items-center justify-content-center" id="navbarDropdownSistema" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-gear-fill me-1 me-lg-1 me-0"></i>
+                        <span class="d-none d-lg-inline">Sistema</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="navbarDropdownSistema">
                         <li>

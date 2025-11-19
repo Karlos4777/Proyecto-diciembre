@@ -345,6 +345,22 @@ body.auth-page {
     color: var(--color-accent);
 }
 
+/* === Password Strength Indicator === */
+.password-strength-indicator {
+    margin-top: 0.75rem;
+}
+
+.password-strength-indicator .progress {
+    background-color: var(--color-light-gray);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.password-strength-indicator .progress-bar {
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
 /* === Alerts === */
 .alert {
     border: none;

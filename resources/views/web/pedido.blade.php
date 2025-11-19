@@ -18,58 +18,45 @@
                     </div>
                     <div class="card-body" id="cartItems">
                         @forelse($carrito as $id => $item)
-                        <!-- Product-->
-                        <div class="row align-items-center mb-3 cart-item">
-                            <!--Nombre y código-->
-                            <div class="col-md-5 d-flex align-items-center">
-                                <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" 
-                                style="width: 80px; height: 80px; object-fit: cover;" alt="{{ $item['nombre'] }}">
-                                <div class="ms-3">
-                                    <h6 class="mb-0">{{ $item['nombre'] }}</h6>
-                                    <small class="text-muted">{{ $item['codigo'] }}</small>
+                        <div class="cart-item mb-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-md-5 d-flex align-items-center">
+                                    <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" alt="{{ $item['nombre'] }}" class="product-thumb me-3" />
+                                    <div>
+                                        <div class="product-name fw-bold">{{ $item['nombre'] }}</div>
+                                        <div class="product-code">{{ $item['codigo'] }}</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <!--Precio-->
-                            <div class="col-md-2 text-center">
-                                        @if(isset($item['precio_original']) && $item['precio_original'] > $item['precio'])
+
+                                <div class="col-md-2 text-center">
+                                    @if(isset($item['precio_original']) && $item['precio_original'] > $item['precio'])
                                         <div>
                                             <small class="text-muted text-decoration-line-through">${{ number_format($item['precio_original'], 2) }}</small>
                                         </div>
-                                        <div>
-                                                <span class="product-price fw-bold">${{ number_format($item['precio'], 2) }}</span>
-                                        </div>
-                                    @else
-                                        <span class="product-price fw-bold">${{ number_format($item['precio'], 2) }}</span>
                                     @endif
-                            </div>
-                            <!--Cantidad-->
-                            <div class="col-md-2 d-flex justify-content-center">
-                                <div class="input-group input-group-sm" style="max-width: 100px;"><td class="text-center">
-        <a href="{{ route('carrito.restar', $id) }}" class="btn btn-outline-danger btn-sm">-</a>
-        <span class="mx-2">{{ $item['cantidad'] }}</span>
-        <a href="{{ route('carrito.sumar', $id) }}" class="btn btn-outline-success btn-sm">+</a>
-    </td>
-                                   
-                                        
+                                    <div class="product-price fw-bold">${{ number_format($item['precio'], 2) }}</div>
+                                </div>
+
+                                <div class="col-md-2 d-flex justify-content-center cart-qty">
+                                    <div class="btn-group" role="group" aria-label="Cantidad">
+                                        <a href="{{ route('carrito.restar', $id) }}" class="btn btn-outline-danger btn-sm">-</a>
+                                        <span class="d-inline-flex align-items-center px-3">{{ $item['cantidad'] }}</span>
+                                        <a href="{{ route('carrito.sumar', $id) }}" class="btn btn-outline-success btn-sm">+</a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 text-end">
+                                    <div class="fw-bold mb-2">${{ number_format($item['precio'] * $item['cantidad'], 2) }}</div>
+                                    <a class="btn btn-sm btn-outline-danger" href="{{ route('carrito.eliminar', $id) }}">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </div>
                             </div>
-
-                            <!--Subtotal-->
-                            <div class="col-md-3 d-flex align-items-center justify-content-end">
-                                <div class="text-end me-3">
-                                    <span
-                                        class="fw-bold subtotal product-price">${{ number_format($item['precio'] * $item['cantidad'], 2) }}</span>
-                                </div>
-                                <a class="btn btn-sm btn-outline-danger" href="{{ route('carrito.eliminar', $id) }}">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </div>
-
                         </div>
-                        <hr>
                         @empty
-                        <div class="text-center">
-                            <p>Tu carrito esta vacío</p>
+                        <div class="cart-empty">
+                            <p>Tu carrito está vacío</p>
+                            <a href="/" class="btn btn-outline-primary mt-2">Continuar comprando</a>
                         </div>
                         @endforelse
                     </div>
