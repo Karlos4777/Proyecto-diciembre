@@ -37,7 +37,7 @@
     </div>
 </div>
 
-<!-- 💥 SECCIONES: LO MÁS VENDIDO POR CATÁLOGO -->
+<!-- SECCIONES: LO MÁS VENDIDO POR CATÁLOGO -->
 @foreach ($productosVendidosPorCatalogo as $catalogo => $productos)
     <div class="container mt-5">
         <h2 class="section-title text-start mb-4">Lo más vendido en {{ $catalogo }}</h2>

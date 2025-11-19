@@ -75,8 +75,7 @@
                                 </div>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="button" class="btn btn-secondary me-md-2"
-                                    onclick="window.location.href='{{route('web.index')}}'">Cancelar</button>
+                                <a href="{{ route('web.index') }}" class="btn btn-secondary me-md-2">Cancelar</a>
                                 <button type="submit" class="btn btn-primary">Actualizar datos</button>
                             </div>
                         </form>

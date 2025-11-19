@@ -136,7 +136,9 @@
     <!-- Link a registro -->
     <div class="text-center">
       <p class="text-muted mb-0">
-        Contacta al administrador para crear una cuenta
+        <a href="{{ route('registro') }}" class="text-decoration-none link-primary">
+          <i class="bi bi-person-plus-fill me-1"></i>Regístrate aquí
+        </a>
       </p>
     </div>
   </div>

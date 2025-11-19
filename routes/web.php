@@ -22,7 +22,7 @@ Route::get('/', [WebController::class, 'index'])->name('web.index');
 Route::get('/producto/{id}', [WebController::class, 'show'])->name('web.show');
 
 // Ruta para búsqueda AJAX de productos
-Route::get('/buscar-productos', [WebController::class, 'buscarProductosAjax'])->name('web.buscar');
+Route::get('/buscar-productos', [WebController::class, 'buscarProductosAjax'])->name('buscar.ajax');
 
 // Nueva ruta para mostrar productos por categoría
 Route::get('/categoria-web/{id}', [CategoriaController::class, 'show'])->name('web.categoria.show');

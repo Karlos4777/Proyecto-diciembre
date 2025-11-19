@@ -17,12 +17,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             
             <!-- 🔍 Buscador principal -->
-            <form id="formBuscador" class="d-flex mx-auto position-relative w-lg-50 search-form" method="GET" action="{{ route('web.index') }}">
-                <div class="search-wrapper">
+            <form id="formBuscador" class="d-flex mx-auto position-relative w-lg-50 search-form" method="GET" action="{{ route('web.index') }}" style="z-index: 1000;">
+                <div class="search-wrapper position-relative w-100">
                     <i class="bi bi-search search-icon d-lg-none"></i>
                     <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." name="search" autocomplete="off" value="{{ request('search') }}">
                 </div>
-                <ul id="resultadosBusqueda" class="list-group position-absolute w-100 mt-1"></ul>
+               <ul id="resultadosBusqueda" class="list-group position-absolute w-100">
+                </ul>
             </form>
 
             <!-- Enlaces principales -->
@@ -169,14 +170,113 @@
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
                         </ul>
                     @else
-                        <a class="nav-link d-flex justify-content-center align-items-center" href="{{ route('login') }}">
-                            <i class="bi bi-box-arrow-in-right me-1 fs-5"></i> Iniciar sesión
-                        </a>
-                    @endauth
+                            <div class="d-flex align-items-center">
+                                <a class="nav-link d-flex justify-content-center align-items-center" href="{{ route('login') }}">
+                                    <i class="bi bi-box-arrow-in-right me-1 fs-5"></i> Iniciar sesión
+                                </a>
+                                <a class="nav-link d-flex justify-content-center align-items-center ms-2 btn btn-outline-primary btn-sm text-nowrap" href="{{ route('registro') }}">
+                                    <i class="bi bi-person-plus me-1"></i> Registrarme
+                                </a>
+                            </div>
+                        @endauth
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+
+<script>
+(function(){
+    // Inicializar con debounce, logs y manejo de errores para depuración
+    function initSearch(){
+        const input = document.getElementById('buscador');
+        const resultsBox = document.getElementById('resultadosBusqueda');
+        if(!input || !resultsBox) return;
+
+        // ocultar inicialmente
+        resultsBox.style.display = 'none';
+
+        let timer = null;
+        input.addEventListener('input', function(){
+            clearTimeout(timer);
+            timer = setTimeout(async () => {
+                const query = input.value.trim();
+                console.log('[buscador] query ->', query);
+
+                if(query.length < 1){
+                    resultsBox.innerHTML = '';
+                    resultsBox.style.display = 'none';
+                    return;
+                }
+
+                try{
+                    const url = "{{ route('buscar.ajax') }}?search=" + encodeURIComponent(query);
+                    const resp = await fetch(url, { method: 'GET' });
+                    if(!resp.ok){
+                        throw new Error('HTTP ' + resp.status);
+                    }
+                    const data = await resp.json();
+                    console.log('[buscador] respuesta ->', data);
+
+                    resultsBox.innerHTML = '';
+
+                    if(!Array.isArray(data) || data.length === 0){
+                        resultsBox.innerHTML = '<li class="list-group-item text-center">Sin resultados</li>';
+                        resultsBox.style.display = 'block';
+                        return;
+                    }
+
+                    for(const producto of data){
+                        const categoria = producto.categoria ?? 'Sin categoría';
+                        const catalogo = producto.catalogo ?? 'Sin catálogo';
+                        const imagen = producto.imagen ?? '/img/sin-imagen.png';
+
+                        resultsBox.innerHTML += `
+                            <li class="list-group-item d-flex align-items-center gap-3 resultado-item" 
+                                style="cursor:pointer;"
+                                onclick="window.location='/producto/${producto.id}'">
+
+                                <img src="${imagen}" 
+                                     alt="${producto.nombre}" 
+                                     class="rounded" 
+                                     style="width: 60px; height: 60px; object-fit: cover;">
+
+                                <div>
+                                    <strong>${producto.nombre}</strong><br>
+                                    <span class="text-success">$${producto.precio}</span><br>
+                                    <small>Categoría: ${categoria}</small><br>
+                                    <small>Catálogo: ${catalogo}</small>
+                                </div>
+                            </li>`;
+                    }
+
+                    resultsBox.style.display = 'block';
+
+                }catch(err){
+                    console.error('[buscador] error:', err);
+                    resultsBox.innerHTML = '<li class="list-group-item text-center text-danger">Error al realizar la búsqueda</li>';
+                    resultsBox.style.display = 'block';
+                }
+
+            }, 250);
+        });
+
+        // cerrar al hacer clic fuera
+        document.addEventListener('click', function(e){
+            const form = document.getElementById('formBuscador');
+            if(!form) return;
+            if(!form.contains(e.target)){
+                resultsBox.style.display = 'none';
+            }
+        });
+    }
+
+    if(document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', initSearch);
+    } else {
+        initSearch();
+    }
+})();
+</script>
 
 <!-- Styles and search script moved to public CSS/JS (resources/css/web.css and resources/js/web.js) -->

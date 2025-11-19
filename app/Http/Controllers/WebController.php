@@ -75,28 +75,58 @@ class WebController extends Controller
 
 public function buscarProductosAjax(Request $request)
 {
-    $search = $request->get('search', '');
+    $search = trim((string) $request->get('search', ''));
 
-    $productos = Producto::with(['categoria', 'catalogo'])
-        ->select('id', 'nombre', 'precio', 'imagen', 'cantidad', 'descuento', 'precio_con_descuento', 'categoria_id', 'catalogo_id')
-        ->where('nombre', 'like', "%$search%")
-        ->limit(10)
-        ->get()
-        ->map(function ($producto) {
-            return [
-                'id' => $producto->id,
-                'nombre' => $producto->nombre,
-                'precio' => $producto->precio,
-                'imagen' => $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/sin-imagen.png'),
-                'categoria' => $producto->categoria->nombre ?? 'Sin categoría',
-                'catalogo' => $producto->catalogo->nombre ?? 'Sin catálogo',
-                'estado' => ((int) $producto->cantidad) >= 21
-                    ? 'Disponible'
-                    : (((int) $producto->cantidad) >= 1 ? 'Pocas unidades' : 'Agotado'),
-                'descuento' => (int) ($producto->descuento ?? 0),
-                'precio_con_descuento' => $producto->precio_con_descuento,
-            ];
+    if ($search === '') {
+        return response()->json([]);
+    }
+
+    // Dividir en palabras y filtrar vacíos
+    $words = preg_split('/\s+/', $search);
+    $words = array_filter(array_map('trim', $words), fn($w) => $w !== '');
+
+    // Evitar seleccionar columnas que pueden no existir en todas las migraciones
+    $productosQuery = Producto::with(['categoria', 'catalogo'])
+        ->select('id', 'nombre', 'precio', 'imagen', 'cantidad', 'descuento', 'categoria_id', 'catalogo_id');
+
+    // Requerir que cada palabra aparezca en el nombre, o en la categoría, o en el catálogo
+    // usando COLLATE utf8mb4_general_ci para búsqueda insensible a acentos
+    foreach ($words as $word) {
+        $productosQuery->where(function ($q) use ($word) {
+            $like = '%' . $word . '%';
+            $q->where('nombre', 'like', $like)
+                ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like])
+                ->orWhereHas('categoria', function ($qc) use ($like) {
+                    $qc->where('nombre', 'like', $like)
+                        ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like]);
+                })
+                ->orWhereHas('catalogo', function ($qc) use ($like) {
+                    $qc->where('nombre', 'like', $like)
+                        ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like]);
+                });
         });
+    }
+
+    $productos = $productosQuery->limit(10)->get()->map(function ($producto) {
+        // Calcular precio con descuento si aplica (algunos esquemas no tienen columna `precio_con_descuento`)
+        $precio = (float) $producto->precio;
+        $descuento = (int) ($producto->descuento ?? 0);
+        $precioConDescuento = $descuento > 0 ? round($precio * (100 - $descuento) / 100, 2) : $precio;
+
+        return [
+            'id' => $producto->id,
+            'nombre' => $producto->nombre,
+            'precio' => $producto->precio,
+            'imagen' => $producto->imagen ? asset('uploads/productos/' . $producto->imagen) : asset('img/sin-imagen.png'),
+            'categoria' => $producto->categoria->nombre ?? 'Sin categoría',
+            'catalogo' => $producto->catalogo->nombre ?? 'Sin catálogo',
+            'estado' => ((int) $producto->cantidad) >= 21
+                ? 'Disponible'
+                : (((int) $producto->cantidad) >= 1 ? 'Pocas unidades' : 'Agotado'),
+            'descuento' => $descuento,
+            'precio_con_descuento' => $precioConDescuento,
+        ];
+    });
 
     return response()->json($productos);
 }

@@ -75,13 +75,6 @@
                                                     {{ ucfirst($reg->estado) }}
                                                 </span>
                                             </td>
-                                            <td class="text-center">
-                                                <button class="btn btn-sm btn-primary btn-toggle" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#detalles-{{ $reg->id }}" aria-expanded="false" aria-controls="detalles-{{ $reg->id }}" title="Ver detalles">
-                                                    <i class="bi bi-chevron-down toggle-icon"></i>
-                                                    <span class="ms-1 d-none d-md-inline">Ver</span>
-                                                </button>
-                                            </td>
                                         </tr>
                                         <!-- Mobile card view for details -->
                                         <tr class="d-md-none">
@@ -91,15 +84,15 @@
                                                         <div class="row g-2">
                                                             <div class="col-6">
                                                                 <small class="text-muted">Pedido:</small><br>
-                                                                <strong>#{{$reg->id}}</strong>
+                                                                <strong>#{{ $reg->id }}</strong>
                                                             </div>
                                                             <div class="col-6 text-end">
                                                                 <small class="text-muted">Fecha:</small><br>
-                                                                <small>{{$reg->created_at->format('d/m/Y')}}</small>
+                                                                <small>{{ $reg->created_at->format('d/m/Y') }}</small>
                                                             </div>
                                                             <div class="col-6">
                                                                 <small class="text-muted">Usuario:</small><br>
-                                                                <small>{{$reg->user->name}}</small>
+                                                                <small>{{ $reg->user->name }}</small>
                                                             </div>
                                                             <div class="col-6 text-end">
                                                                 <small class="text-muted">Estado:</small><br>
@@ -114,41 +107,85 @@
                                         </tr>
                                         <tr class="collapse detalles-row" id="detalles-{{ $reg->id }}">
                                             <td colspan="7">
-                                                <table class="table table-sm table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Producto</th>
-                                                            <th class="d-none d-sm-table-cell">Imagen</th>
-                                                            <th class="text-center">Cant.</th>
-                                                            <th class="text-end d-none d-md-table-cell">P. Unit.</th>
-                                                            <th class="text-end">Subtotal</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if($reg->detalles && count($reg->detalles) > 0)
-                                                            @foreach($reg->detalles as $detalle)
-                                                            <tr>
-                                                                <td><small>{{ $detalle->producto->nombre }}</small></td>
-                                                                <td class="d-none d-sm-table-cell">
-                                                                    <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen ) }}"
-                                                                        class="detalle-img"
-                                                                        alt="{{ $detalle->producto->nombre}}"
-                                                                        style="max-width: 50px; max-height: 50px; object-fit: cover;">
-                                                                </td>
-                                                                <td class="text-center">{{ $detalle->cantidad}}</td>
-                                                                <td class="text-end d-none d-md-table-cell"><small>${{ number_format($detalle->precio, 2) }}</small></td>
-                                                                <td class="text-end"><small>${{ number_format($detalle->cantidad * $detalle->precio, 2) }}</small></td>
-                                                            </tr>
-                                                            @endforeach
-                                                        @else
-                                                            <tr>
-                                                                <td colspan="5" class="text-center text-muted">
-                                                                    No hay detalles para este pedido
-                                                                </td>
-                                                            </tr>
-                                                        @endif
-                                                    </tbody>
-                                                </table>
+                                                <div class="p-3">
+                                                    <!-- Menú desplegable Ver más para productos -->
+                                                    <div class="mb-3">
+                                                        <div class="btn-group w-100" role="group">
+                                                            <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#productos-detalle-{{ $reg->id }}" aria-expanded="false">
+                                                                <i class="bi bi-chevron-down"></i> Ver más
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        <!-- Contenido desplegable -->
+                                                        <div class="collapse mt-2" id="productos-detalle-{{ $reg->id }}">
+                                                            <div class="card card-body">
+                                                                @if($reg->detalles && count($reg->detalles) > 0)
+                                                                    @foreach($reg->detalles as $detalle)
+                                                                        <div class="row g-2 mb-3 pb-3 border-bottom" style="align-items: center;">
+                                                                            <!-- Imagen -->
+                                                                            <div class="col-auto">
+                                                                                @if($detalle->producto && $detalle->producto->imagen)
+                                                                                    <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
+                                                                                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" 
+                                                                                         alt="{{ $detalle->producto->nombre ?? 'Producto' }}">
+                                                                                @else
+                                                                                    <div style="width: 60px; height: 60px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                                                                        <i class="bi bi-image text-muted"></i>
+                                                                                    </div>
+                                                                                @endif
+                                                                            </div>
+                                                                            
+                                                                            <!-- Nombre -->
+                                                                            <div class="col">
+                                                                                <strong>
+                                                                                    @if($detalle->producto)
+                                                                                        <a href="{{ route('web.show', $detalle->producto->id) }}" class="text-decoration-none">{{ $detalle->producto->nombre }}</a>
+                                                                                    @else
+                                                                                        Producto eliminado
+                                                                                    @endif
+                                                                                </strong>
+                                                                            </div>
+                                                                            
+                                                                            <!-- Cantidad -->
+                                                                            <div class="col-auto text-center">
+                                                                                <small class="text-muted d-block">Cantidad</small>
+                                                                                <strong>{{ $detalle->cantidad }}</strong>
+                                                                            </div>
+                                                                            
+                                                                            <!-- Precio Unitario -->
+                                                                            <div class="col-auto text-end">
+                                                                                <small class="text-muted d-block">Precio Unit.</small>
+                                                                                <strong>${{ number_format($detalle->precio, 2) }}</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @else
+                                                                    <div class="alert alert-info mb-0">
+                                                                        No hay detalles para este pedido
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Información adicional del pedido -->
+                                                    <hr>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <small class="text-muted">Cliente:</small><br>
+                                                            <strong>{{ $reg->user->name ?? 'N/A' }}</strong><br>
+                                                            <small class="text-muted">Email:</small> <small>{{ $reg->user->email ?? 'N/A' }}</small><br>
+                                                            <small class="text-muted mt-2 d-block">Teléfono:</small> <small>{{ $reg->user->telefono ?? 'N/A' }}</small>
+                                                        </div>
+                                                        <div class="col-md-6 text-end">
+                                                            <small class="text-muted">Fecha:</small><br>
+                                                            <strong>{{ $reg->created_at->format('d/m/Y H:i') }}</strong><br>
+                                                            <small class="text-muted">Dirección:</small><br>
+                                                            <small>{{ $reg->user->direccion ?? 'N/A' }}</small><br>
+                                                            <small class="text-muted mt-2 d-block">Total:</small> <strong class="text-success">${{ number_format($reg->total,2) }}</strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                         @include('pedido.state')
@@ -163,8 +200,7 @@
                                 </tbody>
                             </table>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="button" class="btn btn-secondary me-md-2"
-                                    onclick="window.location.href='{{route('web.index')}}'">Cancelar</button>
+                                <a href="{{ route('web.index') }}" class="btn btn-secondary me-md-2">Cancelar</a>
                         </div>
                         </div>
                     </div>

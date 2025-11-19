@@ -51,6 +51,7 @@
         window.__app_default_img__ = "{{ asset('img/default.jpg') }}";
     </script>
     <script src="{{ asset('js/web.js') }}"></script>
+    <script src="{{ asset('js/search.js') }}"></script>
     @stack('scripts')
 </body>
 </html>
