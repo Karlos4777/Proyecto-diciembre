@@ -1,0 +1,86 @@
+:root{
+    --site-bg: #ffffff;
+    --muted: #6c757d;
+    --brand: #0d6efd; /* bootstrap primary as baseline */
+    --accent: #f97316; /* warm accent for buttons/badges */
+    --success: #198754;
+    --danger: #dc3545;
+    --surface: #f8f9fa;
+    --shadow: rgba(15, 23, 42, 0.06);
+    --container-gap: 12px;
+}
+
+/* Nav and search */
+.nav-logo{ max-height: 40px; width: auto; }
+.search-form{ z-index: 1100; padding: 0; }
+.search-wrapper .form-control{ padding: 0.55rem 0.9rem; }
+#resultadosBusqueda{
+    display: none;
+    z-index: 3000;
+    max-height: 360px;
+    overflow-y: auto;
+    box-shadow: 0 6px 18px var(--shadow);
+    border-radius: .35rem;
+    background: var(--site-bg);
+}
+#resultadosBusqueda.visible{ display: block; }
+#resultadosBusqueda .resultado-item{ cursor: pointer; padding: .55rem .75rem; }
+#resultadosBusqueda .resultado-item:hover{ background: rgba(13,110,253,0.03); }
+#resultadosBusqueda .resultado-item img{ width:60px; height:60px; object-fit: cover; object-position: center; display:block; border-radius: 6px; }
+
+.original-price{ text-decoration: line-through; font-size: 0.9rem; color: var(--muted); }
+.discount-badge{ font-size: 0.75rem; vertical-align: middle; }
+
+/* Ensure badges and price area do not overflow */
+.precio-wrapper{ display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 2px; min-width: 86px; }
+
+/* Small utility to avoid collisions with header/footer */
+.site-safe-area{ padding-top: 8px; padding-bottom: 8px; }
+
+/* Pedido referencia panel fixes */
+.pedido-ref-row{ align-items: center; gap: 0.5rem; }
+.pedido-ref-thumb{ width:60px; height:60px; object-fit:cover; border-radius:6px; background:var(--surface); display:block; }
+.pedido-ref-upload{ display:flex; gap:.5rem; align-items:center; }
+.pedido-ref-list li{ padding:.35rem .5rem; border-radius:4px; background:#fff; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+
+/* Generic thumbnail used in pedido details */
+.pedido-thumb{ width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+.pedido-thumb-placeholder{ width: 60px; height: 60px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+
+/* Table header width helpers */
+.th-w-150{ width: 150px !important; }
+.th-w-120{ width: 120px !important; }
+.th-w-90{ width: 90px !important; }
+.th-w-70{ width: 70px !important; }
+.th-w-60{ width: 60px !important; }
+.th-w-40{ width: 40px !important; }
+.th-w-20{ width: 20px !important; }
+
+/* Image helpers */
+.img-max-150{ max-width: 150px; height: auto; display: block; }
+.small-thumb{ width: 35px; height: 35px; object-fit: cover; flex-shrink: 0; border-radius: 4px; }
+.product-thumb{ width: 60px; height: 60px; object-fit: cover; flex-shrink: 0; border-radius: 4px; }
+.thumb-40{ width:40px; height:40px; object-fit:cover; flex-shrink:0; border-radius:4px; }
+
+/* SVG blend helper */
+.blend-hard-light{ mix-blend-mode: hard-light; }
+.blend-plus-darker{ mix-blend-mode: plus-darker; }
+
+/* Auth headings */
+.auth-heading{ color: var(--color-dark-brown, #5b3b00); font-weight: 700; }
+.auth-sub{ color: #666; font-size: 0.9rem; }
+
+/* Progress small */
+.progress-sm{ height: 4px; }
+#passwordStrengthBar{ transition: all 0.3s ease; }
+
+/* Accessibility and spacing tweaks */
+.btn-carrito{ padding: .45rem .65rem; }
+
+/* Prevent visual bleed on small screens */
+@media (max-width: 575px){
+    #resultadosBusqueda{ max-height: 50vh; }
+}
+
+/* Avoid interfering with footer: keep high z-index only where necessary */
+.modal, #resultadosBusqueda { z-index: 3000; }

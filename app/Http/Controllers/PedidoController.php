@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pedido;
 use App\Models\PedidoDetalle;
+use App\Models\PedidoReferencia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Carrito;
@@ -15,7 +16,7 @@ class PedidoController extends Controller
     $texto = trim($request->get('texto', ''));
     
     // Construir la consulta base
-    $query = Pedido::with(['user', 'detalles.producto'])->orderBy('created_at', 'desc');
+    $query = Pedido::with(['user', 'detalles.producto', 'referencias'])->orderBy('created_at', 'desc');
 
     // Permisos
     if (auth()->user()->can('pedido-list')) {
@@ -150,5 +151,34 @@ public function realizar(Request $request)
         $pedido->save();
 
         return redirect()->back()->with('mensaje', 'El estado del pedido fue actualizado a "' . ucfirst($estadoNuevo) . '"');
+    }
+
+    // Subir referencia (archivo) asociada a un pedido
+    public function uploadReferencia(Request $request, $id)
+    {
+        $pedido = Pedido::findOrFail($id);
+
+        // Permitir que solo el propietario o admin suba (clientes y admins)
+        if (!auth()->user()->can('pedido-list') && $pedido->user_id !== auth()->id()) {
+            abort(403, 'No autorizado');
+        }
+
+        $request->validate([
+            'archivo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120', // max 5MB
+        ]);
+
+        $file = $request->file('archivo');
+        $path = $file->storeAs('pedidos/' . $pedido->id, time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $file->getClientOriginalName()), 'public');
+
+        $referencia = PedidoReferencia::create([
+            'pedido_id' => $pedido->id,
+            'user_id' => auth()->id(),
+            'filename' => $file->getClientOriginalName(),
+            'path' => $path,
+            'mime' => $file->getClientMimeType(),
+            'size' => $file->getSize(),
+        ]);
+
+        return redirect()->back()->with('mensaje', 'Referencia subida correctamente.');
     }
 }

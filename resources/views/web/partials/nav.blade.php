@@ -17,7 +17,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             
             <!-- 🔍 Buscador principal -->
-            <form id="formBuscador" class="d-flex mx-auto position-relative w-lg-50 search-form" method="GET" action="{{ route('web.index') }}" style="z-index: 1000;">
+            <form id="formBuscador" class="d-flex mx-auto position-relative w-lg-50 search-form" method="GET" action="{{ route('web.index') }}">
                 <div class="search-wrapper position-relative w-100">
                     <i class="bi bi-search search-icon d-lg-none"></i>
                     <input type="text" id="buscador" class="form-control" placeholder="Buscar productos..." name="search" autocomplete="off" value="{{ request('search') }}">
@@ -185,88 +185,141 @@
     </div>
 </nav>
 
+
 <script>
 (function(){
-    // Inicializar con debounce, logs y manejo de errores para depuración
     function initSearch(){
         const input = document.getElementById('buscador');
         const resultsBox = document.getElementById('resultadosBusqueda');
+        const form = document.getElementById('formBuscador');
         if(!input || !resultsBox) return;
 
-        // ocultar inicialmente
-        resultsBox.style.display = 'none';
+        // Asegurar estado inicial
+        resultsBox.classList.remove('visible');
 
         let timer = null;
         input.addEventListener('input', function(){
             clearTimeout(timer);
-            timer = setTimeout(async () => {
-                const query = input.value.trim();
-                console.log('[buscador] query ->', query);
+            timer = setTimeout(fetchAndRender, 250);
+        });
 
-                if(query.length < 1){
-                    resultsBox.innerHTML = '';
-                    resultsBox.style.display = 'none';
+        async function fetchAndRender(){
+            const query = input.value.trim();
+            if(query.length < 1){
+                resultsBox.innerHTML = '';
+                resultsBox.classList.remove('visible');
+                return;
+            }
+
+            try{
+                const url = "{{ url('/buscar-productos') }}?search=" + encodeURIComponent(query);
+                const resp = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+                if(!resp.ok){
+                    const txt = await resp.text().catch(()=>null);
+                    throw new Error('HTTP ' + resp.status + ' - ' + (txt||''));
+                }
+                const data = await resp.json();
+
+                resultsBox.innerHTML = '';
+
+                if(!Array.isArray(data) || data.length === 0){
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item text-center';
+                    li.textContent = 'Sin resultados';
+                    resultsBox.appendChild(li);
+                    resultsBox.classList.add('visible');
                     return;
                 }
 
-                try{
-                    const url = "{{ route('buscar.ajax') }}?search=" + encodeURIComponent(query);
-                    const resp = await fetch(url, { method: 'GET' });
-                    if(!resp.ok){
-                        throw new Error('HTTP ' + resp.status);
-                    }
-                    const data = await resp.json();
-                    console.log('[buscador] respuesta ->', data);
+                const frag = document.createDocumentFragment();
+                for(const producto of data){
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex align-items-center gap-3 resultado-item';
 
-                    resultsBox.innerHTML = '';
+                    li.addEventListener('click', () => {
+                        window.location.href = '/producto/' + producto.id;
+                    });
 
-                    if(!Array.isArray(data) || data.length === 0){
-                        resultsBox.innerHTML = '<li class="list-group-item text-center">Sin resultados</li>';
-                        resultsBox.style.display = 'block';
-                        return;
-                    }
+                    const img = document.createElement('img');
+                    img.src = producto.imagen ?? '/img/sin-imagen.png';
+                    img.alt = producto.nombre ?? '';
+                    img.className = 'rounded';
 
-                    for(const producto of data){
-                        const categoria = producto.categoria ?? 'Sin categoría';
-                        const catalogo = producto.catalogo ?? 'Sin catálogo';
-                        const imagen = producto.imagen ?? '/img/sin-imagen.png';
-
-                        resultsBox.innerHTML += `
-                            <li class="list-group-item d-flex align-items-center gap-3 resultado-item" 
-                                style="cursor:pointer;"
-                                onclick="window.location='/producto/${producto.id}'">
-
-                                <img src="${imagen}" 
-                                     alt="${producto.nombre}" 
-                                     class="rounded" 
-                                     style="width: 60px; height: 60px; object-fit: cover;">
-
-                                <div>
-                                    <strong>${producto.nombre}</strong><br>
-                                    <span class="text-success">$${producto.precio}</span><br>
-                                    <small>Categoría: ${categoria}</small><br>
-                                    <small>Catálogo: ${catalogo}</small>
-                                </div>
-                            </li>`;
+                    const div = document.createElement('div');
+                    const strong = document.createElement('strong');
+                    strong.textContent = producto.nombre ?? '';
+                    const br = document.createElement('br');
+                    function formatPrice(value){
+                        const num = Number(value) || 0;
+                        return new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
                     }
 
-                    resultsBox.style.display = 'block';
+                    const priceWrapper = document.createElement('div');
+                    priceWrapper.className = 'precio-wrapper';
+                    // Mostrar descuento si aplica
+                    const descuento = Number(producto.descuento || 0);
+                    if(descuento > 0){
+                        const original = document.createElement('div');
+                        original.className = 'text-muted original-price';
+                        original.textContent = '$' + formatPrice(producto.precio ?? 0);
 
-                }catch(err){
-                    console.error('[buscador] error:', err);
-                    resultsBox.innerHTML = '<li class="list-group-item text-center text-danger">Error al realizar la búsqueda</li>';
-                    resultsBox.style.display = 'block';
+                        const discounted = document.createElement('div');
+                        discounted.className = 'text-success fw-bold';
+                        discounted.textContent = '$' + formatPrice(producto.precio_con_descuento ?? producto.precio ?? 0);
+
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-danger ms-2 discount-badge';
+                        badge.textContent = '-' + descuento + '%';
+
+                        priceWrapper.appendChild(original);
+                        const discountedRow = document.createElement('div');
+                        discountedRow.appendChild(discounted);
+                        discountedRow.appendChild(badge);
+                        priceWrapper.appendChild(discountedRow);
+                    } else {
+                        const price = document.createElement('div');
+                        price.className = 'text-success fw-bold';
+                        price.textContent = '$' + formatPrice(producto.precio ?? 0);
+                        priceWrapper.appendChild(price);
+                    }
+
+                    const smallCat = document.createElement('small');
+                    smallCat.textContent = 'Categoría: ' + (producto.categoria ?? 'Sin categoría');
+                    const smallCat2 = document.createElement('small');
+                    smallCat2.textContent = ' Catálogo: ' + (producto.catalogo ?? 'Sin catálogo');
+
+                    div.appendChild(strong);
+                    div.appendChild(br);
+                    div.appendChild(priceWrapper);
+                    div.appendChild(document.createElement('br'));
+                    div.appendChild(smallCat);
+                    div.appendChild(document.createElement('br'));
+                    div.appendChild(smallCat2);
+
+                    li.appendChild(img);
+                    li.appendChild(div);
+                    frag.appendChild(li);
                 }
 
-            }, 250);
-        });
+                resultsBox.appendChild(frag);
+                resultsBox.classList.add('visible');
 
-        // cerrar al hacer clic fuera
+            } catch(err){
+                resultsBox.innerHTML = '';
+                const li = document.createElement('li');
+                li.className = 'list-group-item text-center text-danger';
+                li.textContent = 'Error al realizar la búsqueda';
+                resultsBox.appendChild(li);
+                resultsBox.classList.add('visible');
+                console.error('[buscador] error:', err);
+            }
+        }
+
+        // cerrar al hacer clic fuera del formBuscador
         document.addEventListener('click', function(e){
-            const form = document.getElementById('formBuscador');
             if(!form) return;
             if(!form.contains(e.target)){
-                resultsBox.style.display = 'none';
+                resultsBox.classList.remove('visible');
             }
         });
     }

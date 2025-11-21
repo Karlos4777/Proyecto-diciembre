@@ -35,8 +35,8 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th style="width: 150px">Opciones</th>
-                                        <th style="width: 20px">ID</th>
+                                        <th class="th-w-150">Opciones</th>
+                                        <th class="th-w-20">ID</th>
                                         <th>Código</th>
                                         <th>Nombre</th>
                                         <th>Precio</th>
@@ -99,7 +99,7 @@
                                                 </td>
                                                 <td>
                                                     @if($reg->imagen)
-                                                        <img src="{{ asset('uploads/productos/' . $reg->imagen) }}" alt="{{ $reg->nombre }}" style="max-width: 150px; height: auto;">
+                                                        <img src="{{ asset('uploads/productos/' . $reg->imagen) }}" alt="{{ $reg->nombre }}" class="img-max-150">
                                                     @else
                                                         <span class="text-muted">Sin imagen</span>
                                                     @endif

@@ -79,42 +79,47 @@
                                         <table class="table table-sm">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th style="width: 40px;">Imagen</th>
-                                                    <th>Producto</th>
-                                                    <th style="width: 70px;">Cantidad</th>
-                                                    <th style="width: 90px;">Precio Unit.</th>
+                                                    <th class="th-w-50">Imagen</th>
+                                                    <th class="th-w-50">Producto</th>
+                                                    <th class="th-w-50">Codigo</th>
+                                                    <th class="th-w-50">Categoria</th>
+                                                    <th class="th-w-50">Cantidad</th>
+                                                    <th class="th-w-50">Precio Unit.</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($pedido->detalles as $detalle)
+                                                @if($pedido->detalles && $pedido->detalles->count() > 0)
+                                                    @foreach($pedido->detalles as $detalle)
+                                                        <tr>
+                                                            <td>
+                                                                @if($detalle->producto && $detalle->producto->imagen)
+                                                                    <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
+                                                                         alt="{{ $detalle->producto->nombre ?? 'Producto' }}" class="thumb-40 img-thumbnail">
+                                                                @else
+                                                                    <div class="bg-light d-flex align-items-center justify-content-center thumb-40">
+                                                                        <i class="bi bi-image fs-6"></i>
+                                                                    </div>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                <small><strong>{{ $detalle->producto->nombre ?? 'Producto eliminado' }}</strong></small><br>
+                                                                @if($detalle->producto && $detalle->producto->categoria)
+                                                                    <span class="badge bg-info fs-7">{{ $detalle->producto->categoria->nombre }}</span>
+                                                                @endif
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <small>{{ $detalle->cantidad }}</small>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <small>${{ number_format($detalle->precio ?? 0, 2) }}</small>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @else
                                                     <tr>
-                                                        <td>
-                                                            @if($detalle->producto && $detalle->producto->imagen)
-                                                                <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
-                                                                     class="img-thumbnail"
-                                                                     style="width: 40px; height: 40px; object-fit: cover; padding: 2px !important;"
-                                                                     alt="{{ $detalle->producto->nombre }}">
-                                                            @else
-                                                                <div class="bg-light d-flex align-items-center justify-content-center" 
-                                                                     style="width: 40px; height: 40px; flex-shrink: 0;">
-                                                                    <i class="bi bi-image fs-6"></i>
-                                                                </div>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            <small><strong>{{ $detalle->producto->nombre ?? 'Producto eliminado' }}</strong></small><br>
-                                                            @if($detalle->producto && $detalle->producto->categoria)
-                                                                <span class="badge bg-info fs-7">{{ $detalle->producto->categoria->nombre }}</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <small>{{ $detalle->cantidad }}</small>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <small>${{ number_format($detalle->precio, 2) }}</small>
-                                                        </td>
+                                                        <td colspan="4" class="text-center text-muted py-3">No hay detalles para este pedido</td>
                                                     </tr>
-                                                @endforeach
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
@@ -149,7 +154,7 @@
                                 <i class="bi bi-calendar me-1"></i>{{ $pedido->created_at->format('d \d\e M \d\e Y') }}
                             </small>
                             @if($pedido->estado === 'pendiente')
-                                <form action="{{ route('pedidos.cambiar.estado', $pedido->id) }}" method="POST" style="display: inline;">
+                                <form action="{{ route('pedidos.cambiar.estado', $pedido->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="estado" value="cancelado">

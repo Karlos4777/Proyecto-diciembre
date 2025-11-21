@@ -21,7 +21,7 @@
                         <div class="cart-item mb-3">
                             <div class="row g-2 align-items-center">
                                 <div class="col-md-5 d-flex align-items-center">
-                                    <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" alt="{{ $item['nombre'] }}" class="product-thumb me-3" style="width: 60px; height: 60px; object-fit: cover; flex-shrink: 0;" />
+                                    <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" alt="{{ $item['nombre'] }}" class="product-thumb me-3" />
                                     <div>
                                         <div class="product-name fw-bold">{{ $item['nombre'] }}</div>
                                         <div class="product-code">{{ $item['codigo'] }}</div>

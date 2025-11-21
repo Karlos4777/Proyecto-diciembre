@@ -31,17 +31,19 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
                         </div>
                         @endif
+                        <!-- Page-specific inline styles moved to `site-fixes.css` -->
+
                         <div class="table-responsive mt-3">
                             <table class="table table-bordered table-pedidos">
                                 <thead>
                                     <tr>
-                                        <th style="width: 60px;" class="text-center">Opciones</th>
-                                        <th style="width: 40px;" class="d-none d-sm-table-cell">ID</th>
+                                        <th class="th-w-60 text-center">Opciones</th>
+                                        <th class="th-w-40 d-none d-sm-table-cell">ID</th>
                                         <th class="d-none d-md-table-cell">Fecha</th>
                                         <th class="d-none d-lg-table-cell">Usuario</th>
                                         <th class="text-center">Total</th>
                                         <th class="text-center d-none d-md-table-cell">Estado</th>
-                                        <th style="width: 80px;" class="text-center">Detalles</th>
+                                        <th class="th-w-120 text-center">Referencia</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,6 +76,46 @@
                                                 <span class="badge {{ $colores[$reg->estado] ?? 'bg-dark' }}">
                                                     {{ ucfirst($reg->estado) }}
                                                 </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <!-- Botón referencia: abre un pequeño collapse para subir archivo -->
+                                                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#referencia-{{ $reg->id }}" aria-expanded="false">
+                                                    <i class="bi bi-paperclip"></i> Referencia
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="collapse referencia-row" id="referencia-{{ $reg->id }}">
+                                            <td colspan="7">
+                                                <div class="p-3">
+                                                    <form action="{{ route('pedidos.referencia.upload', $reg->id) }}" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="row g-2">
+                                                            <div class="col-12 col-md-5">
+                                                                <label class="form-label mb-1">Archivo</label>
+                                                                <div class="d-flex input-and-button">
+                                                                    <input type="file" name="archivo" class="form-control form-control-sm" accept="image/*,.pdf" required>
+                                                                    <button class="btn btn-primary btn-sm" type="submit">Subir</button>
+                                                                </div>
+                                                                <small class="text-muted">Tipos: jpg, png, pdf. Máx 5 MB.</small>
+                                                            </div>
+                                                            <div class="col-12 col-md-7">
+                                                                <label class="form-label mb-1">Archivos subidos</label>
+                                                                @if($reg->referencias && $reg->referencias->count() > 0)
+                                                                    <ul class="list-unstyled file-list mb-0">
+                                                                        @foreach($reg->referencias as $ref)
+                                                                            <li>
+                                                                                <a href="{{ asset('storage/' . $ref->path) }}" target="_blank">{{ $ref->filename }}</a>
+                                                                                <small class="text-muted"> — {{ number_format($ref->size/1024,1) }} KB</small>
+                                                                            </li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @else
+                                                                    <div class="small text-muted">Aún no hay archivos subidos para este pedido.</div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                         <!-- Mobile card view for details -->
@@ -121,19 +163,19 @@
                                                             <div class="card card-body">
                                                                 @if($reg->detalles && count($reg->detalles) > 0)
                                                                     @foreach($reg->detalles as $detalle)
-                                                                        <div class="row g-2 mb-3 pb-3 border-bottom" style="align-items: center;">
+                                                                        <div class="row g-2 mb-3 pb-3 border-bottom align-items-center">
                                                                             <!-- Imagen -->
                                                                             <div class="col-auto">
-                                                                                @if($detalle->producto && $detalle->producto->imagen)
-                                                                                    <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
-                                                                                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" 
-                                                                                         alt="{{ $detalle->producto->nombre ?? 'Producto' }}">
-                                                                                @else
-                                                                                    <div style="width: 60px; height: 60px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
-                                                                                        <i class="bi bi-image text-muted"></i>
-                                                                                    </div>
-                                                                                @endif
-                                                                            </div>
+                                                                                    @if($detalle->producto && $detalle->producto->imagen)
+                                                                                        <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
+                                                                                             class="pedido-thumb" 
+                                                                                             alt="{{ $detalle->producto->nombre ?? 'Producto' }}">
+                                                                                    @else
+                                                                                        <div class="pedido-thumb-placeholder">
+                                                                                            <i class="bi bi-image text-muted"></i>
+                                                                                        </div>
+                                                                                    @endif
+                                                                                </div>
                                                                             
                                                                             <!-- Nombre -->
                                                                             <div class="col">

@@ -48,6 +48,7 @@ Route::get('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carri
     Route::get('/pedido/formulario', [PedidoController::class, 'formulario'])->name('pedido.formulario');
     Route::post('/pedido/realizar', [PedidoController::class, 'realizar'])->name('pedido.realizar');
     Route::get('/perfil/pedidos', [PedidoController::class, 'index'])->name('perfil.pedidos');
+    Route::post('/pedidos/{id}/referencias', [PedidoController::class, 'uploadReferencia'])->name('pedidos.referencia.upload');
     Route::patch('/pedidos/{id}/estado', [PedidoController::class, 'cambiarEstado'])->name('pedidos.cambiar.estado');    
 
     Route::get('dashboard', function(){

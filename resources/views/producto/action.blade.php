@@ -118,7 +118,7 @@
                                     @if(isset($registro) && $registro->imagen)
                                         <div class="mt-2">
                                             <img src="{{ asset('uploads/productos/' . $registro->imagen) }}"
-                                                alt="Imagen actual" style="max-width: 150px; height: auto; border-radius: 8px;">
+                                                alt="Imagen actual" class="img-max-150" style="border-radius: 8px;">
                                         </div>
                                     @endif
                                 </div>

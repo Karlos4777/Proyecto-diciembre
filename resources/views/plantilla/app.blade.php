@@ -21,6 +21,7 @@
     <!-- Core theme CSS -->
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/web.css?v=' . time()) }}" rel="stylesheet" />
+    <link href="{{ asset('css/site-fixes.css?v=' . time()) }}" rel="stylesheet" />
     <link href="{{ asset('css/admin.css?v=' . time()) }}" rel="stylesheet" />
     @stack('estilos')
 </head>

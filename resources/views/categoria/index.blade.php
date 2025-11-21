@@ -37,8 +37,8 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th style="width: 150px">Opciones</th>
-                                        <th style="width: 20px">ID</th>
+                                        <th class="th-w-150">Opciones</th>
+                                        <th class="th-w-20">ID</th>
                                         <th>Nombre</th>
                                         <th>Descripcion</th>
                                     </tr>

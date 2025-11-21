@@ -41,9 +41,9 @@
                                             <tr>
                                                 <td class="d-flex align-items-center gap-2">
                                                     @if(isset($item['imagen']))
-                                                        <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" 
+                                                         <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" 
                                                              alt="{{ $item['nombre'] }}"
-                                                             style="width: 35px; height: 35px; object-fit: cover; flex-shrink: 0;">
+                                                             class="small-thumb">
                                                     @endif
                                                     <div>
                                                         <strong class="d-block">{{ $item['nombre'] }}</strong>

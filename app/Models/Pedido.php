@@ -19,4 +19,8 @@ class Pedido extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function referencias()
+    {
+        return $this->hasMany(\App\Models\PedidoReferencia::class);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\Catalogo;
+use Illuminate\Support\Facades\Log;
 
 class WebController extends Controller
 {
@@ -77,7 +78,11 @@ public function buscarProductosAjax(Request $request)
 {
     $search = trim((string) $request->get('search', ''));
 
+    // Log de entrada para depuración
+    Log::debug('buscarProductosAjax inicio', ['ip' => $request->ip(), 'search' => $search]);
+
     if ($search === '') {
+        Log::debug('buscarProductosAjax: search vacío');
         return response()->json([]);
     }
 
@@ -86,28 +91,34 @@ public function buscarProductosAjax(Request $request)
     $words = array_filter(array_map('trim', $words), fn($w) => $w !== '');
 
     // Evitar seleccionar columnas que pueden no existir en todas las migraciones
+    // Evitar seleccionar columnas que podrían no existir en ciertas migraciones (como 'descuento')
     $productosQuery = Producto::with(['categoria', 'catalogo'])
-        ->select('id', 'nombre', 'precio', 'imagen', 'cantidad', 'descuento', 'categoria_id', 'catalogo_id');
+        ->select('id', 'nombre', 'precio', 'imagen', 'cantidad', 'categoria_id', 'catalogo_id');
 
     // Requerir que cada palabra aparezca en el nombre, o en la categoría, o en el catálogo
     // usando COLLATE utf8mb4_general_ci para búsqueda insensible a acentos
-    foreach ($words as $word) {
-        $productosQuery->where(function ($q) use ($word) {
-            $like = '%' . $word . '%';
-            $q->where('nombre', 'like', $like)
-                ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like])
-                ->orWhereHas('categoria', function ($qc) use ($like) {
-                    $qc->where('nombre', 'like', $like)
-                        ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like]);
-                })
-                ->orWhereHas('catalogo', function ($qc) use ($like) {
-                    $qc->where('nombre', 'like', $like)
-                        ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like]);
-                });
-        });
-    }
+    try {
+        foreach ($words as $word) {
+            $productosQuery->where(function ($q) use ($word) {
+                $like = '%' . $word . '%';
+                $q->where('nombre', 'like', $like)
+                    ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like])
+                    ->orWhereHas('categoria', function ($qc) use ($like) {
+                        $qc->where('nombre', 'like', $like)
+                            ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like]);
+                    })
+                    ->orWhereHas('catalogo', function ($qc) use ($like) {
+                        $qc->where('nombre', 'like', $like)
+                            ->orWhereRaw("nombre COLLATE utf8mb4_general_ci LIKE ?", [$like]);
+                    });
+            });
+        }
 
-    $productos = $productosQuery->limit(10)->get()->map(function ($producto) {
+        $productos = $productosQuery->limit(10)->get();
+
+        Log::debug('buscarProductosAjax: productos encontrados', ['count' => $productos->count()]);
+
+        $productos = $productos->map(function ($producto) {
         // Calcular precio con descuento si aplica (algunos esquemas no tienen columna `precio_con_descuento`)
         $precio = (float) $producto->precio;
         $descuento = (int) ($producto->descuento ?? 0);
@@ -129,6 +140,11 @@ public function buscarProductosAjax(Request $request)
     });
 
     return response()->json($productos);
+    } catch (\Exception $e) {
+        Log::error('buscarProductosAjax EXCEPTION', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+        return response()->json(['error' => 'Error al realizar la búsqueda'], 500);
+    }
+
 }
 
 }

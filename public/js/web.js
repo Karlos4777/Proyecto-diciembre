@@ -57,31 +57,21 @@ document.addEventListener('DOMContentLoaded', () => {
             prevBtn.addEventListener('click', (e) => { e.preventDefault(); prev(); });
         }
 
-        // Autoplay with pause on hover/focus
-        function startAutoplay() {
-            stopAutoplay();
-            autoplayTimer = setInterval(() => { next(); }, AUTOPLAY_DELAY);
-        }
+        // Autoplay disabled by default: carousel will remain static unless user navigates.
         function stopAutoplay() {
             if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
         }
 
+        // Keep pause on hover/focus behavior (stops any running autoplay), but do not restart automatically.
         wrapper.addEventListener('mouseenter', stopAutoplay);
-        wrapper.addEventListener('mouseleave', startAutoplay);
         wrapper.addEventListener('focusin', stopAutoplay);
-        wrapper.addEventListener('focusout', startAutoplay);
 
-        // Pause when page hidden
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) stopAutoplay(); else startAutoplay();
-        });
-
-        // Touch swipe support
+        // Touch swipe support (no automatic resume)
         let touchStartX = null;
         wrapper.addEventListener('touchstart', (ev) => { stopAutoplay(); touchStartX = ev.touches[0].clientX; }, { passive: true });
         wrapper.addEventListener('touchend', (ev) => {
             if (touchStartX === null) return; const dx = ev.changedTouches[0].clientX - touchStartX; const TH = 40;
-            if (dx > TH) prev(); else if (dx < -TH) next(); touchStartX = null; startAutoplay();
+            if (dx > TH) prev(); else if (dx < -TH) next(); touchStartX = null;
         });
 
         // Keyboard support (left/right when not typing)
@@ -92,8 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'ArrowLeft') { prev(); }
         });
 
-        // Start autoplay initially
-        startAutoplay();
+        // Autoplay intentionally not started: carousel remains static until user presses next/prev.
     });
 
     // Buscador AJAX (from nav.blade.php)
@@ -103,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const form = document.getElementById('formBuscador');
         const storageUrl = window.__app_storage_url__ || '';
         const defaultImg = window.__app_default_img__ || '';
-        const priceFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const priceFormatter = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         if (input) {
             // helper: escape regex chars
@@ -190,8 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         <small class="text-muted">${categoriaHtml} • ${catalogoHtml}</small>
                                     </div>
                                     <div class="text-end ms-3">
-                                        ${tieneDscto ? `<div><del class="text-muted">$${priceFormatter.format(parseFloat(precioOriginal))}</del></div>` : ''}
-                                        <div class="fw-bold text-success">$${priceFormatter.format(parseFloat(displayPrice))}</div>
+                                        ${tieneDscto ? `<div><span class="product-price fw-bold">$${priceFormatter.format(parseFloat(displayPrice))}</span><span class="badge bg-warning text-dark ms-2">-${p.descuento}%</span></div>` : `<div class="fw-bold text-success">$${priceFormatter.format(parseFloat(displayPrice))}</div>`}
                                     </div>
                                 </div>
                             </div>

@@ -8,8 +8,8 @@
       <a href="/" class="login-brand">
         <img src="{{ asset('assets/img/nav-logo-img.png') }}" alt="DiscZone" class="login-logo-main" />
       </a>
-      <h2 class="mt-3 mb-2" style="color: var(--color-dark-brown); font-weight: 700;">Recuperar Contraseña</h2>
-      <p style="color: #666; font-size: 0.9rem;">Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña</p>
+      <h2 class="mt-3 mb-2 auth-heading">Recuperar Contraseña</h2>
+      <p class="auth-sub">Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña</p>
     </div>
 
     <!-- Mensajes de error/éxito -->

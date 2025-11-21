@@ -8,8 +8,8 @@
       <a href="/" class="login-brand">
         <img src="{{ asset('assets/img/nav-logo-img.png') }}" alt="DiscZone" class="login-logo-main" />
       </a>
-      <h2 class="mt-3 mb-2" style="color: var(--color-dark-brown); font-weight: 700;">Restablecer Contraseña</h2>
-      <p style="color: #666; font-size: 0.9rem;">Crea una nueva contraseña segura para tu cuenta</p>
+      <h2 class="mt-3 mb-2 auth-heading">Restablecer Contraseña</h2>
+      <p class="auth-sub">Crea una nueva contraseña segura para tu cuenta</p>
     </div>
 
     <!-- Mensajes de error/éxito -->
@@ -129,11 +129,11 @@
       </div>
 
       <!-- Password Strength Indicator (opcional) -->
-      <div class="password-strength-indicator mb-3" id="passwordStrengthIndicator" style="display: none;">
-        <div class="progress" style="height: 4px;">
-          <div id="passwordStrengthBar" class="progress-bar" style="width: 0%; transition: all 0.3s ease;"></div>
+      <div class="password-strength-indicator mb-3 d-none" id="passwordStrengthIndicator">
+        <div class="progress progress-sm">
+          <div id="passwordStrengthBar" class="progress-bar" style="width: 0%;"></div>
         </div>
-        <small id="passwordStrengthText" style="color: #666; margin-top: 0.5rem; display: block;"></small>
+        <small id="passwordStrengthText" class="text-muted mt-1 d-block"></small>
       </div>
 
       <!-- Botón submit -->

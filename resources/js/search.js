@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const storageUrl = window.__app_storage_url__ || '';
     const defaultImg = window.__app_default_img__ || '';
-    const priceFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const priceFormatter = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     let searchTimeout;
     let currentIndex = -1;
@@ -62,9 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div style="flex-grow: 1;">
                             <div class="fw-semibold small">${nombreHtml}</div>
                             <small class="text-muted d-block">${categoriaHtml} • ${catalogoHtml}</small>
-                            <div class="fw-bold text-success mt-2">
-                                $${priceFormatter.format(parseFloat(displayPrice))}
-                                ${tieneDscto ? `<span class="text-muted ms-2" style="font-size: 0.85em; text-decoration: line-through;">$${priceFormatter.format(parseFloat(precioOriginal))}</span>` : ''}
+                            <div class="mt-2">
+                                ${tieneDscto ? `<span class="product-price fw-bold">$${priceFormatter.format(parseFloat(displayPrice))}</span><small class="badge bg-warning text-dark ms-2">-${p.descuento}%</small>` : `<span class="fw-bold text-success">$${priceFormatter.format(parseFloat(displayPrice))}</span>`}
                             </div>
                         </div>
                     </a>
