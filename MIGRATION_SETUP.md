@@ -74,6 +74,9 @@ php artisan migrate:fresh --seed
 | Admin | admin@prueba.com | admin123456 | admin |
 | Cliente | cliente@prueba.com | cliente123456 | cliente |
 
+> ⚠️ **ADVERTENCIA DE SEGURIDAD**: Estas contraseñas son ÚNICAMENTE para desarrollo y pruebas locales. 
+> DEBEN ser cambiadas antes de desplegar a producción. Nunca usar estas credenciales en ambientes productivos.
+
 ### 🔐 Roles (2)
 1. **admin** - Administrador del sistema
 2. **cliente** - Cliente regular
@@ -135,10 +138,20 @@ El servidor estará disponible en: `http://127.0.0.1:8000`
 
 ## 📝 Notas Importantes
 
-1. **Credenciales de Prueba**: Las contraseñas de los usuarios de prueba son para desarrollo únicamente
+1. **⚠️ SEGURIDAD - Credenciales de Prueba**: 
+   - Las contraseñas mostradas son SOLO para desarrollo local
+   - **OBLIGATORIO**: Cambiar todas las credenciales antes de producción
+   - Usar contraseñas seguras generadas aleatoriamente en producción
+   - Nunca exponer las credenciales de desarrollo en repositorios públicos
+
 2. **Base de Datos**: Se utiliza SQLite para facilitar el desarrollo. Para producción, configurar MySQL/MariaDB
+
 3. **Permisos**: El sistema de permisos está implementado con Spatie Laravel Permission
+
 4. **Seeders**: Los seeders crean datos mínimos necesarios para comenzar a trabajar
+
+5. **Migraciones de Descuento**: Existen dos migraciones relacionadas con descuentos en productos (2025_11_12 y 2025_11_21). 
+   La segunda es una actualización o expansión de la funcionalidad de descuentos.
 
 ---
 
