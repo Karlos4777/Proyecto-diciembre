@@ -57,10 +57,10 @@ php artisan migrate:fresh --seed
 | 18 | `2025_11_12_210044_alter_pedido_detalles_precio_column` | Ajuste tipo de dato precio |
 | 19 | `2025_11_12_210103_alter_pedidos_total_column` | Ajuste tipo de dato total |
 | 20 | `2025_11_12_210126_alter_productos_precio_column` | Ajuste tipo de dato precio |
-| 21 | `2025_11_21_192900_add_descuento_to_productos_table` | Descuento con validación (tinyint)* |
+| 21 | `2025_11_21_192900_add_descuento_to_productos_table` | Descuento optimizado (tinyint 0-100)* |
 | 22 | `2025_11_21_195500_create_pedido_referencias_table` | Referencias de pedidos |
 
-> *Nota: La migración #21 incluye validación para evitar duplicar el campo si ya existe. Mejora el tipo de dato de `integer` a `unsignedTinyInteger` (0-255).
+> *Nota: La migración #21 mejora el tipo de dato de `integer` a `unsignedTinyInteger` (más eficiente para valores 0-100) e incluye validación para evitar duplicar el campo.
 
 ---
 
@@ -102,11 +102,11 @@ php artisan migrate:fresh --seed
 ## 📊 Estadísticas de la Base de Datos
 
 ```
-Database: SQLite 3.45.1
+Database: SQLite (versión puede variar según el entorno)
 Connection: sqlite
 Path: database/database.sqlite
 Tables: 21
-Size: 156.00 KB
+Size: 156.00 KB (después de migraciones y seeds iniciales)
 ```
 
 ### Tablas Creadas:
@@ -153,8 +153,8 @@ El servidor estará disponible en: `http://127.0.0.1:8000`
 4. **Seeders**: Los seeders crean datos mínimos necesarios para comenzar a trabajar
 
 5. **Migraciones de Descuento**: Existen dos migraciones relacionadas con descuentos:
-   - Primera (2025_11_12): Agrega el campo `descuento` como `integer`
-   - Segunda (2025_11_21): Mejora el tipo de dato a `unsignedTinyInteger` (más eficiente) e incluye validación para evitar duplicación en caso de re-ejecución
+   - Primera (2025_11_12): Agrega el campo `descuento` como `integer` (puede almacenar valores negativos innecesarios)
+   - Segunda (2025_11_21): Mejora el tipo de dato a `unsignedTinyInteger` (optimizado para porcentajes 0-100, usa menos espacio de almacenamiento) e incluye validación para evitar duplicación en caso de re-ejecución
 
 ---
 
