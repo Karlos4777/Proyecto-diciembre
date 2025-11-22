@@ -52,13 +52,15 @@ php artisan migrate:fresh --seed
 | 13 | `2025_11_10_220623_create_carritos_table` | Carrito de compras |
 | 14 | `2025_11_11_203630_add_contenido_to_pedidos_table` | Contenido de pedidos |
 | 15 | `2025_11_12_000000_add_telefono_direccion_to_users_table` | Datos de contacto |
-| 16 | `2025_11_12_000001_add_descuento_to_productos_table` | Sistema de descuentos |
+| 16 | `2025_11_12_000001_add_descuento_to_productos_table` | Sistema de descuentos (integer) |
 | 17 | `2025_11_12_024805_add_ventas_to_productos_table` | Contador de ventas |
 | 18 | `2025_11_12_210044_alter_pedido_detalles_precio_column` | Ajuste tipo de dato precio |
 | 19 | `2025_11_12_210103_alter_pedidos_total_column` | Ajuste tipo de dato total |
 | 20 | `2025_11_12_210126_alter_productos_precio_column` | Ajuste tipo de dato precio |
-| 21 | `2025_11_21_192900_add_descuento_to_productos_table` | Descuento adicional |
+| 21 | `2025_11_21_192900_add_descuento_to_productos_table` | Descuento con validación (tinyint)* |
 | 22 | `2025_11_21_195500_create_pedido_referencias_table` | Referencias de pedidos |
+
+> *Nota: La migración #21 incluye validación para evitar duplicar el campo si ya existe. Mejora el tipo de dato de `integer` a `unsignedTinyInteger` (0-255).
 
 ---
 
@@ -150,8 +152,9 @@ El servidor estará disponible en: `http://127.0.0.1:8000`
 
 4. **Seeders**: Los seeders crean datos mínimos necesarios para comenzar a trabajar
 
-5. **Migraciones de Descuento**: Existen dos migraciones relacionadas con descuentos en productos (2025_11_12 y 2025_11_21). 
-   La segunda es una actualización o expansión de la funcionalidad de descuentos.
+5. **Migraciones de Descuento**: Existen dos migraciones relacionadas con descuentos:
+   - Primera (2025_11_12): Agrega el campo `descuento` como `integer`
+   - Segunda (2025_11_21): Mejora el tipo de dato a `unsignedTinyInteger` (más eficiente) e incluye validación para evitar duplicación en caso de re-ejecución
 
 ---
 
@@ -179,5 +182,5 @@ php artisan db:show
 
 ---
 
-**Fecha de Configuración**: 22 de Noviembre, 2025
+**Última Actualización**: Noviembre 2024
 **Estado**: ✅ Configuración Completa y Funcional
