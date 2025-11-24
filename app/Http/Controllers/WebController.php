@@ -90,10 +90,9 @@ public function buscarProductosAjax(Request $request)
     $words = preg_split('/\s+/', $search);
     $words = array_filter(array_map('trim', $words), fn($w) => $w !== '');
 
-    // Evitar seleccionar columnas que pueden no existir en todas las migraciones
-    // Evitar seleccionar columnas que podrían no existir en ciertas migraciones (como 'descuento')
+    // Seleccionar columnas incluyendo descuento si existe
     $productosQuery = Producto::with(['categoria', 'catalogo'])
-        ->select('id', 'nombre', 'precio', 'imagen', 'cantidad', 'categoria_id', 'catalogo_id');
+        ->select('id', 'nombre', 'precio', 'descuento', 'imagen', 'cantidad', 'categoria_id', 'catalogo_id');
 
     // Requerir que cada palabra aparezca en el nombre, o en la categoría, o en el catálogo
     // usando COLLATE utf8mb4_general_ci para búsqueda insensible a acentos

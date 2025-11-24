@@ -150,6 +150,12 @@ footer {
     max-height: 90px;
     display: block;
     margin: 0 auto 0.5rem auto;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+}
+
+.header-img:hover {
+    transform: scale(1.1);
 }
 
 /* Navbar brand image */
@@ -675,10 +681,16 @@ footer {
 .carrusel-wrapper {
     position: relative;
     overflow: hidden;
-    background-color: var(--color-cream);
-    border-radius: 8px;
-    padding: 20px 0;
-    margin: 20px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    padding: 2rem 0;
+    margin: 2rem 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    transition: box-shadow 0.3s ease;
+}
+
+.carrusel-wrapper:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1);
 }
 
 .carrusel-wrapper:hover .carousel-btn {
@@ -690,51 +702,55 @@ footer {
     display: flex;
     overflow-x: auto;
     scroll-behavior: smooth;
-    gap: 1.5rem;
-    padding: 28px;
-    scroll-padding: 28px;
+    gap: 1.75rem;
+    padding: 2rem;
+    scroll-padding: 2rem;
     background: transparent;
     box-sizing: border-box;
-}
-
-/* Improve carousel snapping and spacing */
-.productos-carrusel {
-    scroll-snap-type: x proximity;
+    scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    padding-left: 64px; /* increased side breathing room */
-    padding-right: 64px;
 }
 
 .producto-card {
-    scroll-snap-align: center;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
 
-/* Ensure image container hides overflow and centers the image */
+/* Contenedor de imagen con aspect ratio 1:1 */
 .producto-card .imagen-container {
     width: 100%;
-    height: 360px; /* matches image height */
+    aspect-ratio: 1;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #f8f9fa;
+    position: relative;
+}
+
+/* Badges fijos sobre la imagen */
+.producto-card .imagen-container .badge {
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.producto-card:hover .imagen-container .badge {
+    transform: scale(1.05);
 }
 
 .producto-card .imagen-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     display: block;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Make product images taller so cards feel more square */
-.productos-carrusel .imagen-container img,
-.producto-card .imagen-container img {
-    width: 100%;
-    height: 360px; /* increased for a squarer card */
-    max-height: 360px;
-    object-fit: cover;
-    object-position: center top;
-    display: block;
+.producto-card:hover .imagen-container img {
+    transform: scale(1.1);
 }
 
 /* Carousel dots (optional) */
@@ -755,39 +771,43 @@ footer {
 .carrusel-dots button.active { background: var(--color-brown); transform: scale(1.15); }
 
 .productos-carrusel::-webkit-scrollbar {
-    height: 8px;
-    background-color: var(--color-light-gray);
-}
-
-/* General section background: avoid plain white pages */
-section.py-5 {
-    background: var(--color-cream);
-    border-radius: 8px;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    height: 10px;
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 10px;
 }
 
 .productos-carrusel::-webkit-scrollbar-thumb {
-    background: var(--color-brown);
-    border-radius: 4px;
+    background: linear-gradient(90deg, #0d6efd 0%, #0b5ed7 100%);
+    border-radius: 10px;
+    transition: background 0.3s ease;
 }
 
 .productos-carrusel::-webkit-scrollbar-thumb:hover {
-    background: var(--color-dark-brown);
+    background: linear-gradient(90deg, #0b5ed7 0%, #0a58ca 100%);
 }
 
 /* === Producto Card === */
 .producto-card {
-    flex: 0 0 280px;
-    border-radius: 8px;
-    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s ease, background 0.25s ease;
+    flex: 0 0 300px;
+    border-radius: 16px;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.4s ease, 
+                border-color 0.3s ease;
     position: relative;
-    /* Card shell: keep light so image stands out; info area will be brown */
-    background: linear-gradient(180deg, var(--color-cream) 0%, rgba(255,255,255,0.95) 100%);
-    border: 1px solid rgba(232,232,232,0.7);
+    background: white;
+    border: 1px solid #e9ecef;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    color: var(--color-black);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    color: #212529;
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+}
+
+.producto-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.18);
+    border-color: #0d6efd;
 }
 
 /* === Carrito / Pedido Styles === */
@@ -938,10 +958,10 @@ section.py-5 {
 
 /* Wider cards by default; adjust down at smaller sizes */
 @media (min-width: 1200px) {
-    .producto-card { flex: 0 0 400px; }
+    .producto-card { flex: 0 0 280px; }
 }
 @media (min-width: 992px) and (max-width:1199px) {
-    .producto-card { flex: 0 0 340px; }
+    .producto-card { flex: 0 0 260px; }
 }
 @media (min-width: 768px) and (max-width:991px) {
     .producto-card { flex: 0 0 300px; }

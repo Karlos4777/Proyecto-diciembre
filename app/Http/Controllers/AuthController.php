@@ -14,17 +14,21 @@ class AuthController extends Controller
         ]);
 
         $credenciales=$request->only('email', 'password');
+        $remember = $request->has('remember');
 
-        if(Auth::attempt($credenciales)){
+        if(Auth::attempt($credenciales, $remember)){
             $user= Auth::user();
 
             if($user->activo){
+                $request->session()->regenerate();
                 return redirect()->intended();
             }else{
                 Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
                 return back()->with('error', 'Su cuenta esta inactiva. Contacte con el administrador');
             }
         }
-        return back()->with('error', 'Las credenciales no son correctas')->withInput();
+        return back()->with('error', 'Las credenciales no son correctas')->withInput($request->only('email', 'remember'));
     }
 }
