@@ -9,6 +9,10 @@ use App\Models\PedidoReferencia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Carrito;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PedidoConfirmacion;
+use App\Mail\NuevoPedidoAdmin;
+use App\Models\User;
 
 class PedidoController extends Controller
 {public function index(Request $request)
@@ -16,7 +20,9 @@ class PedidoController extends Controller
     $texto = trim($request->get('texto', ''));
     
     // Construir la consulta base
-    $query = Pedido::with(['user', 'detalles.producto', 'referencias'])->orderBy('created_at', 'desc');
+    // Usar 'detalles.producto.categoria' para asegurar que en la vista web.mis_pedidos
+    // $pedido->detalles tenga cargado el producto y su categoría (eager loading)
+    $query = Pedido::with(['user', 'detalles.producto.categoria', 'referencias'])->orderBy('created_at', 'desc');
 
     // Permisos
     if (auth()->user()->can('pedido-list')) {
@@ -42,6 +48,48 @@ class PedidoController extends Controller
 
     $registros = $query->paginate(10);
 
+    // Debug logging para diagnosticar por qué clientes no ven sus pedidos
+    try {
+        \Log::debug("PedidoController@index debug", [
+            'user_id' => auth()->id(),
+            'user_email' => auth()->user()->email ?? null,
+            'view' => $view,
+            'registros_count' => is_object($registros) && method_exists($registros, 'count') ? $registros->count() : (is_array($registros) ? count($registros) : null),
+        ]);
+    } catch (\Throwable $e) {
+        // no detener la ejecución por fallos en logging
+        \Log::error('Error al escribir debug en PedidoController@index: ' . $e->getMessage());
+    }
+
+    // Additional per-pedido debug: lineas and producto availability
+    try {
+        $pedidos_debug = [];
+            foreach ($registros as $p) {
+                $lineas_count = is_object($p->detalles) && method_exists($p->detalles, 'count') ? $p->detalles->count() : (is_array($p->detalles) ? count($p->detalles) : 0);
+                $sample = [];
+                if ($lineas_count > 0) {
+                    $i = 0;
+                    foreach ($p->detalles as $d) {
+                        if ($i++ >= 3) break;
+                        $sample[] = [
+                            'detalle_id' => $d->id ?? null,
+                            'producto_id' => $d->producto_id ?? null,
+                            'producto_loaded' => $d->producto ? true : false,
+                            'producto_nombre' => $d->producto->nombre ?? null,
+                        ];
+                    }
+                }
+                $pedidos_debug[] = [
+                    'pedido_id' => $p->id,
+                    'lineas_count' => $lineas_count,
+                    'lineas_sample' => $sample,
+                ];
+        }
+        \Log::debug('PedidoController@index pedidos_debug', ['pedidos' => $pedidos_debug]);
+    } catch (\Throwable $e) {
+        \Log::error('Error building pedidos_debug: ' . $e->getMessage());
+    }
+
     return view($view, compact('registros', 'texto'));
 }
         public function formulario()
@@ -53,9 +101,22 @@ class PedidoController extends Controller
 
     $carrito = $registro->contenido ?? [];
 
-    if (empty($carrito)) {
-        return redirect()->route('carrito.mostrar')->with('error', 'El carrito está vacío.');
-    }
+        // Log carrito contents for debugging (non-fatal)
+        try {
+            \Log::debug('PedidoController@formulario debug', [
+                'user_id' => auth()->id(),
+                'carrito_count' => is_array($carrito) ? count($carrito) : (is_object($carrito) && method_exists($carrito, 'count') ? $carrito->count() : null),
+                'carrito_sample' => array_slice(is_array($carrito) ? $carrito : [], 0, 5),
+            ]);
+        } catch (\Throwable $e) {
+            // don't break the flow if logging fails
+            \Log::error('Error logging carrito in PedidoController@formulario: ' . $e->getMessage());
+        }
+
+        if (empty($carrito)) {
+            // keep the redirect behavior but include a flash so the UI shows why
+            return redirect()->route('carrito.mostrar')->with('error', 'El carrito está vacío. Agrega productos antes de completar la compra.');
+        }
 
     return view('web.formulario_pedido', compact('carrito'));
 }
@@ -76,6 +137,7 @@ public function realizar(Request $request)
         'telefono' => 'required',
         'direccion' => 'required',
         'metodo_pago' => 'required',
+        'archivo' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
     ]);
 
     if (empty($carrito)) {
@@ -107,14 +169,47 @@ public function realizar(Request $request)
             ]);
         }
 
+        // Si se subió un archivo en el formulario, guardarlo y crear la referencia
+        if ($request->hasFile('archivo')) {
+            $file = $request->file('archivo');
+            $safeName = time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $file->getClientOriginalName());
+            $path = $file->storeAs('pedidos/' . $pedido->id, $safeName, 'public');
+
+            PedidoReferencia::create([
+                'pedido_id' => $pedido->id,
+                'user_id' => auth()->id(),
+                'filename' => $file->getClientOriginalName(),
+                'path' => $path,
+                'mime' => $file->getClientMimeType(),
+                'size' => $file->getSize(),
+            ]);
+        }
+
         // Vaciar carrito del usuario en la base de datos
         $registro->contenido = [];
         $registro->save();
 
+        // Enviar email de confirmación al cliente
+        try {
+            Mail::to($pedido->user->email)->send(new PedidoConfirmacion($pedido));
+        } catch (\Exception $e) {
+            \Log::error('Error al enviar email de confirmación: ' . $e->getMessage());
+        }
+
+        // Enviar notificación a administradores
+        try {
+            $admins = User::role('Admin')->get();
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->send(new NuevoPedidoAdmin($pedido));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error al enviar email a administradores: ' . $e->getMessage());
+        }
+
         DB::commit();
 
-    // Enviar mensaje de éxito sin HTML para evitar que aparezcan caracteres sueltos
-    return redirect()->route('web.index')->with('success', '¡Compra exitosa! Tu pedido #' . $pedido->id . ' ha sido registrado.');
+        // Enviar mensaje de éxito sin HTML para evitar que aparezcan caracteres sueltos
+        return redirect()->route('web.index')->with('success', '¡Compra exitosa! Tu pedido #' . $pedido->id . ' ha sido registrado.');
     } catch (\Exception $e) {
         DB::rollBack();
         \Log::error('Error al procesar pedido: ' . $e->getMessage());
@@ -165,14 +260,26 @@ public function realizar(Request $request)
 
         $request->validate([
             'archivo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120', // max 5MB
+            'detalle_id' => 'nullable|integer|exists:pedido_detalles,id'
         ]);
 
+        // Si se envió un detalle_id, asegurar que pertenece al pedido
+        $detalleId = $request->input('detalle_id');
+        if ($detalleId) {
+            $detalle = PedidoDetalle::find($detalleId);
+            if (!$detalle || $detalle->pedido_id != $pedido->id) {
+                return redirect()->back()->with('error', 'El detalle seleccionado no pertenece a este pedido.');
+            }
+        }
+
         $file = $request->file('archivo');
-        $path = $file->storeAs('pedidos/' . $pedido->id, time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $file->getClientOriginalName()), 'public');
+        $safeName = time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $file->getClientOriginalName());
+        $path = $file->storeAs('pedidos/' . $pedido->id, $safeName, 'public');
 
         $referencia = PedidoReferencia::create([
             'pedido_id' => $pedido->id,
             'user_id' => auth()->id(),
+            'detalle_id' => $detalleId ?? null,
             'filename' => $file->getClientOriginalName(),
             'path' => $path,
             'mime' => $file->getClientMimeType(),

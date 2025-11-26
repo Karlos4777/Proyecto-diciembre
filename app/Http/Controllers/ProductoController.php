@@ -9,6 +9,7 @@ use App\Models\Catalogo;
 use App\Http\Requests\ProductoRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Str;
+use App\Services\SpotifyService;
 
 class ProductoController extends Controller
 {
@@ -51,6 +52,7 @@ class ProductoController extends Controller
 
         $registro = new Producto();
         $registro->codigo       = $request->input('codigo');
+        $registro->barcode      = $request->input('barcode');
         $registro->nombre       = $request->input('nombre');
         $registro->precio       = $request->input('precio');
     $registro->cantidad       = $request->input('cantidad');
@@ -58,6 +60,9 @@ class ProductoController extends Controller
         $registro->categoria_id = $request->input('categoria_id');
         $registro->catalogo_id  = $request->input('catalogo_id'); // <- agregado
         $registro->descripcion  = $request->input('descripcion');
+        $registro->artista      = $request->input('artista');
+        $registro->album        = $request->input('album');
+        $registro->preview_url  = $request->input('preview_url');
 
         $sufijo = strtolower(Str::random(2));
         $image = $request->file('imagen');
@@ -100,6 +105,7 @@ class ProductoController extends Controller
 
         $registro = Producto::findOrFail($id);
         $registro->codigo       = $request->input('codigo');
+        $registro->barcode      = $request->input('barcode');
         $registro->nombre       = $request->input('nombre');
         $registro->precio       = $request->input('precio');
     $registro->cantidad       = $request->input('cantidad');
@@ -107,6 +113,9 @@ class ProductoController extends Controller
         $registro->categoria_id = $request->input('categoria_id');
         $registro->catalogo_id  = $request->input('catalogo_id'); // <- agregado
         $registro->descripcion  = $request->input('descripcion');
+        $registro->artista      = $request->input('artista');
+        $registro->album        = $request->input('album');
+        $registro->preview_url  = $request->input('preview_url');
 
         $sufijo = strtolower(Str::random(2));
         $image = $request->file('imagen');
@@ -183,5 +192,33 @@ public function buscarProductosAjax(Request $request)
 
     return response()->json($data);
 }
+
+    /**
+     * Buscar track en Spotify y retornar datos
+     * Soporta búsqueda por texto o código de barras UPC/EAN
+     */
+    public function buscarSpotify(Request $request, SpotifyService $spotify)
+    {
+        $query = $request->input('query');
+        $searchType = $request->input('type', 'text'); // 'text' o 'barcode'
+        
+        if (!$query || strlen($query) < 2) {
+            return response()->json(['error' => 'Consulta muy corta'], 400);
+        }
+
+        // Búsqueda por código de barras
+        if ($searchType === 'barcode' || (is_numeric($query) && strlen($query) >= 12)) {
+            $resultado = $spotify->searchByBarcode($query);
+        } else {
+            // Búsqueda por texto
+            $resultado = $spotify->searchTrack($query);
+        }
+        
+        if (!$resultado) {
+            return response()->json(['error' => 'No se encontraron resultados'], 404);
+        }
+
+        return response()->json($resultado);
+    }
 
 }

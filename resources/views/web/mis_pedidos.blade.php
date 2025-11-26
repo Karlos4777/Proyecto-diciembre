@@ -102,9 +102,21 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                <small><strong>{{ $detalle->producto->nombre ?? 'Producto eliminado' }}</strong></small><br>
+                                                                <small><strong>{{ $detalle->producto->nombre ?? 'Producto eliminado' }}</strong></small>
+                                                                <div class="mt-1">
+                                                                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#upload-prod-{{ $pedido->id }}-{{ $detalle->id }}" aria-expanded="false">
+                                                                        <i class="bi bi-upload"></i> Subir archivo
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <small>{{ $detalle->producto->codigo ?? '-' }}</small>
+                                                            </td>
+                                                            <td class="text-center">
                                                                 @if($detalle->producto && $detalle->producto->categoria)
-                                                                    <span class="badge bg-info fs-7">{{ $detalle->producto->categoria->nombre }}</span>
+                                                                    <small>{{ $detalle->producto->categoria->nombre }}</small>
+                                                                @else
+                                                                    <small>-</small>
                                                                 @endif
                                                             </td>
                                                             <td class="text-center">
@@ -114,10 +126,22 @@
                                                                 <small>${{ number_format($detalle->precio ?? 0, 2) }}</small>
                                                             </td>
                                                         </tr>
+
+                                                        <tr class="collapse" id="upload-prod-{{ $pedido->id }}-{{ $detalle->id }}">
+                                                            <td colspan="6">
+                                                                <form action="{{ route('pedidos.referencia.upload', $pedido->id) }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2 py-2">
+                                                                    @csrf
+                                                                    <input type="hidden" name="detalle_id" value="{{ $detalle->id }}">
+                                                                    <input type="file" name="archivo" accept="image/*,.pdf" class="form-control form-control-sm" required>
+                                                                    <button class="btn btn-primary btn-sm" type="submit">Subir</button>
+                                                                    <small class="text-muted ms-2">jpg, png, pdf. Máx 5 MB.</small>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
                                                     @endforeach
                                                 @else
                                                     <tr>
-                                                        <td colspan="4" class="text-center text-muted py-3">No hay detalles para este pedido</td>
+                                                        <td colspan="6" class="text-center text-muted py-3">No hay detalles para este pedido</td>
                                                     </tr>
                                                 @endif
                                             </tbody>
@@ -138,11 +162,23 @@
                                                 <span>Envío:</span>
                                                 <span class="badge bg-success">Gratis</span>
                                             </div>
+                                            <form action="{{ route('pedidos.referencia.upload', $pedido->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
+                                                @csrf
+                                                <label class="form-label mb-1">Subir archivo (recibo)</label>
+                                                <div class="d-flex">
+                                                    <input type="file" name="archivo" accept="image/*,.pdf" class="form-control form-control-sm" required>
+                                                    <button class="btn btn-primary btn-sm ms-2" type="submit">Subir</button>
+                                                </div>
+                                                <small class="text-muted">Tipos: jpg, png, pdf. Máx 5 MB.</small>
+                                            </form>
+                                            
                                             <hr>
                                             <div class="d-flex justify-content-between">
                                                 <strong>Total:</strong>
                                                 <strong class="text-success fs-5">${{ number_format($pedido->total, 2) }}</strong>
                                             </div>
+                                            
+                                            <!-- Formulario para que el cliente suba archivo (recibo / referencia) asociado al pedido -->
                                         </div>
                                     </div>
                                 </div>

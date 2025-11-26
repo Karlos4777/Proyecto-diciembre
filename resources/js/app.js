@@ -1,4 +1,5 @@
 import './bootstrap';
+import './search';
 
 document.addEventListener('DOMContentLoaded', function () {
     // Manejo de submenús dentro de dropdowns Bootstrap

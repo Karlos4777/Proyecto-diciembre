@@ -9,7 +9,7 @@ class PedidoReferencia extends Model
     protected $table = 'pedido_referencias';
 
     protected $fillable = [
-        'pedido_id', 'user_id', 'filename', 'path', 'mime', 'size'
+        'pedido_id', 'user_id', 'detalle_id', 'filename', 'path', 'mime', 'size'
     ];
 
     public function pedido()

@@ -174,6 +174,9 @@
                             <li><a class="dropdown-item" href="{{ route('perfil.pedidos') }}">
                                 <i class="bi bi-bag-check me-2"></i> Mis pedidos
                             </a></li>
+                            <li><a class="dropdown-item" href="{{ route('favoritos.index') }}">
+                                <i class="bi bi-heart-fill me-2 text-danger"></i> Mis favoritos
+                            </a></li>
                             <li><a class="dropdown-item" href="{{ route('perfil.edit') }}">
                                 <i class="bi bi-gear me-2"></i> Mi perfil
                             </a></li>

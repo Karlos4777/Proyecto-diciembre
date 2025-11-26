@@ -6,7 +6,20 @@
             <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h3 class="card-title">Productos</h3>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="card-title mb-0">Productos</h3>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ route('reportes.productos.csv') }}" class="btn btn-outline-primary" title="Exportar CSV">
+                                    <i class="bi bi-filetype-csv me-1"></i> CSV
+                                </a>
+                                <a href="{{ route('reportes.productos.pdf') }}" class="btn btn-outline-danger" title="Exportar PDF">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                                </a>
+                                <a href="{{ route('reportes.productos.excel') }}" class="btn btn-outline-success" title="Exportar Excel">
+                                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Excel
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div>

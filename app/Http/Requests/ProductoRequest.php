@@ -26,6 +26,7 @@ class ProductoRequest extends FormRequest
 
         $rules = [
             'codigo' => ['required', 'string', 'max:16', 'unique:productos,codigo,' . $id],
+            'barcode' => ['nullable', 'string', 'max:50', 'regex:/^\d{8,14}$/'],
             'nombre' => ['required', 'string', 'max:100'],
             'precio' => ['required', 'numeric', 'min:0'],
             'cantidad' => ['required', 'integer', 'min:0'],
@@ -41,6 +42,9 @@ class ProductoRequest extends FormRequest
             'codigo.required' => 'El código del producto es obligatorio.',
             'codigo.unique' => 'Este código ya está registrado en otro producto.',
             'codigo.max' => 'El código no puede tener más de 50 caracteres.',
+
+            'barcode.regex' => 'El código de barras debe tener entre 8 y 14 dígitos numéricos (UPC/EAN).',
+            'barcode.max' => 'El código de barras no puede tener más de 50 caracteres.',
 
             'nombre.required' => 'El nombre del producto es obligatorio.',
             'nombre.max' => 'El nombre no puede tener más de 255 caracteres.',

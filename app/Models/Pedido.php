@@ -11,9 +11,15 @@ class Pedido extends Model
     protected $casts = [
         'contenido' => 'array', // para que se convierta automáticamente de/para JSON
     ];
+    // Línea de pedido (detalle de cada producto) - renamed to avoid collision
+    public function lineas()
+    {
+        return $this->hasMany(PedidoDetalle::class, 'pedido_id');
+    }
+    // Alias usado por las vistas antiguas: detalles == lineas
     public function detalles()
     {
-        return $this->hasMany(PedidoDetalle::class);
+        return $this->hasMany(PedidoDetalle::class, 'pedido_id');
     }
     public function user()
     {

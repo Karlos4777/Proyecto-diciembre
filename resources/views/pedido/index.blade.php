@@ -8,7 +8,20 @@
             <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h3 class="card-title">Pedidos</h3>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="card-title mb-0">Pedidos</h3>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ route('reportes.pedidos.csv') }}" class="btn btn-outline-primary" title="Exportar CSV">
+                                    <i class="bi bi-filetype-csv me-1"></i> CSV
+                                </a>
+                                <a href="{{ route('reportes.pedidos.pdf') }}" class="btn btn-outline-danger" title="Exportar PDF">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                                </a>
+                                <a href="{{ route('reportes.pedidos.excel') }}" class="btn btn-outline-success" title="Exportar Excel">
+                                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Excel
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -80,41 +93,37 @@
                                             <td class="text-center">
                                                 <!-- Botón referencia: abre un pequeño collapse para subir archivo -->
                                                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#referencia-{{ $reg->id }}" aria-expanded="false">
-                                                    <i class="bi bi-paperclip"></i> Referencia
+                                                    <i class="bi bi-paperclip"></i> Ver detalles por recibo
                                                 </button>
                                             </td>
                                         </tr>
                                         <tr class="collapse referencia-row" id="referencia-{{ $reg->id }}">
                                             <td colspan="7">
                                                 <div class="p-3">
-                                                    <form action="{{ route('pedidos.referencia.upload', $reg->id) }}" method="POST" enctype="multipart/form-data">
-                                                        @csrf
-                                                        <div class="row g-2">
-                                                            <div class="col-12 col-md-5">
-                                                                <label class="form-label mb-1">Archivo</label>
-                                                                <div class="d-flex input-and-button">
-                                                                    <input type="file" name="archivo" class="form-control form-control-sm" accept="image/*,.pdf" required>
-                                                                    <button class="btn btn-primary btn-sm" type="submit">Subir</button>
-                                                                </div>
-                                                                <small class="text-muted">Tipos: jpg, png, pdf. Máx 5 MB.</small>
-                                                            </div>
-                                                            <div class="col-12 col-md-7">
-                                                                <label class="form-label mb-1">Archivos subidos</label>
-                                                                @if($reg->referencias && $reg->referencias->count() > 0)
-                                                                    <ul class="list-unstyled file-list mb-0">
-                                                                        @foreach($reg->referencias as $ref)
-                                                                            <li>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <label class="form-label mb-1">Archivos subidos</label>
+                                                            @if($reg->referencias && $reg->referencias->count() > 0)
+                                                                <div class="d-flex flex-wrap gap-2">
+                                                                    @foreach($reg->referencias as $ref)
+                                                                        @php $ext = pathinfo($ref->filename, PATHINFO_EXTENSION); @endphp
+                                                                        @if(in_array(strtolower($ext), ['jpg','jpeg','png','gif']))
+                                                                            <a href="{{ asset('storage/' . $ref->path) }}" target="_blank" title="{{ $ref->filename }}">
+                                                                                <img src="{{ asset('storage/' . $ref->path) }}" alt="{{ $ref->filename }}" class="pedido-ref-thumb" style="max-width:120px;max-height:120px;object-fit:cover;border:1px solid #e9ecef;padding:3px;border-radius:4px;" />
+                                                                            </a>
+                                                                        @else
+                                                                            <div class="file-link badge bg-light border p-2">
                                                                                 <a href="{{ asset('storage/' . $ref->path) }}" target="_blank">{{ $ref->filename }}</a>
-                                                                                <small class="text-muted"> — {{ number_format($ref->size/1024,1) }} KB</small>
-                                                                            </li>
-                                                                        @endforeach
-                                                                    </ul>
-                                                                @else
-                                                                    <div class="small text-muted">Aún no hay archivos subidos para este pedido.</div>
-                                                                @endif
-                                                            </div>
+                                                                                <div class="small text-muted">{{ number_format($ref->size/1024,1) }} KB</div>
+                                                                            </div>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </div>
+                                                            @else
+                                                                <div class="small text-muted">Aún no hay archivos subidos para este pedido.</div>
+                                                            @endif
                                                         </div>
-                                                    </form>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>

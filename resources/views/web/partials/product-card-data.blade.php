@@ -98,12 +98,39 @@
         <p class="product-price-wrapper fw-bold text-success mb-2 price-final">
             ${{ number_format($precioConDescuento, 2) }}
         </p>
+
+        {{-- Rating promedio --}}
+        @php
+            $ratingProm = $producto->rating_promedio ?? null;
+        @endphp
+        @if($ratingProm)
+            <div class="mb-2 small text-warning">
+                @for($i=1;$i<=5;$i++)
+                    <i class="bi {{ $i <= round($ratingProm) ? 'bi-star-fill' : 'bi-star' }}"></i>
+                @endfor
+                <span class="text-muted ms-1">{{ $ratingProm }} ({{ $producto->rating_cantidad }})</span>
+            </div>
+        @endif
         
         {{-- Botón (solo en vista full) --}}
         @if(!$compact)
             <a href="{{ route('web.show', $producto->id) }}" class="btn btn-product btn-sm w-100">
                 <i class="bi bi-eye me-1"></i> Ver producto
             </a>
+            @auth
+                @php
+                    $enFavoritos = \App\Models\Wishlist::where('user_id', auth()->id())
+                        ->where('producto_id', $producto->id)
+                        ->exists();
+                @endphp
+                <form method="POST" action="{{ route('favoritos.toggle', $producto->id) }}" class="mt-2">
+                    @csrf
+                    <button type="submit" class="btn btn-sm w-100 {{ $enFavoritos ? 'btn-outline-danger' : 'btn-outline-secondary' }}">
+                        <i class="bi {{ $enFavoritos ? 'bi-heart-fill text-danger' : 'bi-heart' }} me-1"></i>
+                        {{ $enFavoritos ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}
+                    </button>
+                </form>
+            @endauth
         @endif
     </div>
 </div>

@@ -8,6 +8,7 @@ class Producto extends Model
 {
     protected $fillable = [
         'codigo',
+        'barcode',
         'nombre',
         'precio',
         'cantidad',
@@ -16,6 +17,9 @@ class Producto extends Model
         'imagen',
         'categoria_id',
         'catalogo_id', // <- agregado
+        'artista',
+        'album',
+        'preview_url',
     ];
 
     // Relación con categoría
@@ -58,6 +62,23 @@ class Producto extends Model
     public function getTieneDescuentoAttribute()
     {
         return ((int) ($this->descuento ?? 0)) > 0;
+    }
+
+    // Reseñas
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function getRatingPromedioAttribute()
+    {
+        $avg = $this->reviews()->where('aprobado', true)->avg('rating');
+        return $avg ? round($avg, 1) : null;
+    }
+
+    public function getRatingCantidadAttribute()
+    {
+        return $this->reviews()->where('aprobado', true)->count();
     }
 
 }

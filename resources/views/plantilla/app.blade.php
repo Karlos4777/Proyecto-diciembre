@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="height: 100%;">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,7 +25,7 @@
     <link href="{{ asset('css/admin.css?v=' . time()) }}" rel="stylesheet" />
     @stack('estilos')
 </head>
-<body>
+<body style="display: flex; flex-direction: column; min-height: 100vh; margin: 0;">
 
     <!-- Navegación -->
     @include('web.partials.nav')
@@ -36,12 +36,9 @@
     @endif
 
     <!-- Contenido principal -->
-    <main>
+    <main style="flex: 1; padding-bottom: 2rem;">
         @yield('contenido')
     </main>
-
-    <!-- Footer -->
-    @include('web.partials.footer')
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

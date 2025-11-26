@@ -61,7 +61,7 @@ class WebController extends Controller
 
     public function show($id)
     {
-        $producto = Producto::findOrFail($id);
+        $producto = Producto::with(['categoria','catalogo','reviews.user'])->findOrFail($id);
 
         // 🔁 Guardar en "vistos recientemente"
         $vistos = session('vistos_recientemente', []);
@@ -71,7 +71,20 @@ class WebController extends Controller
             session(['vistos_recientemente' => $vistos]);
         }
 
-        return view('web.item', compact('producto'));
+        $reviews = $producto->reviews->where('aprobado', true)->sortByDesc('created_at');
+        $ratingPromedio = $producto->rating_promedio;
+        $ratingCantidad = $producto->rating_cantidad;
+        // Verificar si usuario puede reseñar
+        $puedeResenar = false;
+        if(auth()->check()){
+            $yaReseno = $producto->reviews->where('user_id', auth()->id())->count() > 0;
+            if(!$yaReseno){
+                $puedeResenar = \App\Models\PedidoDetalle::where('producto_id', $producto->id)
+                    ->whereHas('pedido', function($q){ $q->where('user_id', auth()->id()); })
+                    ->exists();
+            }
+        }
+        return view('web.item', compact('producto','reviews','ratingPromedio','ratingCantidad','puedeResenar'));
     }
 
 public function buscarProductosAjax(Request $request)
@@ -145,5 +158,13 @@ public function buscarProductosAjax(Request $request)
     }
 
 }
-
+    /**
+     * Backwards-compatible wrapper.
+     * Algunas rutas o código pueden estar invocando `buscarProductos` en lugar
+     * de `buscarProductosAjax`. Delegamos para evitar BadMethodCallException.
+     */
+    public function buscarProductos(Request $request)
+    {
+        return $this->buscarProductosAjax($request);
+    }
 }

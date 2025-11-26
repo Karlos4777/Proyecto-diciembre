@@ -35,6 +35,8 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('productos', ProductoController::class);
     // Ruta para asignar promociones (form admin simple)
     Route::post('/productos/promocion/assign', [PromotionController::class, 'assign'])->name('productos.promocion.assign');
+    // Ruta para buscar en Spotify
+    Route::post('/productos/spotify/search', [ProductoController::class, 'buscarSpotify'])->name('productos.spotify.search');
     Route::resource('categoria', CategoriaController::class);
     Route::resource('catalogo', CatalogoController::class);
     
@@ -51,9 +53,25 @@ Route::get('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carri
     Route::post('/pedidos/{id}/referencias', [PedidoController::class, 'uploadReferencia'])->name('pedidos.referencia.upload');
     Route::patch('/pedidos/{id}/estado', [PedidoController::class, 'cambiarEstado'])->name('pedidos.cambiar.estado');    
 
-    Route::get('dashboard', function(){
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+
+    // Favoritos (Wishlist)
+    Route::get('/favoritos', [\App\Http\Controllers\WishlistController::class, 'index'])->name('favoritos.index');
+    Route::post('/favoritos/{producto}/toggle', [\App\Http\Controllers\WishlistController::class, 'toggle'])->name('favoritos.toggle');
+
+    // Reseñas
+    Route::post('/reviews/{producto}', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    // Reportes CSV
+    Route::get('/reportes/productos.csv', [\App\Http\Controllers\ReportController::class, 'productosCsv'])->name('reportes.productos.csv');
+    Route::get('/reportes/pedidos.csv', [\App\Http\Controllers\ReportController::class, 'pedidosCsv'])->name('reportes.pedidos.csv');
+    // Reportes PDF
+    Route::get('/reportes/productos.pdf', [\App\Http\Controllers\ReportController::class, 'productosPdf'])->name('reportes.productos.pdf');
+    Route::get('/reportes/pedidos.pdf', [\App\Http\Controllers\ReportController::class, 'pedidosPdf'])->name('reportes.pedidos.pdf');
+    // Reportes Excel
+    Route::get('/reportes/productos.xlsx', [\App\Http\Controllers\ReportController::class, 'productosExcel'])->name('reportes.productos.excel');
+    Route::get('/reportes/pedidos.xlsx', [\App\Http\Controllers\ReportController::class, 'pedidosExcel'])->name('reportes.pedidos.excel');
 
     Route::post('logout', function(){
         Auth::logout();
