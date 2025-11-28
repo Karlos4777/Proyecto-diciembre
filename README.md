@@ -21,6 +21,29 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Project Reports (CSV / PDF / Excel)
+
+- Endpoints:
+	- `GET /reportes/productos.csv`
+	- `GET /reportes/productos.pdf`
+	- `GET /reportes/productos.xlsx`
+	- `GET /reportes/pedidos.csv`
+	- `GET /reportes/pedidos.pdf`
+	- `GET /reportes/pedidos.xlsx`
+
+- PHP Requirements:
+	- Enable `ext-zip` and `ext-gd` in `php.ini` for Excel/PDF.
+	- Packages: `maatwebsite/excel ^3.1`, `barryvdh/laravel-dompdf`.
+
+- PDF Branding:
+	- Optional logo at `public/assets/img/nav-logo-img.png`.
+	- If present, it will render in the report header.
+
+- Notes:
+	- CSVs include UTF-8 BOM and `;` delimiter for Excel compatibility.
+	- PDFs have header with date and record count, and footer with page numbers.
+	- Excels use `App\Exports\ProductosExport` and `App\Exports\PedidosExport`.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
