@@ -27,7 +27,7 @@ class PrivacyController extends Controller
         }
 
         $oneYearMinutes = 525600;
-        $cookie = cookie('cookie_consent', '1', $oneYearMinutes, null, null, config('session.secure_cookie', false), true, false, 'Lax');
+        $cookie = cookie('cookie_consent', '1', $oneYearMinutes, null, null, config('session.secure', false), true, false, 'Lax');
 
         return response()->json(['status' => 'ok', 'message' => 'Consent recorded in cookie.'])->cookie($cookie);
     }
