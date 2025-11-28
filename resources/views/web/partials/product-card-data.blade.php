@@ -101,18 +101,16 @@
             ${{ number_format($precioConDescuento, 2) }}
         </p>
 
-        {{-- Rating promedio --}}
+        {{-- Rating promedio (siempre mostrar estrellas) --}}
         @php
-            $ratingProm = $producto->rating_promedio ?? null;
+            $ratingProm = $producto->rating_promedio ?? 0;
+            $ratingRedondeado = round($ratingProm);
         @endphp
-        @if($ratingProm)
-            <div class="mb-2 small text-warning">
-                @for($i=1;$i<=5;$i++)
-                    <i class="bi {{ $i <= round($ratingProm) ? 'bi-star-fill' : 'bi-star' }}"></i>
-                @endfor
-                <span class="text-muted ms-1">{{ $ratingProm }} ({{ $producto->rating_cantidad }})</span>
-            </div>
-        @endif
+        <div class="mb-2 small text-warning">
+            @for($i=1;$i<=5;$i++)
+                <i class="bi {{ $i <= $ratingRedondeado ? 'bi-star-fill' : 'bi-star' }}"></i>
+            @endfor
+        </div>
         
         {{-- Botón (solo en vista full) --}}
         @if(!$compact)

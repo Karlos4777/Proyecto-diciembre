@@ -25,7 +25,7 @@ class CarritoController extends Controller
         $total = 0;
 
         foreach ($contenido as $productoId => &$item) {
-            $producto = Producto::find($productoId);
+            $producto = Producto::with('categoria')->find($productoId);
 
             // Si el producto ya no existe, lo eliminamos del carrito
             if (!$producto) {
@@ -33,10 +33,12 @@ class CarritoController extends Controller
                 continue;
             }
 
-            // Actualizar datos básicos (nombre, codigo, imagen)
+            // Actualizar datos básicos (nombre, codigo, imagen, categoria)
             $item['nombre'] = $producto->nombre;
             $item['codigo'] = $producto->codigo;
             $item['imagen'] = $producto->imagen;
+            $item['categoria'] = $producto->categoria ? $producto->categoria->nombre : 'Sin categoría';
+            $item['categoria_id'] = $producto->categoria ? $producto->categoria->id : null;
 
             // Cantidad segura
             $item['cantidad'] = isset($item['cantidad']) ? (int) $item['cantidad'] : 1;
@@ -64,7 +66,7 @@ class CarritoController extends Controller
     // Agregar producto
     public function agregar(Request $request)
     {
-        $producto = Producto::findOrFail($request->producto_id);
+        $producto = Producto::with('categoria')->findOrFail($request->producto_id);
 
         $registro = Carrito::firstOrCreate(
             ['user_id' => Auth::id()],
@@ -82,6 +84,7 @@ class CarritoController extends Controller
             $contenido[$producto->id] = [
                 'nombre' => $producto->nombre,
                 'codigo' => $producto->codigo,
+                'categoria' => $producto->categoria ? $producto->categoria->nombre : 'Sin categoría',
                 // Guardar precio original y precio con descuento (si aplica)
                 'precio_original' => $producto->precio,
                 'precio' => $producto->precio_con_descuento ?? $producto->precio,

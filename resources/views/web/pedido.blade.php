@@ -8,47 +8,63 @@
             <!-- Cart Items -->
             <div class="col-lg-8">
                 <div class="card mb-4">
-                    <div class="card-header bg-light">
+                    <div class="card-header" style="background-color: #6F4E37; color: white;">
                         <div class="row">
-                            <div class="col-md-5"><strong>Producto</strong></div>
-                            <div class="col-md-2 text-center"><strong>Precio</strong></div>
+                            <div class="col-md-2 text-center"><strong>Imagen</strong></div>
+                            <div class="col-md-2"><strong>Producto</strong></div>
+                            <div class="col-md-1 text-center"><strong>Código</strong></div>
+                            <div class="col-md-2 text-center"><strong>Categoría</strong></div>
+                            <div class="col-md-1 text-center"><strong>Precio</strong></div>
                             <div class="col-md-2 text-center"><strong>Cantidad</strong></div>
-                            <div class="col-md-3 text-end"><strong>Subtotal</strong></div>
+                            <div class="col-md-2 text-end"><strong>Subtotal</strong></div>
                         </div>
                     </div>
                     <div class="card-body" id="cartItems">
                         @forelse($carrito as $id => $item)
-                        <div class="cart-item mb-3">
+                        <div class="cart-item mb-3 border-bottom pb-3">
                             <div class="row g-2 align-items-center">
-                                <div class="col-md-5 d-flex align-items-center">
-                                    <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" alt="{{ $item['nombre'] }}" class="product-thumb me-3" />
-                                    <div>
-                                        <div class="product-name fw-bold">{{ $item['nombre'] }}</div>
-                                        <div class="product-code">{{ $item['codigo'] }}</div>
-                                    </div>
+                                <div class="col-md-2 text-center">
+                                    <img src="{{ asset('uploads/productos/' . $item['imagen']) }}" 
+                                         alt="{{ $item['nombre'] }}" 
+                                         class="rounded shadow-sm" 
+                                         style="width: 80px; height: 80px; object-fit: cover;" />
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="product-name fw-bold" style="color: #4A2F1E;">{{ $item['nombre'] }}</div>
+                                </div>
+
+                                <div class="col-md-1 text-center">
+                                    <span class="badge bg-secondary">{{ $item['codigo'] ?? '-' }}</span>
                                 </div>
 
                                 <div class="col-md-2 text-center">
+                                    <span class="badge" style="background-color: #efe3d8; color: #6F4E37;">
+                                        {{ $item['categoria'] ?? 'Sin categoría' }}
+                                    </span>
+                                </div>
+
+                                <div class="col-md-1 text-center">
                                     @if(isset($item['precio_original']) && $item['precio_original'] > $item['precio'])
                                         <div>
                                             <small class="text-muted text-decoration-line-through">${{ number_format($item['precio_original'], 2) }}</small>
                                         </div>
                                     @endif
-                                    <div class="product-price fw-bold">${{ number_format($item['precio'], 2) }}</div>
+                                    <div class="product-price fw-bold" style="color: #6F4E37;">${{ number_format($item['precio'], 2) }}</div>
                                 </div>
 
                                 <div class="col-md-2 d-flex justify-content-center cart-qty">
-                                    <div class="btn-group" role="group" aria-label="Cantidad">
-                                        <a href="{{ route('carrito.restar', $id) }}" class="btn btn-outline-danger btn-sm">-</a>
-                                        <span class="d-inline-flex align-items-center px-3">{{ $item['cantidad'] }}</span>
-                                        <a href="{{ route('carrito.sumar', $id) }}" class="btn btn-outline-success btn-sm">+</a>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Cantidad">
+                                        <a href="{{ route('carrito.restar', $id) }}" class="btn btn-outline-danger">-</a>
+                                        <span class="d-inline-flex align-items-center px-3 border-top border-bottom">{{ $item['cantidad'] }}</span>
+                                        <a href="{{ route('carrito.sumar', $id) }}" class="btn btn-outline-success">+</a>
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 text-end">
-                                    <div class="fw-bold mb-2">${{ number_format($item['precio'] * $item['cantidad'], 2) }}</div>
+                                <div class="col-md-2 text-end">
+                                    <div class="fw-bold mb-2" style="color: #6F4E37;">${{ number_format($item['precio'] * $item['cantidad'], 2) }}</div>
                                     <a class="btn btn-sm btn-outline-danger" href="{{ route('carrito.eliminar', $id) }}">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-trash"></i> Eliminar
                                     </a>
                                 </div>
                             </div>
@@ -95,7 +111,7 @@
                             <strong>Total</strong>
                             <strong id="orderTotal">${{ number_format($total ?? 0, 2) }}</strong>
                         </div>
-                        <!-- Checkout Button --><a href="{{ route('pedido.formulario') }}" class="btn btn-product w-100" id="checkout">
+                        <!-- Checkout Button --><a href="{{ route('pedido.formulario') }}" class="btn btn-outline-brown w-100" id="checkout">
                         <i class="bi bi-credit-card me-1"></i>Realizar pedido
                         </a>
                          

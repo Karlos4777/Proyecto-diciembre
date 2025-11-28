@@ -15,8 +15,8 @@
 
 /* Override Bootstrap card background in app-content */
 .app-content {
-    --bs-card-bg: var(--color-cream);
-    --bs-card-cap-bg: var(--color-cream);
+    --bs-card-bg: var(--color-white);
+    --bs-card-cap-bg: var(--color-white);
 }
 
 html {
@@ -25,7 +25,7 @@ html {
 
 html, body {
     font-family: var(--font-main);
-    background-color: var(--color-cream); /* Cambiado de dark-brown a cream */
+    background-color: var(--color-white); /* Cambiado de cream a white */
     margin: 0;
     padding: 0;
 }
@@ -39,7 +39,7 @@ body {
 /* Main element styling for controller views */
 main {
     flex: 1;
-    background-color: var(--color-cream); /* Cambiado de dark-brown a cream */
+    background-color: var(--color-white); /* Cambiado de cream a white */
     padding-top: 72px; /* Account for fixed navbar */
     padding-bottom: 2rem; /* Space before footer */
     min-height: calc(100vh - 72px);
@@ -362,7 +362,7 @@ main {
 
 /* === Apply cream background to app-content wrapper (controller views) === */
 .app-content {
-    background-color: var(--color-cream);
+    background-color: var(--color-white);
     padding: 1.5rem;
     margin: 0;
     min-height: calc(100vh - 72px - 4rem); /* viewport height minus navbar and spacing */
@@ -370,19 +370,19 @@ main {
 
 /* Apply cream background to all cards in admin views === */
 .app-content .card {
-    background-color: var(--color-cream) !important;
+    background-color: var(--color-white) !important;
 }
 
 .app-content .card-header {
-    background-color: var(--color-cream) !important;
+    background-color: var(--color-white) !important;
 }
 
 .app-content .card-body {
-    background-color: var(--color-cream) !important;
+    background-color: var(--color-white) !important;
 }
 
 .app-content .card-footer {
-    background-color: var(--color-cream) !important;
+    background-color: var(--color-white) !important;
 }
 
 /* === Responsive Design === */

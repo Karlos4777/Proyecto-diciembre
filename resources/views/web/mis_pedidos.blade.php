@@ -41,18 +41,18 @@
             @foreach($registros as $pedido)
                 <div class="col-md-12 mb-4">
                     <!-- Destacar el primer pedido (el más reciente) cuando hay mensaje de éxito -->
-                    <div class="card shadow-sm border-0 @if(session('success') && $loop->first) border-success border-3 @endif">
-                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <div class="card shadow-lg border-0 @if(session('success') && $loop->first) border-success border-3 @endif">
+                        <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #6F4E37; color: white;">
                             <div>
                                 <h5 class="mb-0">
                                     <i class="bi bi-file-text me-2"></i>Pedido #{{ $pedido->id }}
                                     @if(session('success') && $loop->first)
-                                        <span class="badge bg-success ms-2">
+                                        <span class="badge bg-warning text-dark ms-2">
                                             <i class="bi bi-star-fill me-1"></i>NUEVO
                                         </span>
                                     @endif
                                 </h5>
-                                <small class="text-muted">
+                                <small style="color: #e0e0e0;">
                                     {{ $pedido->created_at->format('d/m/Y H:i') }}
                                 </small>
                             </div>
@@ -65,26 +65,26 @@
                                         'cancelado' => 'bg-secondary',
                                     ];
                                 @endphp
-                                <span class="badge {{ $colores[$pedido->estado] ?? 'bg-dark' }} fs-6">
+                                <span class="badge {{ $colores[$pedido->estado] ?? 'bg-dark' }} fs-6 shadow-sm">
                                     <i class="bi bi-circle-fill me-1"></i>{{ ucfirst($pedido->estado) }}
                                 </span>
                             </div>
                         </div>
 
-                        <div class="card-body">
+                        <div class="card-body" style="background-color: #ffffff;">
                             <div class="row mb-3">
                                 <div class="col-md-8">
-                                    <h6 class="text-muted">Productos:</h6>
+                                    <h6 class="mb-3" style="color: #6F4E37;">Productos:</h6>
                                     <div class="table-responsive">
-                                        <table class="table table-sm">
-                                            <thead class="table-light">
+                                        <table class="table table-hover align-middle">
+                                            <thead style="background-color: #4A2F1E; color: white;">
                                                 <tr>
-                                                    <th class="th-w-50">Imagen</th>
-                                                    <th class="th-w-50">Producto</th>
-                                                    <th class="th-w-50">Codigo</th>
-                                                    <th class="th-w-50">Categoria</th>
-                                                    <th class="th-w-50">Cantidad</th>
-                                                    <th class="th-w-50">Precio Unit.</th>
+                                                    <th class="py-2">Imagen</th>
+                                                    <th class="py-2">Producto</th>
+                                                    <th class="py-2 text-center">Código</th>
+                                                    <th class="py-2 text-center">Categoría</th>
+                                                    <th class="py-2 text-center">Cantidad</th>
+                                                    <th class="py-2 text-end">Precio Unit.</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -94,48 +94,33 @@
                                                             <td>
                                                                 @if($detalle->producto && $detalle->producto->imagen)
                                                                     <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
-                                                                         alt="{{ $detalle->producto->nombre ?? 'Producto' }}" class="thumb-40 img-thumbnail">
+                                                                         alt="{{ $detalle->producto->nombre ?? 'Producto' }}" 
+                                                                         class="rounded shadow-sm" 
+                                                                         style="width: 50px; height: 50px; object-fit: cover;">
                                                                 @else
-                                                                    <div class="bg-light d-flex align-items-center justify-content-center thumb-40">
-                                                                        <i class="bi bi-image fs-6"></i>
+                                                                    <div class="bg-light d-flex align-items-center justify-content-center rounded shadow-sm" style="width: 50px; height: 50px;">
+                                                                        <i class="bi bi-image fs-5 text-muted"></i>
                                                                     </div>
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                <small><strong>{{ $detalle->producto->nombre ?? 'Producto eliminado' }}</strong></small>
-                                                                <div class="mt-1">
-                                                                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#upload-prod-{{ $pedido->id }}-{{ $detalle->id }}" aria-expanded="false">
-                                                                        <i class="bi bi-upload"></i> Subir archivo
-                                                                    </button>
-                                                                </div>
+                                                                <strong style="color: #4A2F1E;">{{ $detalle->producto->nombre ?? 'Producto eliminado' }}</strong>
                                                             </td>
                                                             <td class="text-center">
-                                                                <small>{{ $detalle->producto->codigo ?? '-' }}</small>
+                                                                <span class="badge bg-light text-dark border">{{ $detalle->producto->codigo ?? '-' }}</span>
                                                             </td>
                                                             <td class="text-center">
                                                                 @if($detalle->producto && $detalle->producto->categoria)
-                                                                    <small>{{ $detalle->producto->categoria->nombre }}</small>
+                                                                    <span class="badge" style="background-color: #efe3d8; color: #6F4E37;">{{ $detalle->producto->categoria->nombre }}</span>
                                                                 @else
                                                                     <small>-</small>
                                                                 @endif
                                                             </td>
                                                             <td class="text-center">
-                                                                <small>{{ $detalle->cantidad }}</small>
+                                                                <strong>{{ $detalle->cantidad }}</strong>
                                                             </td>
                                                             <td class="text-end">
-                                                                <small>${{ number_format($detalle->precio ?? 0, 2) }}</small>
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr class="collapse" id="upload-prod-{{ $pedido->id }}-{{ $detalle->id }}">
-                                                            <td colspan="6">
-                                                                <form action="{{ route('pedidos.referencia.upload', $pedido->id) }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2 py-2">
-                                                                    @csrf
-                                                                    <input type="hidden" name="detalle_id" value="{{ $detalle->id }}">
-                                                                    <input type="file" name="archivo" accept="image/*,.pdf" class="form-control form-control-sm" required>
-                                                                    <button class="btn btn-primary btn-sm" type="submit">Subir</button>
-                                                                    <small class="text-muted ms-2">jpg, png, pdf. Máx 5 MB.</small>
-                                                                </form>
+                                                                <strong style="color: #28a745;">${{ number_format($detalle->precio ?? 0, 2) }}</strong>
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -150,10 +135,10 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <div class="card bg-light">
+                                    <div class="card border-0 shadow-sm" style="background-color: #fbfaf9;">
                                         <div class="card-body">
-                                            <h6 class="card-title">Resumen del pedido</h6>
-                                            <hr>
+                                            <h6 class="card-title" style="color: #6F4E37;">Resumen del pedido</h6>
+                                            <hr style="border-color: #6F4E37; opacity: 0.2;">
                                             <div class="d-flex justify-content-between mb-2">
                                                 <span>Subtotal:</span>
                                                 <span>${{ number_format($pedido->total, 2) }}</span>
@@ -162,30 +147,33 @@
                                                 <span>Envío:</span>
                                                 <span class="badge bg-success">Gratis</span>
                                             </div>
-                                            <form action="{{ route('pedidos.referencia.upload', $pedido->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
-                                                @csrf
-                                                <label class="form-label mb-1">Subir archivo (recibo)</label>
-                                                <div class="d-flex">
-                                                    <input type="file" name="archivo" accept="image/*,.pdf" class="form-control form-control-sm" required>
-                                                    <button class="btn btn-primary btn-sm ms-2" type="submit">Subir</button>
-                                                </div>
-                                                <small class="text-muted">Tipos: jpg, png, pdf. Máx 5 MB.</small>
-                                            </form>
                                             
-                                            <hr>
-                                            <div class="d-flex justify-content-between">
-                                                <strong>Total:</strong>
-                                                <strong class="text-success fs-5">${{ number_format($pedido->total, 2) }}</strong>
+                                            <div class="mt-3 p-3 rounded" style="background-color: #ffffff; border: 1px dashed #6F4E37;">
+                                                <form action="{{ route('pedidos.referencia.upload', $pedido->id) }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <label class="form-label mb-1 small fw-bold" style="color: #4A2F1E;">Subir comprobante general</label>
+                                                    <div class="d-flex flex-column gap-2">
+                                                        <input type="file" name="archivo" accept="image/*,.pdf" class="form-control form-control-sm" required>
+                                                        <button class="btn btn-sm btn-outline-brown w-100" type="submit">
+                                                            <i class="bi bi-cloud-upload me-1"></i> Subir Recibo
+                                                        </button>
+                                                    </div>
+                                                    <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">Tipos: jpg, png, pdf. Máx 5 MB.</small>
+                                                </form>
                                             </div>
                                             
-                                            <!-- Formulario para que el cliente suba archivo (recibo / referencia) asociado al pedido -->
+                                            <hr style="border-color: #6F4E37; opacity: 0.2;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <strong style="color: #4A2F1E;">Total:</strong>
+                                                <strong class="fs-4" style="color: #6F4E37;">${{ number_format($pedido->total, 2) }}</strong>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-footer bg-light d-flex justify-content-between">
+                        <div class="card-footer d-flex justify-content-between align-items-center" style="background-color: #fbfaf9; border-top: 1px solid #eee;">
                             <small class="text-muted">
                                 <i class="bi bi-calendar me-1"></i>{{ $pedido->created_at->format('d \d\e M \d\e Y') }}
                             </small>
@@ -196,7 +184,7 @@
                                     <input type="hidden" name="estado" value="cancelado">
                                     <button type="submit" class="btn btn-sm btn-outline-danger" 
                                             onclick="return confirm('¿Estás seguro de cancelar este pedido?')">
-                                        <i class="bi bi-trash me-1"></i> Cancelar
+                                        <i class="bi bi-trash me-1"></i> Cancelar Pedido
                                     </button>
                                 </form>
                             @endif
@@ -227,10 +215,10 @@
 
     <div class="row mt-4">
         <div class="col-md-12 text-center">
-            <a href="{{ route('web.index') }}" class="btn btn-secondary">
+            <a href="{{ route('web.index') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-2"></i>Volver a la tienda
             </a>
-            <a href="{{ route('carrito.mostrar') }}" class="btn btn-outline-primary">
+            <a href="{{ route('carrito.mostrar') }}" class="btn btn-outline-brown">
                 <i class="bi bi-cart me-2"></i>Mi carrito
             </a>
         </div>

@@ -64,10 +64,16 @@
                                         @foreach($registros as $reg)
                                         <tr class="align-middle">
                                             <td class="text-center">
-                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                    data-bs-target="#modal-estado-{{$reg->id}}" title="Cambiar estado">
-                                                    <i class="bi bi-arrow-repeat"></i>
-                                                </button>
+                                                <div class="btn-group-vertical btn-group-sm" role="group">
+                                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                                        data-bs-target="#modal-estado-{{$reg->id}}" title="Cambiar estado">
+                                                        <i class="bi bi-arrow-repeat"></i>
+                                                    </button>
+                                                    <button class="btn btn-info btn-sm text-white" type="button" data-bs-toggle="collapse" 
+                                                        data-bs-target="#productos-detalle-{{ $reg->id }}" aria-expanded="false" title="Ver productos">
+                                                        <i class="bi bi-box-seam"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                             <td class="d-none d-sm-table-cell">{{$reg->id}}</td>
                                             <td class="d-none d-md-table-cell">
@@ -97,6 +103,104 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        
+                                        <!-- Fila colapsable para mostrar detalles de productos -->
+                                        <tr class="collapse" id="productos-detalle-{{ $reg->id }}">
+                                            <td colspan="7">
+                                                <div class="p-3 bg-light">
+                                                    <h6 class="mb-3"><i class="bi bi-box-seam me-2"></i>Productos del Pedido #{{ $reg->id }}</h6>
+                                                    @if($reg->detalles && count($reg->detalles) > 0)
+                                                        <div class="table-responsive">
+                                                            <table class="table table-sm table-bordered table-hover mb-0">
+                                                                <thead class="table-secondary">
+                                                                    <tr>
+                                                                        <th style="width: 80px;">Imagen</th>
+                                                                        <th>Producto</th>
+                                                                        <th class="text-center" style="width: 100px;">Código</th>
+                                                                        <th class="text-center" style="width: 120px;">Categoría</th>
+                                                                        <th class="text-center" style="width: 80px;">Cantidad</th>
+                                                                        <th class="text-end" style="width: 100px;">Precio Unit.</th>
+                                                                        <th class="text-end" style="width: 100px;">Subtotal</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach($reg->detalles as $detalle)
+                                                                        <tr>
+                                                                            <td class="text-center">
+                                                                                @if($detalle->producto && $detalle->producto->imagen)
+                                                                                    <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
+                                                                                         alt="{{ $detalle->producto->nombre ?? 'Producto' }}"
+                                                                                         class="rounded"
+                                                                                         style="width: 60px; height: 60px; object-fit: cover;">
+                                                                                @else
+                                                                                    <div class="bg-white border rounded d-flex align-items-center justify-content-center" 
+                                                                                         style="width: 60px; height: 60px;">
+                                                                                        <i class="bi bi-image text-muted"></i>
+                                                                                    </div>
+                                                                                @endif
+                                                                            </td>
+                                                                            <td>
+                                                                                <strong>
+                                                                                    @if($detalle->producto)
+                                                                                        <a href="{{ route('web.show', $detalle->producto->id) }}" 
+                                                                                           class="text-decoration-none" target="_blank">
+                                                                                            {{ $detalle->producto->nombre }}
+                                                                                        </a>
+                                                                                    @else
+                                                                                        <span class="text-muted">Producto eliminado</span>
+                                                                                    @endif
+                                                                                </strong>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <span class="badge bg-secondary">
+                                                                                    {{ $detalle->producto->codigo ?? '-' }}
+                                                                                </span>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                @if($detalle->producto && $detalle->producto->categoria)
+                                                                                    <span class="badge bg-info">
+                                                                                        {{ $detalle->producto->categoria->nombre }}
+                                                                                    </span>
+                                                                                @else
+                                                                                    <span class="text-muted">-</span>
+                                                                                @endif
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <strong>{{ $detalle->cantidad }}</strong>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                <strong>${{ number_format($detalle->precio ?? 0, 2) }}</strong>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                <strong class="text-success">
+                                                                                    ${{ number_format(($detalle->precio ?? 0) * $detalle->cantidad, 2) }}
+                                                                                </strong>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                                <tfoot class="table-light">
+                                                                    <tr>
+                                                                        <td colspan="6" class="text-end"><strong>Total del Pedido:</strong></td>
+                                                                        <td class="text-end">
+                                                                            <strong class="text-primary fs-5">
+                                                                                ${{ number_format($reg->total, 2) }}
+                                                                            </strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                    @else
+                                                        <div class="alert alert-warning mb-0">
+                                                            <i class="bi bi-exclamation-triangle me-2"></i>
+                                                            No hay detalles de productos para este pedido
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
                                         <tr class="collapse referencia-row" id="referencia-{{ $reg->id }}">
                                             <td colspan="7">
                                                 <div class="p-3">
@@ -129,7 +233,7 @@
                                         </tr>
                                         <!-- Mobile card view for details -->
                                         <tr class="d-md-none">
-                                            <td colspan="5">
+                                            <td colspan="7">
                                                 <div class="card card-sm">
                                                     <div class="card-body p-2">
                                                         <div class="row g-2">
@@ -159,68 +263,7 @@
                                         <tr class="collapse detalles-row" id="detalles-{{ $reg->id }}">
                                             <td colspan="7">
                                                 <div class="p-3">
-                                                    <!-- Menú desplegable Ver más para productos -->
-                                                    <div class="mb-3">
-                                                        <div class="btn-group w-100" role="group">
-                                                            <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#productos-detalle-{{ $reg->id }}" aria-expanded="false">
-                                                                <i class="bi bi-chevron-down"></i> Ver más
-                                                            </button>
-                                                        </div>
-                                                        
-                                                        <!-- Contenido desplegable -->
-                                                        <div class="collapse mt-2" id="productos-detalle-{{ $reg->id }}">
-                                                            <div class="card card-body">
-                                                                @if($reg->detalles && count($reg->detalles) > 0)
-                                                                    @foreach($reg->detalles as $detalle)
-                                                                        <div class="row g-2 mb-3 pb-3 border-bottom align-items-center">
-                                                                            <!-- Imagen -->
-                                                                            <div class="col-auto">
-                                                                                    @if($detalle->producto && $detalle->producto->imagen)
-                                                                                        <img src="{{ asset('uploads/productos/' . $detalle->producto->imagen) }}" 
-                                                                                             class="pedido-thumb" 
-                                                                                             alt="{{ $detalle->producto->nombre ?? 'Producto' }}">
-                                                                                    @else
-                                                                                        <div class="pedido-thumb-placeholder">
-                                                                                            <i class="bi bi-image text-muted"></i>
-                                                                                        </div>
-                                                                                    @endif
-                                                                                </div>
-                                                                            
-                                                                            <!-- Nombre -->
-                                                                            <div class="col">
-                                                                                <strong>
-                                                                                    @if($detalle->producto)
-                                                                                        <a href="{{ route('web.show', $detalle->producto->id) }}" class="text-decoration-none">{{ $detalle->producto->nombre }}</a>
-                                                                                    @else
-                                                                                        Producto eliminado
-                                                                                    @endif
-                                                                                </strong>
-                                                                            </div>
-                                                                            
-                                                                            <!-- Cantidad -->
-                                                                            <div class="col-auto text-center">
-                                                                                <small class="text-muted d-block">Cantidad</small>
-                                                                                <strong>{{ $detalle->cantidad }}</strong>
-                                                                            </div>
-                                                                            
-                                                                            <!-- Precio Unitario -->
-                                                                            <div class="col-auto text-end">
-                                                                                <small class="text-muted d-block">Precio Unit.</small>
-                                                                                <strong>${{ number_format($detalle->precio, 2) }}</strong>
-                                                                            </div>
-                                                                        </div>
-                                                                    @endforeach
-                                                                @else
-                                                                    <div class="alert alert-info mb-0">
-                                                                        No hay detalles para este pedido
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
                                                     <!-- Información adicional del pedido -->
-                                                    <hr>
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <small class="text-muted">Cliente:</small><br>

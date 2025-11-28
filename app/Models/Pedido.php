@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pedido extends Model
 {
-    protected $fillable = ['user_id','contenido', 'estado', 'fecha', 'total','detalles',
-    ];
+    protected $fillable = ['user_id','contenido', 'estado', 'fecha', 'total'];
     protected $casts = [
         'contenido' => 'array', // para que se convierta automáticamente de/para JSON
     ];
