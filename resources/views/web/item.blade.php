@@ -94,8 +94,8 @@
                     </div>
                 @endif
 
-                <!-- Botones: agregar al carrito y regresar -->
-                <div class="d-flex gap-2 mt-3">
+                <!-- Botones: agregar al carrito, favoritos y regresar -->
+                <div class="d-flex gap-2 mt-3 flex-wrap">
                     @if ($producto->cantidad >= 1)
                         <form method="POST" action="{{ route('carrito.agregar') }}">
                             @csrf
@@ -105,6 +105,22 @@
                             </button>
                         </form>
                     @endif
+                    
+                    @auth
+                        @php
+                            $enFavoritos = \App\Models\Wishlist::where('user_id', auth()->id())
+                                ->where('producto_id', $producto->id)
+                                ->exists();
+                        @endphp
+                        <form method="POST" action="{{ route('favoritos.toggle', $producto->id) }}">
+                            @csrf
+                            <button type="submit" class="btn {{ $enFavoritos ? 'btn-danger' : 'btn-outline-danger' }}">
+                                <i class="bi {{ $enFavoritos ? 'bi-heart-fill' : 'bi-heart' }} me-1"></i>
+                                {{ $enFavoritos ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}
+                            </button>
+                        </form>
+                    @endauth
+                    
                     <a class="btn btn-outline-secondary" href="javascript:history.back()">Regresar</a>
                 </div>
 

@@ -2,11 +2,13 @@
     Componente reutilizable para mostrar información de productos
     Variables requeridas: $producto
     Variables opcionales: $compact (true para vista compacta en búsqueda)
+    Variables opcionales: $showWishlist (true para mostrar botón de favoritos)
 --}}
 
 @php
     $stock = $producto->cantidad ?? 0;
     $compact = $compact ?? false;
+    $showWishlist = $showWishlist ?? true;
     
     // Determinar estado del stock
     if ($stock >= 21) {
@@ -117,20 +119,22 @@
             <a href="{{ route('web.show', $producto->id) }}" class="btn btn-product btn-sm w-100">
                 <i class="bi bi-eye me-1"></i> Ver producto
             </a>
-            @auth
-                @php
-                    $enFavoritos = \App\Models\Wishlist::where('user_id', auth()->id())
-                        ->where('producto_id', $producto->id)
-                        ->exists();
-                @endphp
-                <form method="POST" action="{{ route('favoritos.toggle', $producto->id) }}" class="mt-2">
-                    @csrf
-                    <button type="submit" class="btn btn-sm w-100 {{ $enFavoritos ? 'btn-outline-danger' : 'btn-outline-secondary' }}">
-                        <i class="bi {{ $enFavoritos ? 'bi-heart-fill text-danger' : 'bi-heart' }} me-1"></i>
-                        {{ $enFavoritos ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}
-                    </button>
-                </form>
-            @endauth
+            @if($showWishlist)
+                @auth
+                    @php
+                        $enFavoritos = \App\Models\Wishlist::where('user_id', auth()->id())
+                            ->where('producto_id', $producto->id)
+                            ->exists();
+                    @endphp
+                    <form method="POST" action="{{ route('favoritos.toggle', $producto->id) }}" class="mt-2">
+                        @csrf
+                        <button type="submit" class="btn btn-sm w-100 {{ $enFavoritos ? 'btn-outline-danger' : 'btn-outline-secondary' }}">
+                            <i class="bi {{ $enFavoritos ? 'bi-heart-fill text-danger' : 'bi-heart' }} me-1"></i>
+                            {{ $enFavoritos ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}
+                        </button>
+                    </form>
+                @endauth
+            @endif
         @endif
     </div>
 </div>

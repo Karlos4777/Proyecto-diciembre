@@ -8,7 +8,7 @@
     <div class="productos-carrusel" role="list">
 
         @foreach ($productos as $producto)
-            @include('web.partials.product-card-data', ['producto' => $producto, 'compact' => false])
+            @include('web.partials.product-card-data', ['producto' => $producto, 'compact' => false, 'showWishlist' => false])
         @endforeach
 
     </div>
