@@ -78,15 +78,15 @@ class ReportController extends Controller
 
     public function productosPdf()
     {
-        $productos = Producto::with(['categoria','catalogo'])->orderBy('id')->get();
-        $pdf = Pdf::loadView('reportes.productos_pdf', compact('productos'));
+        $registros = Producto::with(['categoria','catalogo'])->orderBy('id')->get();
+        $pdf = Pdf::loadView('reportes.productos_pdf', compact('registros'));
         return $pdf->download('productos_' . now()->format('Ymd_His') . '.pdf');
     }
 
     public function pedidosPdf()
     {
-        $pedidos = Pedido::with(['user','lineas'])->orderBy('id','desc')->get();
-        $pdf = Pdf::loadView('reportes.pedidos_pdf', compact('pedidos'));
+        $registros = Pedido::with(['user','lineas'])->orderBy('id','desc')->get();
+        $pdf = Pdf::loadView('reportes.pedidos_pdf', compact('registros'));
         return $pdf->download('pedidos_' . now()->format('Ymd_His') . '.pdf');
     }
 
