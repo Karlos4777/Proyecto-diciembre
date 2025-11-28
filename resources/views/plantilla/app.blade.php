@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="author" content="ArtCode" />
     <meta name="description" content="Sistema | ArtCode.com" />
     <title>@yield('titulo', 'Panel de Administración - ArtCode')</title>
@@ -50,5 +51,8 @@
     </script>
     <script src="{{ asset('js/web.js') }}"></script>
     @stack('scripts')
+
+    <!-- Cookie Consent Banner -->
+    @include('partials.cookie_consent')
 </body>
 </html>

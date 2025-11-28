@@ -16,6 +16,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\PrivacyController;
 
 //  Rutas públicas del sitio web
 Route::get('/', [WebController::class, 'index'])->name('web.index');
@@ -26,6 +27,10 @@ Route::get('/buscar-productos', [WebController::class, 'buscarProductosAjax'])->
 
 // Nueva ruta para mostrar productos por categoría
 Route::get('/categoria-web/{id}', [CategoriaController::class, 'show'])->name('web.categoria.show');
+
+// Rutas de privacidad y consentimiento de cookies
+Route::get('/privacy', [PrivacyController::class, 'show'])->name('privacy.show');
+Route::post('/cookies/accept', [PrivacyController::class, 'acceptCookies'])->name('cookies.accept');
 
 //  Rutas protegidas (solo usuarios autenticados)
 Route::middleware(['auth'])->group(function(){
