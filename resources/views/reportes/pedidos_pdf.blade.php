@@ -85,7 +85,7 @@
     </main>
 </body>
 </html>
-    <p style="margin-top:10px;">Total pedidos: {{ $pedidos->count() }}</p>
+    <p style="margin-top:10px;">Total pedidos: {{ is_countable($registros ?? []) ? count($registros) : ($registros->count() ?? 0) }}</p>
     <small>Generado: {{ now()->format('d/m/Y H:i:s') }}</small>
 </body>
 </html>
