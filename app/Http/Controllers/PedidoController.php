@@ -152,13 +152,44 @@ public function realizar(Request $request)
             $total += $item['precio'] * $item['cantidad'];
         }
 
+        // Lógica de Puntos (Descuento)
+        $puntosCanjeados = session('puntos_canjeados', 0);
+        $descuentoPuntos = 0;
+        if ($puntosCanjeados > 0) {
+            $descuentoPuntos = $puntosCanjeados * 100; // 1 punto = $100 COP
+            if ($descuentoPuntos > $total) {
+                $descuentoPuntos = $total;
+            }
+            
+            // Descontar puntos al usuario
+            $user = auth()->user();
+            if ($user->puntos >= $puntosCanjeados) {
+                $user->puntos -= $puntosCanjeados;
+                $user->save();
+            } else {
+                // Si por alguna razón ya no tiene puntos (concurrencia), no aplicar descuento
+                $descuentoPuntos = 0;
+                $puntosCanjeados = 0;
+            }
+        }
+
+        $totalFinal = max(0, $total - $descuentoPuntos);
+
         // Crear pedido
         $pedido = Pedido::create([
             'user_id' => auth()->id(),
-            'total' => $total,
+            'total' => $totalFinal,
             'estado' => 'pendiente',
             'fecha' => now()->toDateString(),
         ]);
+
+        // Ganar puntos (1 punto por cada $1000 gastados del total final)
+        $puntosGanados = floor($totalFinal / 1000);
+        if ($puntosGanados > 0) {
+            $user = auth()->user();
+            $user->puntos += $puntosGanados;
+            $user->save();
+        }
 
         foreach ($carrito as $productoId => $item) {
             PedidoDetalle::create([
@@ -188,6 +219,9 @@ public function realizar(Request $request)
         // Vaciar carrito del usuario en la base de datos
         $registro->contenido = [];
         $registro->save();
+        
+        // Limpiar sesión de puntos
+        session()->forget('puntos_canjeados');
 
         // Enviar email de confirmación al cliente
         try {

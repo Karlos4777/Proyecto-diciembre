@@ -47,10 +47,10 @@
                                 <div class="col-md-1 text-center">
                                     @if(isset($item['precio_original']) && $item['precio_original'] > $item['precio'])
                                         <div>
-                                            <small class="text-muted text-decoration-line-through">${{ number_format($item['precio_original'], 2) }}</small>
+                                            <small class="text-muted text-decoration-line-through">${{ number_format($item['precio_original'], 0, ',', '.') }}</small>
                                         </div>
                                     @endif
-                                    <div class="product-price fw-bold" style="color: #6F4E37;">${{ number_format($item['precio'], 2) }}</div>
+                                    <div class="product-price fw-bold" style="color: #6F4E37;">${{ number_format($item['precio'], 0, ',', '.') }}</div>
                                 </div>
 
                                 <div class="col-md-2 d-flex justify-content-center cart-qty">
@@ -62,7 +62,7 @@
                                 </div>
 
                                 <div class="col-md-2 text-end">
-                                    <div class="fw-bold mb-2" style="color: #6F4E37;">${{ number_format($item['precio'] * $item['cantidad'], 2) }}</div>
+                                    <div class="fw-bold mb-2" style="color: #6F4E37;">${{ number_format($item['precio'] * $item['cantidad'], 0, ',', '.') }}</div>
                                     <a class="btn btn-sm btn-outline-danger" href="{{ route('carrito.eliminar', $id) }}">
                                         <i class="bi bi-trash"></i> Eliminar
                                     </a>
@@ -102,14 +102,54 @@
 
             <!-- Order Summary -->
             <div class="col-lg-4">
+                <!-- Puntos Card -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-music-note-beamed me-2"></i>Puntos Musicales</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Tienes <strong class="text-primary">{{ auth()->user()->puntos }}</strong> puntos disponibles.</p>
+                        <small class="text-muted d-block mb-3">Canjea 1 punto por $100 de descuento.</small>
+                        
+                        @if(isset($puntosCanjeados) && $puntosCanjeados > 0)
+                            <div class="alert alert-success py-2 mb-0 d-flex justify-content-between align-items-center">
+                                <small><i class="bi bi-check-circle me-1"></i>Canjeados: {{ $puntosCanjeados }} pts</small>
+                                <a href="{{ route('carrito.quitar.puntos') }}" class="btn btn-sm btn-link text-danger p-0" title="Quitar descuento">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                </a>
+                            </div>
+                        @else
+                            <form action="{{ route('carrito.canjear.puntos') }}" method="POST" class="d-flex gap-2">
+                                @csrf
+                                <input type="number" name="puntos" class="form-control form-control-sm" placeholder="Cant. puntos" min="1" step="1" max="{{ auth()->user()->puntos }}">
+                                <button type="submit" class="btn btn-sm btn-brown text-white" style="background-color: #6F4E37;">Canjear</button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Resumen del Pedido</h5>
                     </div>
                     <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <strong>${{ number_format($total ?? 0, 0, ',', '.') }}</strong>
+                        </div>
+
+                        @if(isset($descuentoPuntos) && $descuentoPuntos > 0)
+                        <div class="d-flex justify-content-between mb-2 text-success">
+                            <span><i class="bi bi-stars me-1"></i>Descuento Puntos</span>
+                            <strong>-${{ number_format($descuentoPuntos, 0, ',', '.') }}</strong>
+                        </div>
+                        @endif
+
+                        <hr>
+
                         <div class="d-flex justify-content-between mb-4">
                             <strong>Total</strong>
-                            <strong id="orderTotal">${{ number_format($total ?? 0, 2) }}</strong>
+                            <strong id="orderTotal" class="fs-4" style="color: #6F4E37;">${{ number_format($totalConDescuento ?? $total, 0, ',', '.') }}</strong>
                         </div>
                         <!-- Checkout Button --><a href="{{ route('pedido.formulario') }}" class="btn btn-outline-brown w-100" id="checkout">
                         <i class="bi bi-credit-card me-1"></i>Realizar pedido

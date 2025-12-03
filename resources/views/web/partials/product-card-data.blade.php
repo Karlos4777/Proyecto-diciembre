@@ -98,7 +98,7 @@
         
         {{-- Precio --}}
         <p class="product-price-wrapper fw-bold text-success mb-2 price-final">
-            ${{ number_format($precioConDescuento, 2) }}
+            ${{ number_format($precioConDescuento, 0, ',', '.') }}
         </p>
 
         {{-- Rating promedio (siempre mostrar estrellas) --}}

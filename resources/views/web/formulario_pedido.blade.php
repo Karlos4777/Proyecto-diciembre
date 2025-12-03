@@ -59,7 +59,7 @@
                                                 </td>
                                                 <td>
                                                     <strong class="d-block" style="color: #4A2F1E;">{{ $item['nombre'] }}</strong>
-                                                    <small class="text-muted">${{ number_format($item['precio'], 2) }} c/u</small>
+                                                    <small class="text-muted">${{ number_format($item['precio'], 0, ',', '.') }} c/u</small>
                                                 </td>
                                                 <td class="text-center">
                                                     <span class="badge bg-secondary small">{{ $item['codigo'] ?? '-' }}</span>
@@ -73,17 +73,41 @@
                                                     <strong>{{ $item['cantidad'] }}</strong>
                                                 </td>
                                                 <td class="text-end">
-                                                    <strong style="color: #4A2F1E;">${{ number_format($subtotal, 2) }}</strong>
+                                                    <strong style="color: #4A2F1E;">${{ number_format($subtotal, 0, ',', '.') }}</strong>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            @php
+                                $puntosCanjeados = session('puntos_canjeados', 0);
+                                $descuentoPuntos = 0;
+                                if ($puntosCanjeados > 0) {
+                                    $descuentoPuntos = $puntosCanjeados * 100;
+                                    if ($descuentoPuntos > $total) $descuentoPuntos = $total;
+                                }
+                                $totalFinal = max(0, $total - $descuentoPuntos);
+                            @endphp
+
                             <hr style="border-color: #6F4E37; opacity: 0.2;">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">Subtotal:</span>
+                                <strong>${{ number_format($total, 0, ',', '.') }}</strong>
+                            </div>
+
+                            @if($descuentoPuntos > 0)
+                            <div class="d-flex justify-content-between align-items-center mb-2 text-success">
+                                <span><i class="bi bi-stars me-1"></i>Descuento Puntos:</span>
+                                <strong>-${{ number_format($descuentoPuntos, 0, ',', '.') }}</strong>
+                            </div>
+                            @endif
+
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0" style="color: #6F4E37;">Total a pagar:</h6>
-                                <h5 class="mb-0 product-price"><strong>${{ number_format($total, 2) }}</strong></h5>
+                                <h5 class="mb-0 product-price"><strong>${{ number_format($totalFinal, 0, ',', '.') }}</strong></h5>
                             </div>
                         </div>
                     </div>

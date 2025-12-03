@@ -58,9 +58,53 @@ class CarritoController extends Controller
         $registro->contenido = $contenido;
         $registro->save();
 
+        // Lógica de Puntos
+        $puntosCanjeados = session('puntos_canjeados', 0);
+        $descuentoPuntos = 0;
+        
+        if ($puntosCanjeados > 0) {
+            // Tasa de conversión: 1 punto = $100 COP
+            $descuentoPuntos = $puntosCanjeados * 100;
+            
+            // Validar que el descuento no exceda el total
+            if ($descuentoPuntos > $total) {
+                $descuentoPuntos = $total;
+                // Ajustar puntos canjeados si excede el total (opcional, por ahora simple)
+            }
+        }
+
+        $totalConDescuento = max(0, $total - $descuentoPuntos);
+
         $carrito = $contenido;
 
-        return view('web.pedido', compact('carrito', 'total'));
+        return view('web.pedido', compact('carrito', 'total', 'puntosCanjeados', 'descuentoPuntos', 'totalConDescuento'));
+    }
+
+    // Canjear puntos
+    public function canjearPuntos(Request $request)
+    {
+        $request->validate([
+            'puntos' => 'required|integer|min:1'
+        ]);
+
+        $puntosUsuario = Auth::user()->puntos;
+        $puntosAUsar = $request->input('puntos');
+
+        if ($puntosAUsar > $puntosUsuario) {
+            return redirect()->back()->with('error', 'No tienes suficientes puntos.');
+        }
+
+        // Guardar en sesión
+        session(['puntos_canjeados' => $puntosAUsar]);
+
+        return redirect()->back()->with('mensaje', 'Puntos aplicados correctamente.');
+    }
+
+    // Quitar puntos
+    public function quitarPuntos()
+    {
+        session()->forget('puntos_canjeados');
+        return redirect()->back()->with('mensaje', 'Puntos removidos.');
     }
 
     // Agregar producto

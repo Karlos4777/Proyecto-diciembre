@@ -89,7 +89,7 @@
                 <li class="nav-item">
                     <a href="{{ route('carrito.mostrar') }}" class="btn btn-carrito d-flex align-items-center justify-content-center position-relative">
                         <i class="bi bi-cart-fill me-2"></i>
-                        <span class="d-none d-lg-inline">Pedido</span>
+                        <span class="d-none d-lg-inline">Carrito</span>
                         @php
                             $registro = \App\Models\Carrito::where('user_id', auth()->id())->first();
                             $cantidad = $registro ? array_sum(array_column($registro->contenido ?? [], 'cantidad')) : 0;

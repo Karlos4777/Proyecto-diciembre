@@ -46,6 +46,8 @@ Route::get('/carrito/sumar/{producto_id}', [CarritoController::class, 'sumar'])-
 Route::get('/carrito/restar/{producto_id}', [CarritoController::class, 'restar'])->name('carrito.restar');
 Route::get('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
 Route::get('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
+Route::post('/carrito/canjear-puntos', [CarritoController::class, 'canjearPuntos'])->name('carrito.canjear.puntos');
+Route::get('/carrito/quitar-puntos', [CarritoController::class, 'quitarPuntos'])->name('carrito.quitar.puntos');
 
     Route::get('/pedido/formulario', [PedidoController::class, 'formulario'])->name('pedido.formulario');
     Route::post('/pedido/realizar', [PedidoController::class, 'realizar'])->name('pedido.realizar');
